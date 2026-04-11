@@ -22,11 +22,12 @@ public class HeartRenderer
     // Hardcore row in icons.png is at V=45
     private static final int HC_V = 45;
     // U positions: each heart type is offset by 9px from base U=16
-    private static final int CONTAINER_U = 16;  // index 0
-    private static final int FULL_U = 34;       // index 2
-    private static final int HALF_U = 43;       // index 3
-    private static final int ABSORB_FULL_U = 88; // index 8
-    private static final int ABSORB_HALF_U = 97; // index 9
+    private static final int CONTAINER_U = 16;
+    private static final int FULL_U = 52;
+    private static final int HALF_U = 61;
+    private static final int ABSORB_FULL_U = 160;
+    private static final int ABSORB_HALF_U = 169;
+    private static final int ABSORB_V = 0;
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event)
@@ -70,29 +71,25 @@ public class HeartRenderer
         int healthHalf = Mth.ceil(player.getHealth());
         int absorbHalf = Mth.ceil(player.getAbsorptionAmount());
 
-        // Draw all 10 heart positions right-to-left (matches vanilla draw order)
-        for (int i = HeartLossHandler.MAX_HEARTS - 1; i >= 0; i--)
+        // Draw only active heart positions (skip lost hearts entirely)
+        for (int i = activeHearts - 1; i >= 0; i--)
         {
             int x = left + i * 8;
             int y = top;
 
-            // Container outline — always drawn for every position
+            // Container outline
             gfx.blit(ICONS, x, y, CONTAINER_U, HC_V, 9, 9);
 
-            // Only fill hearts that are within the current max
-            if (i < activeHearts)
+            // Fill based on current health
+            int hp = i * 2;
+            if (hp + 2 <= healthHalf)
             {
-                int hp = i * 2; // health-point threshold for this heart
-                if (hp + 2 <= healthHalf)
-                {
-                    gfx.blit(ICONS, x, y, FULL_U, HC_V, 9, 9);
-                }
-                else if (hp + 1 <= healthHalf)
-                {
-                    gfx.blit(ICONS, x, y, HALF_U, HC_V, 9, 9);
-                }
+                gfx.blit(ICONS, x, y, FULL_U, HC_V, 9, 9);
             }
-            // Lost heart positions: only the container outline (already drawn)
+            else if (hp + 1 <= healthHalf)
+            {
+                gfx.blit(ICONS, x, y, HALF_U, HC_V, 9, 9);
+            }
         }
 
         // Draw absorption hearts in a row above
@@ -109,11 +106,11 @@ public class HeartRenderer
                 int ap = i * 2;
                 if (ap + 2 <= absorbHalf)
                 {
-                    gfx.blit(ICONS, x, y, ABSORB_FULL_U, HC_V, 9, 9);
+                    gfx.blit(ICONS, x, y, ABSORB_FULL_U, ABSORB_V, 9, 9);
                 }
                 else if (ap + 1 <= absorbHalf)
                 {
-                    gfx.blit(ICONS, x, y, ABSORB_HALF_U, HC_V, 9, 9);
+                    gfx.blit(ICONS, x, y, ABSORB_HALF_U, ABSORB_V, 9, 9);
                 }
             }
         }
