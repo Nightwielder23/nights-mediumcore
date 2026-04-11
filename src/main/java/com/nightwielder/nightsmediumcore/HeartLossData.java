@@ -14,6 +14,7 @@ public class HeartLossData extends SavedData
 
     private final Map<UUID, Integer> heartsLost = new HashMap<>();
     private final Map<UUID, Long> cooldownExpiry = new HashMap<>();
+    private final Map<UUID, Long> deathGraceExpiry = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -37,6 +38,17 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public long getDeathGraceExpiry(UUID playerUUID)
+    {
+        return deathGraceExpiry.getOrDefault(playerUUID, 0L);
+    }
+
+    public void setDeathGraceExpiry(UUID playerUUID, long gameTime)
+    {
+        deathGraceExpiry.put(playerUUID, gameTime);
+        setDirty();
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag)
     {
@@ -54,6 +66,13 @@ public class HeartLossData extends SavedData
         }
         tag.put("cooldowns", cooldownTag);
 
+        CompoundTag graceTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : deathGraceExpiry.entrySet())
+        {
+            graceTag.putLong(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("deathGrace", graceTag);
+
         return tag;
     }
 
@@ -69,6 +88,11 @@ public class HeartLossData extends SavedData
         for (String key : cooldownTag.getAllKeys())
         {
             data.cooldownExpiry.put(UUID.fromString(key), cooldownTag.getLong(key));
+        }
+        CompoundTag graceTag = tag.getCompound("deathGrace");
+        for (String key : graceTag.getAllKeys())
+        {
+            data.deathGraceExpiry.put(UUID.fromString(key), graceTag.getLong(key));
         }
         return data;
     }

@@ -20,6 +20,8 @@ public class HeartLossHandler
     // Default max health is 20 (10 hearts). Floor is 6 (3 hearts). Max loss = 7 hearts.
     public static final int MAX_HEARTS = 10;
     public static final int MIN_HEARTS = 3;
+    // 60 seconds * 20 ticks per second
+    private static final int DEATH_GRACE_TICKS = 1200;
 
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event)
@@ -29,6 +31,19 @@ public class HeartLossHandler
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+
+        // Check death grace period
+        long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
+        if (currentTime < graceExpiry)
+        {
+            int remainingHearts = MAX_HEARTS - data.getHeartsLost(player.getUUID());
+            player.sendSystemMessage(
+                    Component.literal("You died! Heart protected by recent death grace period. You still have " +
+                            remainingHearts + " max hearts.")
+                            .withStyle(ChatFormatting.GOLD));
+            return;
+        }
 
         int currentLost = data.getHeartsLost(player.getUUID());
         int maxLoss = MAX_HEARTS - MIN_HEARTS;
@@ -43,6 +58,7 @@ public class HeartLossHandler
 
         int newLost = currentLost + 1;
         data.setHeartsLost(player.getUUID(), newLost);
+        data.setDeathGraceExpiry(player.getUUID(), currentTime + DEATH_GRACE_TICKS);
 
         int remainingHearts = MAX_HEARTS - newLost;
 
