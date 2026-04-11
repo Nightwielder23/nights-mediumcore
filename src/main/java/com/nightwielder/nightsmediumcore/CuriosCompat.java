@@ -20,6 +20,7 @@ public class CuriosCompat
     private static Method findFirstCurio;
     private static boolean initialized = false;
     private static boolean available = false;
+    private static boolean usePredicateVariant = false;
 
     private static void init()
     {
@@ -32,7 +33,29 @@ public class CuriosCompat
             getCuriosInventory = apiClass.getMethod("getCuriosInventory", LivingEntity.class);
 
             Class<?> handlerClass = Class.forName("top.theillusivec4.curios.api.type.inventory.ICuriosItemHandler");
-            findFirstCurio = handlerClass.getMethod("findFirstCurio", Item.class);
+
+            // Try Item parameter first, then fall back to searching by name
+            try
+            {
+                findFirstCurio = handlerClass.getMethod("findFirstCurio", Item.class);
+            }
+            catch (NoSuchMethodException e)
+            {
+                // Search for any single-parameter findFirstCurio method
+                for (Method m : handlerClass.getMethods())
+                {
+                    if (m.getName().equals("findFirstCurio") && m.getParameterCount() == 1)
+                    {
+                        findFirstCurio = m;
+                        usePredicateVariant = true;
+                        break;
+                    }
+                }
+                if (findFirstCurio == null)
+                {
+                    throw new NoSuchMethodException("findFirstCurio not found on ICuriosItemHandler");
+                }
+            }
 
             available = true;
         }
@@ -52,14 +75,28 @@ public class CuriosCompat
         try
         {
             Object lazyOpt = getCuriosInventory.invoke(null, player);
-            if (!(lazyOpt instanceof LazyOptional<?> lazy) || !lazy.isPresent())
+            if (!(lazyOpt instanceof LazyOptional<?> lazy))
                 return false;
 
-            Object handler = lazy.resolve().orElse(null);
-            if (handler == null)
+            Optional<?> resolved = lazy.resolve();
+            if (!resolved.isPresent())
                 return false;
 
-            Object result = findFirstCurio.invoke(handler, relicItem);
+            Object handler = resolved.get();
+
+            Object result;
+            if (usePredicateVariant)
+            {
+                // Predicate<ItemStack> variant
+                java.util.function.Predicate<net.minecraft.world.item.ItemStack> pred =
+                        stack -> stack.is(relicItem);
+                result = findFirstCurio.invoke(handler, pred);
+            }
+            else
+            {
+                result = findFirstCurio.invoke(handler, relicItem);
+            }
+
             if (result instanceof Optional<?> opt)
             {
                 return opt.isPresent();

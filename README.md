@@ -14,29 +14,35 @@ It is designed for players who want survival to feel meaningful. Death matters h
 
 **Crystal Shards** are what you get from mining Heart Ore. They are used to craft Crystal Hearts.
 
-**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart. There is a 2 minute cooldown between uses and you cannot use one within 3 minutes of being in combat. Cooldowns never apply in creative mode.
+**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart and grants Regen 1 for 10 seconds as a small bonus for using it strategically. There is a 2 minute cooldown between uses and you cannot use one within 3 minutes of being in combat. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
 
 **Supreme Crystal Hearts** are crafted from five Crystal Hearts and four Gold Blocks. Right-clicking one restores all of your lost maximum hearts at once and grants Regeneration 2, Absorption 4, Resistance, and Fire Resistance for 30 seconds, the same effects as an Enchanted Golden Apple. There is no cooldown on Supreme Crystal Hearts.
+
+**Heart Relics** are crafted from eight Crystal Hearts surrounding one Supreme Crystal Heart. When worn in the Curios charm slot, or anywhere in your main inventory if Curios is not installed, the relic increases your maximum hearts by 20% rounded up and gives you a permanent Regen 1 effect while equipped. The bonus hearts show as an extra row above your base hearts.
 
 ## Golden Apple Mode
 
 The mod supports three heart recovery modes that you can switch between at any time. In **crystal mode** (the default), only Crystal Hearts restore hearts. In **apple mode**, consuming a regular Golden Apple restores one heart and an Enchanted Golden Apple restores all hearts, on top of their normal vanilla effects. In **both mode**, Crystal Hearts and Golden Apples both work.
 
-By default there is no cooldown on apple heart restore and it works regardless of whether you are in combat. Both of these behaviours can be changed in the config if you want a stricter experience. If a cooldown is set and you eat a Golden Apple before it expires, you will still receive the vanilla apple effects but the heart restore simply will not happen.
+By default there is no cooldown on apple heart restore and it works regardless of whether you are in combat. Both of these behaviours can be changed in the config if you want a stricter experience. If a cooldown is set and you eat a Golden Apple before it expires, you will still receive the vanilla apple effects but the heart restore simply will not happen that time.
 
 ## Bed Regen
 
-Sleeping in a bed will restore one maximum heart if your current base heart count is below the configured threshold, which defaults to 7 hearts. This has a configurable cooldown that defaults to 15 minutes so you cannot just spam sleep to recover.
+Sleeping in a bed will restore one maximum heart if your current base heart count is below the configured threshold, which defaults to 7 hearts. You will also receive Regen 1 for 30 seconds when you wake up. This has a configurable cooldown that defaults to 15 minutes so you cannot just spam sleep to recover.
 
-## Heart Relic
+## Respawn Immunity
 
-The Heart Relic is an endgame accessory crafted from eight Crystal Hearts surrounding a Supreme Crystal Heart. While it is in your possession it grants a 20 percent bonus to your maximum hearts, rounded up, plus constant Regeneration 1. If the Curios mod is installed, the Heart Relic works in the charm slot. If Curios is not installed, it works from anywhere in your main inventory.
+When you respawn after dying you receive 5 seconds of complete damage immunity. All damage from all sources is blocked during this window so you have time to react without instantly dying again.
+
+## Death Grace Period
+
+If you die twice within 60 seconds only one heart is lost. A grace period activates after each death preventing consecutive heart loss. This grace period only triggers if you actually have hearts left to lose and will not show any message if you are already at the minimum of 3 hearts.
 
 ## Commands
 
 `/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. This command is available to all players without any permissions.
 
-`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods, for example Total hearts: 11/15. Also available to all players.
+`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods or the Heart Relic, for example Total hearts: 14/12. Also available to all players.
 
 `/nightsmediumcore addheart <player> <amount>` adds maximum hearts to a player. Requires OP level 2.
 
@@ -74,12 +80,14 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 ## Installation
 
-Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required.
+Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required. Curios API is supported as an optional dependency for the Heart Relic charm slot.
 
 ## Credits
 
-The Crystal Heart and Supreme Crystal Heart textures were made by Temok, available at https://temok.itch.io/heart-container-animated-in-pixel-art
-The Heart Relic texture was made by studionamepending, available at https://studionamepending.itch.io/heart-pickup-animated
+The Crystal Heart and Supreme Crystal Heart textures are based on assets by the artist at https://temok.itch.io/heart-container-animated-in-pixel-art
+
+The Heart Relic texture was made by studionamepending, find their work at https://studionamepending.itch.io/
+
 ## License
 
 This mod is licensed under CC BY-NC 4.0. You are free to use it in modpacks and share it as long as you credit Nightwielder23. Commercial use is not permitted. Full license details at https://creativecommons.org/licenses/by-nc/4.0/

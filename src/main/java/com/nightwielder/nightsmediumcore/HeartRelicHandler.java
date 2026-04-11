@@ -46,10 +46,15 @@ public class HeartRelicHandler
                 currentMax -= existing.getAmount();
             }
 
-            // 20% of total max hearts rounded up, converted to HP
-            int baseHearts = (int) (currentMax / 2);
+            // 20% of total max hearts rounded up, each heart = 2 HP
+            int baseHearts = (int) Math.round(currentMax / 2.0);
             int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
             double bonusHP = bonusHearts * 2.0;
+
+            if (bonusHP < 2.0)
+            {
+                bonusHP = 2.0;
+            }
 
             // Apply or update modifier only if the value changed
             if (existing == null || existing.getAmount() != bonusHP)
