@@ -9,6 +9,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -48,8 +50,10 @@ public class CrystalHeartItem extends Item
         long currentTime = overworld.getGameTime();
         boolean isSupreme = heartsToRestore >= HeartLossHandler.MAX_HEARTS;
 
-        // Check combat status (skip for supreme crystal)
-        if (!isSupreme)
+        boolean isCreative = serverPlayer.getAbilities().instabuild;
+
+        // Check combat status (skip for supreme crystal and creative mode)
+        if (!isSupreme && !isCreative)
         {
             long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
             if (currentTime < combatExpiry)
@@ -62,8 +66,8 @@ public class CrystalHeartItem extends Item
             }
         }
 
-        // Check cooldown (skip for supreme crystal)
-        if (!isSupreme)
+        // Check cooldown (skip for supreme crystal and creative mode)
+        if (!isSupreme && !isCreative)
         {
             long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
             if (currentTime < expiry)
@@ -107,8 +111,8 @@ public class CrystalHeartItem extends Item
         // Apply the updated modifier
         HeartLossHandler.applyModifier(serverPlayer, newLost);
 
-        // Apply cooldown (skip for supreme crystal)
-        if (!isSupreme)
+        // Apply cooldown (skip for supreme crystal and creative mode)
+        if (!isSupreme && !isCreative)
         {
             int cooldownTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
             data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
@@ -118,6 +122,15 @@ public class CrystalHeartItem extends Item
         if (!serverPlayer.getAbilities().instabuild)
         {
             stack.shrink(1);
+        }
+
+        // Apply enchanted golden apple effects for supreme crystal (30 seconds = 600 ticks)
+        if (isSupreme)
+        {
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
         }
 
         // Spawn heart particles around the player

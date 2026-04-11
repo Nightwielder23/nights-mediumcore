@@ -10,6 +10,8 @@ public class ModConfig
     public static final ForgeConfigSpec.IntValue BED_REGEN_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.BooleanValue SHOW_HARDCORE_HEARTS;
     public static final ForgeConfigSpec.ConfigValue<String> HEART_RECOVERY_MODE;
+    public static final ForgeConfigSpec.BooleanValue APPLE_COMBAT_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue APPLE_COOLDOWN_SECONDS;
 
     public static final ForgeConfigSpec SPEC;
 
@@ -64,6 +66,18 @@ public class ModConfig
                          "Default: crystal")
                 .define("heartRecoveryMode", "crystal", v -> v instanceof String s
                         && (s.equals("crystal") || s.equals("apple") || s.equals("both")));
+
+        APPLE_COMBAT_COOLDOWN = builder
+                .comment("If true, golden apples cannot restore hearts while in combat.",
+                         "Enchanted golden apples always ignore this.",
+                         "Default: false")
+                .define("appleCombatCooldown", false);
+
+        APPLE_COOLDOWN_SECONDS = builder
+                .comment("Seconds between golden apple heart restores. Set to 0 to disable.",
+                         "Enchanted golden apples always ignore this.",
+                         "Range: 0 to 3600. Default: 0")
+                .defineInRange("appleCooldownSeconds", 0, 0, 3600);
 
         builder.pop();
 

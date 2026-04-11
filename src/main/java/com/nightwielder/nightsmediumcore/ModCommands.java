@@ -58,7 +58,13 @@ public class ModCommands
                                         new String[]{"crystal", "apple", "both"}, builder))
                                 .executes(ctx -> setMode(
                                         ctx.getSource(),
-                                        StringArgumentType.getString(ctx, "mode"))))));
+                                        StringArgumentType.getString(ctx, "mode")))))
+                .then(Commands.literal("clearcooldown")
+                        .requires(source -> source.hasPermission(2))
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(ctx -> clearCooldown(
+                                        ctx.getSource(),
+                                        EntityArgument.getPlayer(ctx, "player"))))));
     }
 
     private static int showHearts(CommandSourceStack source)
@@ -207,6 +213,30 @@ public class ModCommands
 
         source.sendSystemMessage(Component.literal("Heart recovery mode set to: " + mode)
                 .withStyle(ChatFormatting.GREEN));
+
+        return 1;
+    }
+
+    private static int clearCooldown(CommandSourceStack source, ServerPlayer target)
+    {
+        ServerLevel overworld = source.getServer().overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+
+        data.setCrystalCooldown(target.getUUID(), 0L);
+        data.setCombatCooldown(target.getUUID(), 0L);
+        data.setAppleCooldown(target.getUUID(), 0L);
+        data.setBedRegenCooldown(target.getUUID(), 0L);
+        data.setDeathGraceExpiry(target.getUUID(), 0L);
+
+        source.sendSystemMessage(Component.literal("Cleared all cooldowns for " +
+                target.getName().getString() + ".")
+                .withStyle(ChatFormatting.GREEN));
+
+        if (source.getEntity() != target)
+        {
+            target.sendSystemMessage(Component.literal("An admin cleared all your cooldowns.")
+                    .withStyle(ChatFormatting.GREEN));
+        }
 
         return 1;
     }
