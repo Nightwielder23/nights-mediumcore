@@ -19,6 +19,8 @@ public class ModCreativeTab
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.LIFE_ORE_ITEM.get());
                         output.accept(ModItems.LIFE_SHARD.get());
+                        output.accept(ModItems.LIFE_CRYSTAL.get());
+                        output.accept(ModItems.SUPREME_LIFE_CRYSTAL.get());
                     })
                     .build());
 }

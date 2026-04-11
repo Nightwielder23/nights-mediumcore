@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CGC",
+    "GSG",
+    "CGC"
+  ],
+  "key": {
+    "C": {
+      "item": "nightsmediumcore:life_crystal"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "S": {
+      "item": "nightsmediumcore:life_shard"
+    }
+  },
+  "result": {
+    "item": "nightsmediumcore:supreme_life_crystal",
+    "count": 1
+  }
+}
