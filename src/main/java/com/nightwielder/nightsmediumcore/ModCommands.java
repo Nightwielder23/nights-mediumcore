@@ -32,7 +32,7 @@ public class ModCommands
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
                 .then(Commands.literal("setheart")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("amount", IntegerArgumentType.integer(HeartLossHandler.MIN_HEARTS, HeartLossHandler.MAX_HEARTS))
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(1, HeartLossHandler.MAX_HEARTS))
                                         .executes(ctx -> setHeart(
                                                 ctx.getSource(),
                                                 EntityArgument.getPlayer(ctx, "player"),
@@ -78,7 +78,7 @@ public class ModCommands
         HeartLossData data = HeartLossData.get(overworld);
 
         int currentLost = data.getHeartsLost(target.getUUID());
-        int maxLoss = HeartLossHandler.MAX_HEARTS - HeartLossHandler.MIN_HEARTS;
+        int maxLoss = HeartLossHandler.MAX_HEARTS - HeartLossHandler.getMinHearts();
         int newLost = Math.min(currentLost + amount, maxLoss);
         int actualRemoved = newLost - currentLost;
 
@@ -106,7 +106,7 @@ public class ModCommands
         ServerLevel overworld = source.getServer().overworld();
         HeartLossData data = HeartLossData.get(overworld);
 
-        int clamped = Math.max(HeartLossHandler.MIN_HEARTS, Math.min(hearts, HeartLossHandler.MAX_HEARTS));
+        int clamped = Math.max(HeartLossHandler.getMinHearts(), Math.min(hearts, HeartLossHandler.MAX_HEARTS));
         int newLost = HeartLossHandler.MAX_HEARTS - clamped;
 
         data.setHeartsLost(target.getUUID(), newLost);

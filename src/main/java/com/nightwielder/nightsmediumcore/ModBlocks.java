@@ -1,6 +1,8 @@
 package com.nightwielder.nightsmediumcore;
 
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -14,9 +16,10 @@ public class ModBlocks
             DeferredRegister.create(ForgeRegistries.BLOCKS, NightsMediumcore.MODID);
 
     public static final RegistryObject<Block> LIFE_ORE = BLOCKS.register("life_ore",
-            () -> new Block(BlockBehaviour.Properties.of()
+            () -> new DropExperienceBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(3.0f, 3.0f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops()));
+                    .requiresCorrectToolForDrops(),
+                    UniformInt.of(3, 7)));
 }

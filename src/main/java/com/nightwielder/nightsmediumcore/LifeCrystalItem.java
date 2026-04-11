@@ -14,14 +14,12 @@ import net.minecraft.world.entity.player.Player;
 public class LifeCrystalItem extends Item
 {
     private final int heartsToRestore;
-    private final int cooldownTicks;
     private final String itemDisplayName;
 
-    public LifeCrystalItem(Properties properties, int heartsToRestore, int cooldownTicks, String itemDisplayName)
+    public LifeCrystalItem(Properties properties, int heartsToRestore, String itemDisplayName)
     {
         super(properties);
         this.heartsToRestore = heartsToRestore;
-        this.cooldownTicks = cooldownTicks;
         this.itemDisplayName = itemDisplayName;
     }
 
@@ -69,7 +67,8 @@ public class LifeCrystalItem extends Item
         // Apply the updated modifier
         HeartLossHandler.applyModifier(serverPlayer, newLost);
 
-        // Apply cooldown
+        // Apply cooldown from config
+        int cooldownTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
         data.setCooldownExpiry(serverPlayer.getUUID(), currentTime + cooldownTicks);
 
         // Consume item

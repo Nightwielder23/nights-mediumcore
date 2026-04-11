@@ -17,11 +17,17 @@ public class HeartLossHandler
 {
     public static final UUID MODIFIER_UUID = UUID.fromString("d5ec7a62-1b8c-4f92-9e5a-3c7d1f0a2b4e");
     private static final String MODIFIER_NAME = "nightsmediumcore.heart_loss";
-    // Default max health is 20 (10 hearts). Floor is 6 (3 hearts). Max loss = 7 hearts.
     public static final int MAX_HEARTS = 10;
-    public static final int MIN_HEARTS = 3;
-    // 60 seconds * 20 ticks per second
-    private static final int DEATH_GRACE_TICKS = 1200;
+
+    public static int getMinHearts()
+    {
+        return ModConfig.HEART_FLOOR.get();
+    }
+
+    private static int getDeathGraceTicks()
+    {
+        return ModConfig.DEATH_GRACE_PERIOD_SECONDS.get() * 20;
+    }
 
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event)
@@ -32,6 +38,7 @@ public class HeartLossHandler
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
+        int minHearts = getMinHearts();
 
         // Check death grace period
         long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
@@ -46,19 +53,19 @@ public class HeartLossHandler
         }
 
         int currentLost = data.getHeartsLost(player.getUUID());
-        int maxLoss = MAX_HEARTS - MIN_HEARTS;
+        int maxLoss = MAX_HEARTS - minHearts;
 
         if (currentLost >= maxLoss)
         {
             player.sendSystemMessage(
-                    Component.literal("You died! You are at the minimum of " + MIN_HEARTS + " hearts.")
+                    Component.literal("You died! You are at the minimum of " + minHearts + " hearts.")
                             .withStyle(ChatFormatting.RED));
             return;
         }
 
         int newLost = currentLost + 1;
         data.setHeartsLost(player.getUUID(), newLost);
-        data.setDeathGraceExpiry(player.getUUID(), currentTime + DEATH_GRACE_TICKS);
+        data.setDeathGraceExpiry(player.getUUID(), currentTime + getDeathGraceTicks());
 
         int remainingHearts = MAX_HEARTS - newLost;
 
