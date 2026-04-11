@@ -2,9 +2,11 @@ package com.nightwielder.nightsmediumcore;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -48,7 +50,15 @@ public class ModCommands
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(ctx -> restoreHeart(
                                         ctx.getSource(),
-                                        EntityArgument.getPlayer(ctx, "player"))))));
+                                        EntityArgument.getPlayer(ctx, "player")))))
+                .then(Commands.literal("mode")
+                        .requires(source -> source.hasPermission(2))
+                        .then(Commands.argument("mode", StringArgumentType.word())
+                                .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
+                                        new String[]{"crystal", "apple", "both"}, builder))
+                                .executes(ctx -> setMode(
+                                        ctx.getSource(),
+                                        StringArgumentType.getString(ctx, "mode"))))));
     }
 
     private static int showHearts(CommandSourceStack source)
@@ -180,6 +190,23 @@ public class ModCommands
             target.sendSystemMessage(Component.literal("An admin set your base hearts to " + clamped + ".")
                     .withStyle(ChatFormatting.GREEN));
         }
+
+        return 1;
+    }
+
+    private static int setMode(CommandSourceStack source, String mode)
+    {
+        if (!mode.equals("crystal") && !mode.equals("apple") && !mode.equals("both"))
+        {
+            source.sendFailure(Component.literal("Invalid mode! Use: crystal, apple, or both."));
+            return 0;
+        }
+
+        ModConfig.HEART_RECOVERY_MODE.set(mode);
+        ModConfig.SPEC.save();
+
+        source.sendSystemMessage(Component.literal("Heart recovery mode set to: " + mode)
+                .withStyle(ChatFormatting.GREEN));
 
         return 1;
     }
