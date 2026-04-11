@@ -28,7 +28,7 @@ By default there is no cooldown on apple heart restore and it works regardless o
 
 ## Bed Regen
 
-Sleeping in a bed will restore one maximum heart if your current base heart count is below the configured threshold, which defaults to 7 hearts. You will also receive Regen 1 for 30 seconds when you wake up. This has a configurable cooldown that defaults to 15 minutes so you cannot just spam sleep to recover.
+Sleeping in a bed will restore one maximum heart if your current base heart count is below the configured threshold, which defaults to 7 hearts, and the cooldown has expired. You will always receive Regen 1 for 30 seconds when you wake up regardless of the cooldown.
 
 ## Respawn Immunity
 
