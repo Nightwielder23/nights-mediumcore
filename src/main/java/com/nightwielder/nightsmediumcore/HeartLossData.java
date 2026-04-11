@@ -192,52 +192,60 @@ public class HeartLossData extends SavedData
         CompoundTag heartsLostTag = tag.contains("heartsLost") ? tag.getCompound("heartsLost") : tag.getCompound("players");
         for (String key : heartsLostTag.getAllKeys())
         {
-            data.heartsLost.put(UUID.fromString(key), heartsLostTag.getInt(key));
+            try { data.heartsLost.put(UUID.fromString(key), heartsLostTag.getInt(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         // Load crystalCooldown (supports legacy key "cooldowns")
         CompoundTag crystalTag = tag.contains("crystalCooldown") ? tag.getCompound("crystalCooldown") : tag.getCompound("cooldowns");
         for (String key : crystalTag.getAllKeys())
         {
-            data.crystalCooldown.put(UUID.fromString(key), crystalTag.getLong(key));
+            try { data.crystalCooldown.put(UUID.fromString(key), crystalTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         CompoundTag graceTag = tag.getCompound("deathGrace");
         for (String key : graceTag.getAllKeys())
         {
-            data.deathGraceExpiry.put(UUID.fromString(key), graceTag.getLong(key));
+            try { data.deathGraceExpiry.put(UUID.fromString(key), graceTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         // Load combatCooldown (supports legacy key "combat")
         CompoundTag combatTag = tag.contains("combatCooldown") ? tag.getCompound("combatCooldown") : tag.getCompound("combat");
         for (String key : combatTag.getAllKeys())
         {
-            data.combatCooldown.put(UUID.fromString(key), combatTag.getLong(key));
+            try { data.combatCooldown.put(UUID.fromString(key), combatTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         // Load bedRegenCooldown (supports legacy key "bedRegen")
         CompoundTag bedTag = tag.contains("bedRegenCooldown") ? tag.getCompound("bedRegenCooldown") : tag.getCompound("bedRegen");
         for (String key : bedTag.getAllKeys())
         {
-            data.bedRegenCooldown.put(UUID.fromString(key), bedTag.getLong(key));
+            try { data.bedRegenCooldown.put(UUID.fromString(key), bedTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         CompoundTag appleTag = tag.getCompound("appleCooldown");
         for (String key : appleTag.getAllKeys())
         {
-            data.appleCooldown.put(UUID.fromString(key), appleTag.getLong(key));
+            try { data.appleCooldown.put(UUID.fromString(key), appleTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         CompoundTag peakTag = tag.getCompound("peakMaxHearts");
         for (String key : peakTag.getAllKeys())
         {
-            data.peakMaxHearts.put(UUID.fromString(key), peakTag.getInt(key));
+            try { data.peakMaxHearts.put(UUID.fromString(key), peakTag.getInt(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         CompoundTag immunityTag = tag.getCompound("respawnImmunityExpiry");
         for (String key : immunityTag.getAllKeys())
         {
-            data.respawnImmunityExpiry.put(UUID.fromString(key), immunityTag.getLong(key));
+            try { data.respawnImmunityExpiry.put(UUID.fromString(key), immunityTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
         }
 
         return data;

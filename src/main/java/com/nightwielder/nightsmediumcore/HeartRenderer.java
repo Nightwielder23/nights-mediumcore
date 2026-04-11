@@ -39,6 +39,9 @@ public class HeartRenderer
         if (!event.getOverlay().id().equals(VanillaGuiOverlay.PLAYER_HEALTH.id()))
             return;
 
+        if (!ModConfig.SHOW_HARDCORE_HEARTS.get())
+            return;
+
         event.setCanceled(true);
 
         Minecraft mc = Minecraft.getInstance();

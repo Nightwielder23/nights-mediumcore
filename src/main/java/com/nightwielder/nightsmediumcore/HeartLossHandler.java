@@ -180,6 +180,8 @@ public class HeartLossHandler
             return;
         if (!(event.player instanceof ServerPlayer player))
             return;
+        if (player.tickCount % 10 != 0)
+            return;
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);

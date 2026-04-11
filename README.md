@@ -14,11 +14,11 @@ It is designed for players who want survival to feel meaningful. Death matters h
 
 **Crystal Shards** are what you get from mining Heart Ore. They are used to craft Crystal Hearts.
 
-**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart and grants Regen 1 for 10 seconds as a small bonus for using it strategically. There is a 2 minute cooldown between uses and you cannot use one within 3 minutes of being in combat. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
+**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart and grants Regen 1 for 10 seconds as a small bonus for using it strategically. There is a 2 minute cooldown between uses and you cannot use one within 3 minutes of being in combat. You will see a message if you try to use one while either cooldown is active. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
 
 **Supreme Crystal Hearts** are crafted from five Crystal Hearts and four Gold Blocks. Right-clicking one restores all of your lost maximum hearts at once and grants Regeneration 2, Absorption 4, Resistance, and Fire Resistance for 30 seconds, the same effects as an Enchanted Golden Apple. There is no cooldown on Supreme Crystal Hearts.
 
-**Heart Relics** are crafted from eight Crystal Hearts surrounding one Supreme Crystal Heart. When worn in the Curios charm slot, or anywhere in your main inventory if Curios is not installed, the relic increases your maximum hearts by 20% rounded up and gives you a permanent Regen 1 effect while equipped. The bonus hearts show as an extra row above your base hearts.
+**Heart Relics** are crafted from eight Crystal Hearts surrounding one Supreme Crystal Heart. When worn in the Curios charm slot, or anywhere in your main inventory if Curios is not installed, the relic increases your maximum hearts by 20% rounded up and gives you a permanent Regen 1 effect while equipped. The bonus hearts show as an extra row above your base hearts. If Curios is installed you can right click the relic to equip it directly into the charm slot.
 
 ## Golden Apple Mode
 
@@ -42,7 +42,7 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 `/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. This command is available to all players without any permissions.
 
-`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods or the Heart Relic, for example Total hearts: 14/12. Also available to all players.
+`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods or the Heart Relic, for example Total hearts: 12/10. Also available to all players.
 
 `/nightsmediumcore addheart <player> <amount>` adds maximum hearts to a player. Requires OP level 2.
 
@@ -80,11 +80,11 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 ## Installation
 
-Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required. Curios API is supported as an optional dependency for the Heart Relic charm slot.
+Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required.
 
-## Compatability
+## Compatibility
 
-Curios API is supported as an optional dependency. If installed, the Heart Relic can be equipped in the charm slot. Without Curios, it works anywhere in your main inventory. Download Curios API at https://modrinth.com/mod/curios
+Curios API is supported as an optional dependency. If installed, the Heart Relic can be equipped in the charm slot and right clicking it in your hand will automatically equip it. Without Curios it works anywhere in your main inventory. Download Curios API at https://modrinth.com/mod/curios
 
 JEI is supported as an optional dependency for conveniently browsing all mod recipes and items. Download JEI at https://modrinth.com/mod/jei
 

@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -43,6 +44,12 @@ public class GoldenAppleHandler
         {
             consumingItem.remove(player.getUUID());
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        consumingItem.remove(event.getEntity().getUUID());
     }
 
     @SubscribeEvent
