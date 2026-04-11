@@ -15,11 +15,11 @@ import java.util.UUID;
 
 public class HeartLossHandler
 {
-    private static final UUID MODIFIER_UUID = UUID.fromString("d5ec7a62-1b8c-4f92-9e5a-3c7d1f0a2b4e");
+    public static final UUID MODIFIER_UUID = UUID.fromString("d5ec7a62-1b8c-4f92-9e5a-3c7d1f0a2b4e");
     private static final String MODIFIER_NAME = "nightsmediumcore.heart_loss";
     // Default max health is 20 (10 hearts). Floor is 6 (3 hearts). Max loss = 7 hearts.
-    private static final int MAX_HEARTS = 10;
-    private static final int MIN_HEARTS = 3;
+    public static final int MAX_HEARTS = 10;
+    public static final int MIN_HEARTS = 3;
 
     @SubscribeEvent
     public void onPlayerDeath(LivingDeathEvent event)
@@ -77,11 +77,8 @@ public class HeartLossHandler
         applyModifier(player, heartsLost);
     }
 
-    private static void applyModifier(ServerPlayer player, int heartsLost)
+    public static void applyModifier(ServerPlayer player, int heartsLost)
     {
-        if (heartsLost <= 0)
-            return;
-
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
         if (healthAttr == null)
             return;
@@ -91,6 +88,17 @@ public class HeartLossHandler
         if (existing != null)
         {
             healthAttr.removeModifier(MODIFIER_UUID);
+        }
+
+        if (heartsLost <= 0)
+        {
+            // No reduction needed, just clamp health
+            float newMax = player.getMaxHealth();
+            if (player.getHealth() > newMax)
+            {
+                player.setHealth(newMax);
+            }
+            return;
         }
 
         // Each heart = 2 health points

@@ -13,6 +13,7 @@ public class HeartLossData extends SavedData
     private static final String DATA_NAME = NightsMediumcore.MODID + "_heartloss";
 
     private final Map<UUID, Integer> heartsLost = new HashMap<>();
+    private final Map<UUID, Long> cooldownExpiry = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -25,6 +26,17 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public long getCooldownExpiry(UUID playerUUID)
+    {
+        return cooldownExpiry.getOrDefault(playerUUID, 0L);
+    }
+
+    public void setCooldownExpiry(UUID playerUUID, long gameTime)
+    {
+        cooldownExpiry.put(playerUUID, gameTime);
+        setDirty();
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag)
     {
@@ -34,6 +46,14 @@ public class HeartLossData extends SavedData
             playersTag.putInt(entry.getKey().toString(), entry.getValue());
         }
         tag.put("players", playersTag);
+
+        CompoundTag cooldownTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : cooldownExpiry.entrySet())
+        {
+            cooldownTag.putLong(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("cooldowns", cooldownTag);
+
         return tag;
     }
 
@@ -44,6 +64,11 @@ public class HeartLossData extends SavedData
         for (String key : playersTag.getAllKeys())
         {
             data.heartsLost.put(UUID.fromString(key), playersTag.getInt(key));
+        }
+        CompoundTag cooldownTag = tag.getCompound("cooldowns");
+        for (String key : cooldownTag.getAllKeys())
+        {
+            data.cooldownExpiry.put(UUID.fromString(key), cooldownTag.getLong(key));
         }
         return data;
     }
