@@ -107,10 +107,10 @@ public class CrystalHeartItem extends Item
         // Apply the updated modifier
         HeartLossHandler.applyModifier(serverPlayer, newLost);
 
-        // Apply cooldown (skip for supreme crystal and creative mode)
+        // Apply usage cooldown (skip for supreme crystal and creative mode)
         if (!isSupreme && !isCreative)
         {
-            int cooldownTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
+            int cooldownTicks = ModConfig.CRYSTAL_USAGE_COOLDOWN_SECONDS.get() * 20;
             data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
         }
 

@@ -28,8 +28,6 @@ public class HeartRelicHandler
             return;
         if (!(event.player instanceof ServerPlayer player))
             return;
-        if (player.tickCount % 20 != 0)
-            return;
 
         // When Curios is loaded, HeartRelicItem handles everything via ICurioItem
         if (ModList.get().isLoaded("curios"))
@@ -51,15 +49,10 @@ public class HeartRelicHandler
                 currentMax -= existing.getAmount();
             }
 
-            // 20% of max hearts rounded up, each heart = 2 HP
-            int baseHearts = (int) Math.round(currentMax / 2.0);
+            // ceil(currentTotalMaxHearts * 0.20) * 2 health points
+            double baseHearts = currentMax / 2.0;
             int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
             double bonusHP = bonusHearts * 2.0;
-
-            if (bonusHP < 2.0)
-            {
-                bonusHP = 2.0;
-            }
 
             // Only apply or update if the value changed
             if (existing == null || existing.getAmount() != bonusHP)
@@ -76,8 +69,11 @@ public class HeartRelicHandler
                         player.getId(), Collections.singleton(healthAttr)));
             }
 
-            // Apply Regen 1 with 25-tick duration, refreshed every 20 ticks
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+            // Apply Regen 1 every 20 ticks with 25-tick duration
+            if (player.tickCount % 20 == 0)
+            {
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+            }
         }
         else
         {

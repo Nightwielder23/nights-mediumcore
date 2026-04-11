@@ -8,6 +8,7 @@ public class ModConfig
     public static final ForgeConfigSpec.IntValue HEART_FLOOR;
     public static final ForgeConfigSpec.IntValue DEATH_GRACE_PERIOD_SECONDS;
     public static final ForgeConfigSpec.IntValue CRYSTAL_COMBAT_COOLDOWN_SECONDS;
+    public static final ForgeConfigSpec.IntValue CRYSTAL_USAGE_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.IntValue BED_REGEN_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.IntValue BED_REGEN_HEART_THRESHOLD;
     public static final ForgeConfigSpec.BooleanValue SHOW_HARDCORE_HEARTS;
@@ -58,12 +59,17 @@ public class ModConfig
         builder.push("crystals");
 
         CRYSTAL_COMBAT_COOLDOWN_SECONDS = builder
-                .comment("Controls two related cooldowns for life crystals:",
-                         "1. After taking or dealing damage, the player cannot use a crystal for this many seconds.",
-                         "2. After successfully using a crystal, the player cannot use another for this many seconds.",
-                         "Supreme life crystals ignore both cooldowns entirely.",
-                         "Range: 0 to 3600. Default: 180")
-                .defineInRange("crystalCombatCooldownSeconds", 180, 0, 3600);
+                .comment("After taking or dealing damage, the player cannot use a Crystal Heart",
+                         "for this many seconds. Supreme Crystal Hearts ignore this cooldown.",
+                         "Range: 0 to 600. Default: 30")
+                .defineInRange("crystalCombatCooldownSeconds", 30, 0, 600);
+
+        CRYSTAL_USAGE_COOLDOWN_SECONDS = builder
+                .comment("After successfully using a Crystal Heart, the player cannot use another",
+                         "for this many seconds. Supreme Crystal Hearts ignore this cooldown.",
+                         "This is separate from the combat cooldown.",
+                         "Range: 0 to 3600. Default: 120")
+                .defineInRange("crystalUsageCooldownSeconds", 120, 0, 3600);
 
         HEART_RECOVERY_MODE = builder
                 .comment("Controls which methods can restore lost maximum hearts.",

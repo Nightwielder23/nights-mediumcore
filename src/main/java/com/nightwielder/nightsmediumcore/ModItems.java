@@ -37,9 +37,10 @@ public class ModItems
         return new Item(new Item.Properties().stacksTo(1));
     }
 
-    // Separate method to avoid classloading HeartRelicItem when Curios is not installed
+    // Separate class isolates HeartRelicItem (implements ICurioItem) from ModItems bytecode,
+    // preventing NoClassDefFoundError when Curios is not installed
     private static Item createCuriosRelic()
     {
-        return new HeartRelicItem(new Item.Properties().stacksTo(1));
+        return CuriosItemFactory.createHeartRelic();
     }
 }

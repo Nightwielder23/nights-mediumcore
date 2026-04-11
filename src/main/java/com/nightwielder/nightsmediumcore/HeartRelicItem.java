@@ -41,13 +41,14 @@ public class HeartRelicItem extends Item implements ICurioItem
     {
         if (!(slotContext.entity() instanceof ServerPlayer player))
             return;
-        if (player.tickCount % 35 != 0)
-            return;
 
         applyOrUpdateModifier(player);
 
-        // Apply Regen 1 with 40-tick duration, refreshed every 35 ticks
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 40, 0, true, false, true));
+        // Apply Regen 1 every 20 ticks with 25-tick duration
+        if (player.tickCount % 20 == 0)
+        {
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+        }
     }
 
     @Override
@@ -56,7 +57,7 @@ public class HeartRelicItem extends Item implements ICurioItem
         if (slotContext.entity() instanceof ServerPlayer player)
         {
             applyOrUpdateModifier(player);
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 40, 0, true, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
         }
     }
 
@@ -103,14 +104,10 @@ public class HeartRelicItem extends Item implements ICurioItem
             currentMax -= existing.getAmount();
         }
 
-        // 20% of max hearts rounded up, each heart = 2 HP
-        int baseHearts = (int) Math.round(currentMax / 2.0);
+        // ceil(currentTotalMaxHearts * 0.20) * 2 health points
+        double baseHearts = currentMax / 2.0;
         int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
         double bonusHP = bonusHearts * 2.0;
-        if (bonusHP < 2.0)
-        {
-            bonusHP = 2.0;
-        }
 
         // Only apply or update if the value changed
         if (existing == null || existing.getAmount() != bonusHP)
