@@ -20,6 +20,9 @@ import java.util.UUID;
 
 public class HeartRelicItem extends Item implements ICurioItem
 {
+    private static final UUID MODIFIER_UUID = HeartRelicHandler.RELIC_MODIFIER_UUID;
+    private static final String MODIFIER_NAME = "nightsmediumcore.heart_relic";
+
     public HeartRelicItem(Properties properties)
     {
         super(properties);
@@ -28,34 +31,9 @@ public class HeartRelicItem extends Item implements ICurioItem
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack)
     {
-        Multimap<Attribute, AttributeModifier> modifiers = HashMultimap.create();
-        if (slotContext.entity() != null)
-        {
-            AttributeInstance healthAttr = slotContext.entity().getAttribute(Attributes.MAX_HEALTH);
-            if (healthAttr != null)
-            {
-                // Calculate base max health excluding this modifier
-                double currentMax = healthAttr.getValue();
-                AttributeModifier existing = healthAttr.getModifier(uuid);
-                if (existing != null)
-                {
-                    currentMax -= existing.getAmount();
-                }
-
-                // 20% of max hearts rounded up, each heart = 2 HP
-                int baseHearts = (int) Math.round(currentMax / 2.0);
-                int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
-                double bonusHP = bonusHearts * 2.0;
-                if (bonusHP < 2.0)
-                {
-                    bonusHP = 2.0;
-                }
-
-                modifiers.put(Attributes.MAX_HEALTH, new AttributeModifier(
-                        uuid, "nightsmediumcore.heart_relic", bonusHP, AttributeModifier.Operation.ADDITION));
-            }
-        }
-        return modifiers;
+        // Modifier is managed manually in curioTick/onEquip/onUnequip using a fixed UUID
+        // to prevent stacking from Curios' auto-management
+        return HashMultimap.create();
     }
 
     @Override
@@ -66,6 +44,8 @@ public class HeartRelicItem extends Item implements ICurioItem
         if (player.tickCount % 35 != 0)
             return;
 
+        applyOrUpdateModifier(player);
+
         // Apply Regen 1 with 40-tick duration, refreshed every 35 ticks
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 40, 0, true, false, true));
     }
@@ -75,16 +55,8 @@ public class HeartRelicItem extends Item implements ICurioItem
     {
         if (slotContext.entity() instanceof ServerPlayer player)
         {
-            // Apply regen immediately on equip
+            applyOrUpdateModifier(player);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 40, 0, true, false, true));
-
-            // Force attribute sync to client
-            AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
-            if (healthAttr != null)
-            {
-                player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
-                        player.getId(), Collections.singleton(healthAttr)));
-            }
         }
     }
 
@@ -93,21 +65,65 @@ public class HeartRelicItem extends Item implements ICurioItem
     {
         if (slotContext.entity() instanceof ServerPlayer player)
         {
-            // Curios automatically removes modifiers from getAttributeModifiers
-            // Clamp health to new max after modifier removal
             AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
             if (healthAttr != null)
             {
+                healthAttr.removeModifier(MODIFIER_UUID);
+
                 if (player.getHealth() > player.getMaxHealth())
                 {
                     player.setHealth(player.getMaxHealth());
                 }
+
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                         player.getId(), Collections.singleton(healthAttr)));
             }
 
-            // Clear regen effect
             player.removeEffect(MobEffects.REGENERATION);
+        }
+    }
+
+    @Override
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack)
+    {
+        return true;
+    }
+
+    private void applyOrUpdateModifier(ServerPlayer player)
+    {
+        AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (healthAttr == null)
+            return;
+
+        // Calculate base max health excluding the relic modifier
+        double currentMax = player.getMaxHealth();
+        AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
+        if (existing != null)
+        {
+            currentMax -= existing.getAmount();
+        }
+
+        // 20% of max hearts rounded up, each heart = 2 HP
+        int baseHearts = (int) Math.round(currentMax / 2.0);
+        int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
+        double bonusHP = bonusHearts * 2.0;
+        if (bonusHP < 2.0)
+        {
+            bonusHP = 2.0;
+        }
+
+        // Only apply or update if the value changed
+        if (existing == null || existing.getAmount() != bonusHP)
+        {
+            if (existing != null)
+            {
+                healthAttr.removeModifier(MODIFIER_UUID);
+            }
+            healthAttr.addPermanentModifier(new AttributeModifier(
+                    MODIFIER_UUID, MODIFIER_NAME, bonusHP, AttributeModifier.Operation.ADDITION));
+
+            player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
+                    player.getId(), Collections.singleton(healthAttr)));
         }
     }
 }

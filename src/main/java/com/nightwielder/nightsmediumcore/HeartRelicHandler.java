@@ -31,7 +31,11 @@ public class HeartRelicHandler
         if (player.tickCount % 20 != 0)
             return;
 
-        // Only check inventory — when Curios is loaded, HeartRelicItem handles the Curios slot
+        // When Curios is loaded, HeartRelicItem handles everything via ICurioItem
+        if (ModList.get().isLoaded("curios"))
+            return;
+
+        // Inventory fallback — only runs when Curios is NOT installed
         boolean hasRelicInInventory = checkInventory(player);
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
         if (healthAttr == null)
@@ -57,7 +61,7 @@ public class HeartRelicHandler
                 bonusHP = 2.0;
             }
 
-            // Apply or update modifier only if the value changed
+            // Only apply or update if the value changed
             if (existing == null || existing.getAmount() != bonusHP)
             {
                 if (existing != null)
@@ -77,11 +81,6 @@ public class HeartRelicHandler
         }
         else
         {
-            // Only remove inventory modifier if Curios is not handling the relic
-            // When Curios is loaded, the relic may be in a Curios slot (handled by HeartRelicItem)
-            if (ModList.get().isLoaded("curios"))
-                return;
-
             // Remove relic modifier if present
             AttributeModifier existing = healthAttr.getModifier(RELIC_MODIFIER_UUID);
             if (existing != null)

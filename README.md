@@ -86,7 +86,7 @@ Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Fo
 
 Curios API is supported as an optional dependency. If installed, the Heart Relic can be equipped in the charm slot. Without Curios, it works anywhere in your main inventory. Download Curios API at https://modrinth.com/mod/curios
 
-JEI is supported as an optional dependency for viewing Crystal Shard drop rates and crafting recipes. Download JEI at https://modrinth.com/mod/jei
+JEI is supported as an optional dependency for conveniently browsing all mod recipes and items. Download JEI at https://modrinth.com/mod/jei
 
 ## Credits
 
