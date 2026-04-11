@@ -47,24 +47,26 @@ public class HeartLossHandler
         long currentTime = overworld.getGameTime();
         int minHearts = getMinHearts();
 
-        // Check death grace period
+        // Use base mediumcore hearts from SavedData, not total health including modded bonuses
+        int currentLost = data.getHeartsLost(player.getUUID());
+        int maxLoss = MAX_HEARTS - minHearts;
+
+        // Check floor first — no grace message if already at minimum
+        if (currentLost >= maxLoss)
+        {
+            player.sendSystemMessage(
+                    Component.literal("You died! You are at the minimum of " + minHearts + " base hearts.")
+                            .withStyle(ChatFormatting.RED));
+            return;
+        }
+
+        // Check death grace period only when a heart could actually be lost
         long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
         if (currentTime < graceExpiry)
         {
             player.sendSystemMessage(
                     Component.literal("Heart protected \u2014 death grace active.")
                             .withStyle(ChatFormatting.GOLD));
-            return;
-        }
-
-        int currentLost = data.getHeartsLost(player.getUUID());
-        int maxLoss = MAX_HEARTS - minHearts;
-
-        if (currentLost >= maxLoss)
-        {
-            player.sendSystemMessage(
-                    Component.literal("You died! You are at the minimum of " + minHearts + " base hearts.")
-                            .withStyle(ChatFormatting.RED));
             return;
         }
 

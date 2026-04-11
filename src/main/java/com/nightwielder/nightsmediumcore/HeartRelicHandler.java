@@ -93,12 +93,6 @@ public class HeartRelicHandler
 
     private static boolean checkForRelic(ServerPlayer player)
     {
-        // If Curios is loaded, check charm slot only
-        if (ModList.get().isLoaded("curios"))
-        {
-            return CuriosCompat.hasRelicEquipped(player, ModItems.HEART_RELIC.get());
-        }
-
         // Check main inventory slots 0-35 (hotbar + main inventory, not armor or offhand)
         for (int i = 0; i < 36; i++)
         {
@@ -107,6 +101,13 @@ public class HeartRelicHandler
                 return true;
             }
         }
+
+        // Additionally check Curios charm slot if Curios is loaded
+        if (ModList.get().isLoaded("curios"))
+        {
+            return CuriosCompat.hasRelicEquipped(player, ModItems.HEART_RELIC.get());
+        }
+
         return false;
     }
 }
