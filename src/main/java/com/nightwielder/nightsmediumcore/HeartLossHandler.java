@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.UUID;
@@ -100,6 +101,48 @@ public class HeartLossHandler
         int heartsLost = data.getHeartsLost(player.getUUID());
 
         applyModifier(player, heartsLost);
+    }
+
+    @SubscribeEvent
+    public void onPlayerWakeUp(PlayerWakeUpEvent event)
+    {
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
+
+        // Only trigger on natural wake-up (not manually leaving bed)
+        if (event.wakeImmediately())
+            return;
+
+        ServerLevel overworld = player.server.overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+
+        // Check bed regen cooldown
+        long bedExpiry = data.getBedRegenExpiry(player.getUUID());
+        if (currentTime < bedExpiry)
+            return;
+
+        int currentLost = data.getHeartsLost(player.getUUID());
+        if (currentLost <= 0)
+            return;
+
+        int currentHearts = MAX_HEARTS - currentLost;
+        if (currentHearts >= 7)
+            return;
+
+        // Restore 1 heart
+        int newLost = currentLost - 1;
+        data.setHeartsLost(player.getUUID(), newLost);
+        applyModifier(player, newLost);
+
+        // Apply bed regen cooldown
+        int cooldownTicks = ModConfig.BED_REGEN_COOLDOWN_MINUTES.get() * 60 * 20;
+        data.setBedRegenExpiry(player.getUUID(), currentTime + cooldownTicks);
+
+        int newHearts = MAX_HEARTS - newLost;
+        player.sendSystemMessage(
+                Component.literal("You feel rested and restored a heart! You now have " + newHearts + " max hearts.")
+                        .withStyle(ChatFormatting.GREEN));
     }
 
     @SubscribeEvent

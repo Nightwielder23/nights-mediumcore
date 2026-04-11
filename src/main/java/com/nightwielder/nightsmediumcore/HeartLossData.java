@@ -16,6 +16,7 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> cooldownExpiry = new HashMap<>();
     private final Map<UUID, Long> deathGraceExpiry = new HashMap<>();
     private final Map<UUID, Long> combatExpiry = new HashMap<>();
+    private final Map<UUID, Long> bedRegenExpiry = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -61,6 +62,17 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public long getBedRegenExpiry(UUID playerUUID)
+    {
+        return bedRegenExpiry.getOrDefault(playerUUID, 0L);
+    }
+
+    public void setBedRegenExpiry(UUID playerUUID, long gameTime)
+    {
+        bedRegenExpiry.put(playerUUID, gameTime);
+        setDirty();
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag)
     {
@@ -92,6 +104,13 @@ public class HeartLossData extends SavedData
         }
         tag.put("combat", combatTag);
 
+        CompoundTag bedRegenTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : bedRegenExpiry.entrySet())
+        {
+            bedRegenTag.putLong(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("bedRegen", bedRegenTag);
+
         return tag;
     }
 
@@ -117,6 +136,11 @@ public class HeartLossData extends SavedData
         for (String key : combatTag.getAllKeys())
         {
             data.combatExpiry.put(UUID.fromString(key), combatTag.getLong(key));
+        }
+        CompoundTag bedRegenTag = tag.getCompound("bedRegen");
+        for (String key : bedRegenTag.getAllKeys())
+        {
+            data.bedRegenExpiry.put(UUID.fromString(key), bedRegenTag.getLong(key));
         }
         return data;
     }

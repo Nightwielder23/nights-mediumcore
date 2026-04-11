@@ -15,8 +15,10 @@ public class ModCommands
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
         dispatcher.register(Commands.literal("nightsmediumcore")
-                .requires(source -> source.hasPermission(2))
+                .then(Commands.literal("hearts")
+                        .executes(ctx -> showHearts(ctx.getSource())))
                 .then(Commands.literal("addheart")
+                        .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                         .executes(ctx -> addHeart(
@@ -24,6 +26,7 @@ public class ModCommands
                                                 EntityArgument.getPlayer(ctx, "player"),
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
                 .then(Commands.literal("removeheart")
+                        .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                         .executes(ctx -> removeHeart(
@@ -31,6 +34,7 @@ public class ModCommands
                                                 EntityArgument.getPlayer(ctx, "player"),
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
                 .then(Commands.literal("setheart")
+                        .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1, HeartLossHandler.MAX_HEARTS))
                                         .executes(ctx -> setHeart(
@@ -38,10 +42,30 @@ public class ModCommands
                                                 EntityArgument.getPlayer(ctx, "player"),
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
                 .then(Commands.literal("restoreheart")
+                        .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(ctx -> restoreHeart(
                                         ctx.getSource(),
                                         EntityArgument.getPlayer(ctx, "player"))))));
+    }
+
+    private static int showHearts(CommandSourceStack source)
+    {
+        if (!(source.getEntity() instanceof ServerPlayer player))
+        {
+            source.sendFailure(Component.literal("This command can only be used by a player."));
+            return 0;
+        }
+
+        ServerLevel overworld = source.getServer().overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        int heartsLost = data.getHeartsLost(player.getUUID());
+        int currentHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+
+        source.sendSuccess(() -> Component.literal("Your hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS)
+                .withStyle(ChatFormatting.GREEN), false);
+
+        return 1;
     }
 
     private static int addHeart(CommandSourceStack source, ServerPlayer target, int amount)
