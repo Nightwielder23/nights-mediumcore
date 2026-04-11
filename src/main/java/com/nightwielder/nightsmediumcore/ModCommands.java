@@ -98,13 +98,13 @@ public class ModCommands
         ServerLevel overworld = source.getServer().overworld();
         HeartLossData data = HeartLossData.get(overworld);
 
-        int totalHearts = (int) player.getMaxHealth() / 2;
+        // Current total hearts from actual max health (includes heart loss + relic bonus)
+        int totalHearts = (int) (player.getMaxHealth() / 2);
+        // Maximum possible = current total + lost hearts (what they'd have with no heart loss)
+        int heartsLost = data.getHeartsLost(player.getUUID());
+        int maxHearts = totalHearts + heartsLost;
 
-        // Update and retrieve peak max hearts
-        data.updatePeakMaxHearts(player.getUUID(), totalHearts);
-        int peakHearts = data.getPeakMaxHearts(player.getUUID());
-
-        player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts + "/" + peakHearts)
+        player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts + "/" + maxHearts)
                 .withStyle(ChatFormatting.GREEN));
 
         return 1;

@@ -68,7 +68,7 @@ public class ModConfig
                 .comment("After successfully using a Crystal Heart, the player cannot use another",
                          "for this many seconds. Supreme Crystal Hearts ignore this cooldown.",
                          "This is separate from the combat cooldown.",
-                         "Range: 0 to 3600. Default: 120")
+                         "Range: 0 to 3600. Default: 180")
                 .defineInRange("crystalUsageCooldownSeconds", 180, 0, 3600);
 
         HEART_RECOVERY_MODE = builder

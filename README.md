@@ -90,9 +90,9 @@ JEI is supported as an optional dependency for conveniently browsing all mod rec
 
 ## Credits
 
-The Crystal Heart and Supreme Crystal Heart textures are based on assets by the artist at https://temok.itch.io/heart-container-animated-in-pixel-art
+The Crystal Heart and Supreme Crystal Heart textures are by Temok, find the original at https://temok.itch.io/heart-container-animated-in-pixel-art
 
-The Heart Relic texture was made by studionamepending, find their work at https://studionamepending.itch.io/
+The Heart Relic texture is by studionamepending, find the original at https://studionamepending.itch.io/heart-pickup-animated
 
 ## License
 

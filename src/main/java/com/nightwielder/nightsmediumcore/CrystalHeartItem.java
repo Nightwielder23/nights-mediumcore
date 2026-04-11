@@ -48,6 +48,16 @@ public class CrystalHeartItem extends Item
 
         boolean isCreative = serverPlayer.getAbilities().instabuild;
 
+        // Check if player needs healing first (creative mode bypasses this check)
+        int currentLost = data.getHeartsLost(serverPlayer.getUUID());
+        if (currentLost <= 0 && !isCreative)
+        {
+            serverPlayer.sendSystemMessage(
+                    Component.literal("You are already at maximum base hearts!")
+                            .withStyle(ChatFormatting.YELLOW));
+            return InteractionResultHolder.fail(stack);
+        }
+
         // Check combat status (skip for supreme crystal and creative mode)
         if (!isSupreme && !isCreative)
         {
@@ -62,7 +72,7 @@ public class CrystalHeartItem extends Item
             }
         }
 
-        // Check cooldown (skip for supreme crystal and creative mode)
+        // Check usage cooldown (skip for supreme crystal and creative mode)
         if (!isSupreme && !isCreative)
         {
             long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
@@ -77,16 +87,6 @@ public class CrystalHeartItem extends Item
                                 .withStyle(ChatFormatting.YELLOW));
                 return InteractionResultHolder.fail(stack);
             }
-        }
-
-        // Check if player needs healing (creative mode bypasses this check)
-        int currentLost = data.getHeartsLost(serverPlayer.getUUID());
-        if (currentLost <= 0 && !isCreative)
-        {
-            serverPlayer.sendSystemMessage(
-                    Component.literal("You are already at maximum base hearts!")
-                            .withStyle(ChatFormatting.YELLOW));
-            return InteractionResultHolder.fail(stack);
         }
 
         // Restore hearts
