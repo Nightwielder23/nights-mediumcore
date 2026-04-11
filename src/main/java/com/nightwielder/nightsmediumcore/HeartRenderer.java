@@ -18,13 +18,19 @@ import net.minecraftforge.fml.common.Mod;
 public class HeartRenderer
 {
     private static final ResourceLocation ICONS = new ResourceLocation("textures/gui/icons.png");
+    private static final ResourceLocation HEART_TEXTURE = new ResourceLocation(NightsMediumcore.MODID, "textures/gui/mediumcore_heart.png");
 
-    // Hardcore row in icons.png is at V=45
-    private static final int HC_V = 45;
-    // U positions: each heart type is offset by 9px from base U=16
+    // Vanilla heart container outline from icons.png (normal style)
     private static final int CONTAINER_U = 16;
-    private static final int FULL_U = 52;
-    private static final int HALF_U = 61;
+    private static final int CONTAINER_V = 0;
+
+    // Custom heart texture: opaque content bounds within the 256x256 PNG
+    private static final int HEART_SRC_X = 46;
+    private static final int HEART_SRC_Y = 54;
+    private static final int HEART_SRC_W = 162;
+    private static final int HEART_SRC_H = 162;
+
+    // Absorption hearts from vanilla icons.png
     private static final int ABSORB_FULL_U = 160;
     private static final int ABSORB_HALF_U = 169;
     private static final int ABSORB_V = 0;
@@ -33,9 +39,6 @@ public class HeartRenderer
     public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event)
     {
         if (!event.getOverlay().id().equals(VanillaGuiOverlay.PLAYER_HEALTH.id()))
-            return;
-
-        if (!ModConfig.SHOW_HARDCORE_HEARTS.get())
             return;
 
         event.setCanceled(true);
@@ -71,24 +74,35 @@ public class HeartRenderer
         int healthHalf = Mth.ceil(player.getHealth());
         int absorbHalf = Mth.ceil(player.getAbsorptionAmount());
 
-        // Draw only active heart positions (skip lost hearts entirely)
-        for (int i = activeHearts - 1; i >= 0; i--)
+        // Draw all 10 heart positions right-to-left
+        for (int i = HeartLossHandler.MAX_HEARTS - 1; i >= 0; i--)
         {
             int x = left + i * 8;
             int y = top;
 
-            // Container outline
-            gfx.blit(ICONS, x, y, CONTAINER_U, HC_V, 9, 9);
+            if (i < activeHearts)
+            {
+                // Active heart slot — draw container outline, then fill based on current HP
+                gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
 
-            // Fill based on current health
-            int hp = i * 2;
-            if (hp + 2 <= healthHalf)
-            {
-                gfx.blit(ICONS, x, y, FULL_U, HC_V, 9, 9);
+                int hp = i * 2;
+                if (hp + 2 <= healthHalf)
+                {
+                    // Full heart — draw custom texture scaled to 9x9
+                    gfx.blit(HEART_TEXTURE, x, y, 9, 9,
+                            HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W, HEART_SRC_H, 256, 256);
+                }
+                else if (hp + 1 <= healthHalf)
+                {
+                    // Half heart — draw left half of custom texture
+                    gfx.blit(HEART_TEXTURE, x, y, 5, 9,
+                            HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W / 2, HEART_SRC_H, 256, 256);
+                }
             }
-            else if (hp + 1 <= healthHalf)
+            else
             {
-                gfx.blit(ICONS, x, y, HALF_U, HC_V, 9, 9);
+                // Lost heart slot — draw only the empty container outline
+                gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
             }
         }
 
@@ -101,7 +115,7 @@ public class HeartRenderer
                 int x = left + i * 8;
                 int y = top - 10;
 
-                gfx.blit(ICONS, x, y, CONTAINER_U, HC_V, 9, 9);
+                gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
 
                 int ap = i * 2;
                 if (ap + 2 <= absorbHalf)
