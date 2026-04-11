@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -113,6 +114,9 @@ public class HeartLossHandler
         // Update peak max hearts after modifier is applied
         int totalHearts = (int) player.getMaxHealth() / 2;
         data.updatePeakMaxHearts(player.getUUID(), totalHearts);
+
+        // Set respawn immunity flag for 5 seconds (100 ticks)
+        data.setRespawnImmunityExpiry(player.getUUID(), overworld.getGameTime() + 100);
     }
 
     @SubscribeEvent
@@ -175,7 +179,37 @@ public class HeartLossHandler
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
 
+        // Check respawn immunity — cancel all damage if active
+        ServerLevel overworld = player.server.overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+        if (currentTime < data.getRespawnImmunityExpiry(player.getUUID()))
+        {
+            event.setCanceled(true);
+            return;
+        }
+
         markInCombat(player);
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if (event.phase != TickEvent.Phase.START)
+            return;
+        if (!(event.player instanceof ServerPlayer player))
+            return;
+
+        ServerLevel overworld = player.server.overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+        long expiry = data.getRespawnImmunityExpiry(player.getUUID());
+
+        // Clear expired respawn immunity
+        if (expiry > 0 && currentTime >= expiry)
+        {
+            data.clearRespawnImmunity(player.getUUID());
+        }
     }
 
     private static void markInCombat(ServerPlayer player)
