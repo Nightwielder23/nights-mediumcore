@@ -99,11 +99,7 @@ public class HeartRenderer
                             HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W / 2, HEART_SRC_H, 256, 256);
                 }
             }
-            else
-            {
-                // Lost heart slot — draw only the empty container outline
-                gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
-            }
+            // Lost heart slots beyond current max — render nothing
         }
 
         // Draw absorption hearts in a row above

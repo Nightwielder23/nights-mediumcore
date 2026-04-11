@@ -125,17 +125,6 @@ public class CrystalHeartItem extends Item
         // Force health sync to client
         serverPlayer.setHealth(serverPlayer.getMaxHealth());
 
-        // Send message (skip for supreme crystal — particles and sound are enough)
-        if (!isSupreme)
-        {
-            int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
-            serverPlayer.sendSystemMessage(
-                    Component.literal("Used " + itemDisplayName + "! Restored " + actualRestore +
-                            " base heart" + (actualRestore > 1 ? "s" : "") + ". You now have " +
-                            currentHearts + " base hearts.")
-                            .withStyle(ChatFormatting.GREEN));
-        }
-
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 }
