@@ -17,6 +17,7 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> deathGraceExpiry = new HashMap<>();
     private final Map<UUID, Long> combatCooldown = new HashMap<>();
     private final Map<UUID, Long> bedRegenCooldown = new HashMap<>();
+    private final Map<UUID, Long> appleCooldown = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -73,6 +74,17 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public long getAppleCooldown(UUID playerUUID)
+    {
+        return appleCooldown.getOrDefault(playerUUID, 0L);
+    }
+
+    public void setAppleCooldown(UUID playerUUID, long gameTime)
+    {
+        appleCooldown.put(playerUUID, gameTime);
+        setDirty();
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag)
     {
@@ -110,6 +122,13 @@ public class HeartLossData extends SavedData
             bedTag.putLong(entry.getKey().toString(), entry.getValue());
         }
         tag.put("bedRegenCooldown", bedTag);
+
+        CompoundTag appleTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : appleCooldown.entrySet())
+        {
+            appleTag.putLong(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("appleCooldown", appleTag);
 
         return tag;
     }
@@ -150,6 +169,12 @@ public class HeartLossData extends SavedData
         for (String key : bedTag.getAllKeys())
         {
             data.bedRegenCooldown.put(UUID.fromString(key), bedTag.getLong(key));
+        }
+
+        CompoundTag appleTag = tag.getCompound("appleCooldown");
+        for (String key : appleTag.getAllKeys())
+        {
+            data.appleCooldown.put(UUID.fromString(key), appleTag.getLong(key));
         }
 
         return data;

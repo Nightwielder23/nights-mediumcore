@@ -9,6 +9,7 @@ public class ModConfig
     public static final ForgeConfigSpec.IntValue CRYSTAL_COMBAT_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.IntValue BED_REGEN_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.BooleanValue SHOW_HARDCORE_HEARTS;
+    public static final ForgeConfigSpec.ConfigValue<String> HEART_RECOVERY_MODE;
 
     public static final ForgeConfigSpec SPEC;
 
@@ -54,6 +55,15 @@ public class ModConfig
                          "Supreme life crystals ignore both cooldowns entirely.",
                          "Range: 0 to 3600. Default: 180")
                 .defineInRange("crystalCombatCooldownSeconds", 180, 0, 3600);
+
+        HEART_RECOVERY_MODE = builder
+                .comment("Controls which methods can restore lost maximum hearts.",
+                         "crystal = only Crystal Heart items restore hearts (default).",
+                         "apple = only golden apples restore hearts.",
+                         "both = both Crystal Hearts and golden apples restore hearts.",
+                         "Default: crystal")
+                .define("heartRecoveryMode", "crystal", v -> v instanceof String s
+                        && (s.equals("crystal") || s.equals("apple") || s.equals("both")));
 
         builder.pop();
 

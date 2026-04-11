@@ -34,6 +34,15 @@ public class CrystalHeartItem extends Item
         if (!(player instanceof ServerPlayer serverPlayer))
             return InteractionResultHolder.pass(stack);
 
+        // Block crystal usage in "apple" mode
+        if (ModConfig.HEART_RECOVERY_MODE.get().equals("apple"))
+        {
+            serverPlayer.sendSystemMessage(
+                    Component.literal("Crystal hearts are disabled! Use golden apples to restore hearts.")
+                            .withStyle(ChatFormatting.RED));
+            return InteractionResultHolder.fail(stack);
+        }
+
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();

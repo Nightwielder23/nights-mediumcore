@@ -1,94 +1,55 @@
 # Night's Mediumcore
 
-**A Minecraft 1.20.1 Forge mod that introduces a permanent heart loss system, making death carry real consequences without being as punishing as Hardcore mode.**
+A Minecraft 1.20.1 Forge mod that adds a permanent heart loss system. Death carries real consequences without being as brutal as Hardcore mode.
 
----
+## What This Mod Does
 
-## Overview
+Every time you die, you permanently lose one maximum heart, down to a minimum of 3 hearts. To get them back you need to craft and use a Crystal Heart, which requires a rare new ore found deep underground. If you prefer, you can also configure the mod so that Golden Apples restore hearts instead, or have both options available at once.
 
-Night's Mediumcore changes how death works in Minecraft. Every time you die, you permanently lose one maximum heart — down to a floor of 3 hearts. To recover lost hearts you must find and use Crystal Hearts, crafted from a rare new ore found deep underground.
+It's designed for players who want survival to feel meaningful. Death matters here, but it's never game over.
 
-This mod is designed for players who want survival to feel meaningful without the all-or-nothing nature of Hardcore mode. Death matters, but recovery is always possible.
+## Items and Blocks
 
----
+**Heart Ore** generates underground between Y=-20 and Y=20, slightly rarer than gold. You need at least an iron pickaxe to mine it. Each ore drops 1 to 2 Crystal Shards and a bit of XP, and Fortune enchantments work on it.
 
-## Features
+**Crystal Shards** are what you get from mining Heart Ore. They're used to craft Crystal Hearts.
 
-### Heart Loss System
-- Dying permanently removes 1 maximum heart
-- Minimum floor of 3 hearts — you can never go below this
-- A 60-second grace period after death prevents losing two hearts in quick succession
-- Heart loss only affects your base health, not bonus hearts from other mods
+**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart. There's a 2 minute cooldown between uses and you can't use one within 3 minutes of being in combat.
 
-### Heart Ore
-- A new ore called **Heart Ore** generates underground between Y=-20 and Y=20
-- Slightly rarer than gold ore
-- Requires an iron pickaxe or better to mine
-- Drops 1-2 Crystal Shards, with Fortune compatibility
-- Drops 3-7 XP when mined
+**Supreme Crystal Hearts** are crafted from four Crystal Hearts, four Gold Blocks, and one Crystal Shard. Right-clicking one restores all of your lost maximum hearts at once with no cooldown.
 
-### Crystal Shards
-- Dropped by Heart Ore
-- Used to craft Crystal Hearts
+## Golden Apple Mode
 
-### Crystal Heart
-- Crafted from 1 Crystal Shard surrounded by 4 Gold Ingots
-- Right-click to consume and restore 1 maximum heart
-- 2-minute cooldown between uses
-- Cannot be used within 3 minutes of combat
+The mod supports three heart recovery modes that you can switch between at any time. In **crystal mode** (the default), only Crystal Hearts restore hearts. In **apple mode**, consuming a regular Golden Apple restores one heart and an Enchanted Golden Apple restores all hearts, on top of their normal vanilla effects. In **both mode**, Crystal Hearts and Golden Apples both work. You can change the mode in the config file or with the `/nightsmediumcore mode` command.
 
-### Supreme Crystal Heart
-- Crafted from 4 Crystal Hearts, 4 Gold Blocks, and 1 Crystal Shard
-- Right-click to consume and restore all lost maximum hearts
-- No cooldown
+## Bed Regen
 
-### Bed Regen
-- Sleeping in a bed restores 1 maximum heart if you are below 7 hearts
-- Has a configurable cooldown (default 15 minutes)
+Sleeping in a bed will restore one maximum heart if you are currently below 7 hearts. This has a configurable cooldown that defaults to 15 minutes, so you can't just spam sleep to recover.
 
-### Commands
-| Command | Permission | Description |
-|---|---|---|
-| `/nightsmediumcore hearts` | Anyone | Shows your current base mediumcore hearts |
-| `/nightsmediumcore hearts total` | Anyone | Shows total hearts including bonuses from other mods |
-| `/nightsmediumcore addheart <player> <amount>` | OP | Adds max hearts to a player |
-| `/nightsmediumcore removeheart <player> <amount>` | OP | Removes max hearts from a player |
-| `/nightsmediumcore setheart <player> <amount>` | OP | Sets a player's max hearts |
-| `/nightsmediumcore restoreheart <player>` | OP | Restores all hearts for a player |
+## Commands
 
----
+`/nightsmediumcore hearts` shows your current base mediumcore heart count and doesn't require any permissions, so any player can check their own status. Adding `total` at the end shows your full heart count including any bonuses added by other mods.
 
-## Installation
+The following commands require OP level 2:
 
-1. Install [Minecraft Forge 1.20.1](https://files.minecraftforge.net/) (recommended build 47.4.10)
-2. Download the latest release of Night's Mediumcore
-3. Place the `.jar` file in your `mods` folder
-4. Launch the game
-
----
+`/nightsmediumcore addheart <player> <amount>` adds max hearts to a player.
+`/nightsmediumcore removeheart <player> <amount>` removes max hearts from a player.
+`/nightsmediumcore setheart <player> <amount>` sets a player's max hearts to a specific number.
+`/nightsmediumcore restoreheart <player>` fully restores all hearts for a player.
+`/nightsmediumcore mode <crystal|apple|both>` changes the heart recovery mode at runtime.
 
 ## Configuration
 
-A config file is generated at `config/nightsmediumcore-common.toml` on first launch. The following options are available:
+A config file is generated at `config/nightsmediumcore-common.toml` the first time you launch. You can adjust the heart floor, the grace period after death, the combat cooldown for crystals, the bed regen cooldown, and the heart recovery mode all from there without touching any code.
 
-| Option | Default | Description |
-|---|---|---|
-| `heartFloor` | 3 | Minimum hearts a player can reach |
-| `deathGracePeriodSeconds` | 60 | Seconds after death before another heart can be lost |
-| `crystalCombatCooldownSeconds` | 180 | Seconds after combat before crystals can be used |
-| `bedRegenCooldownMinutes` | 15 | Minutes between bed heart regeneration |
-| `showHardcoreHearts` | true | Whether to show custom heart style |
+## Installation
 
----
+Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required.
 
 ## License
 
-This mod is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
-You must credit **Nightwielder23** when using this mod in any work. Commercial use is not permitted.
-
----
+This mod is licensed under CC BY-NC 4.0. You are free to use it in modpacks and share it as long as you credit Nightwielder23. Commercial use is not permitted. Full license details at https://creativecommons.org/licenses/by-nc/4.0/
 
 ## Author
 
-Made by **Nightwielder23**
-GitHub: [https://github.com/Nightwielder23](https://github.com/Nightwielder23)
+Made by Nightwielder23. You can find my other projects at https://github.com/Nightwielder23
