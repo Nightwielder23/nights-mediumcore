@@ -84,9 +84,9 @@ public class ModCommands
 
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
 
-        source.sendSuccess(() -> Component.literal("Added " + actualRestore + " base heart(s) to " +
+        source.sendSystemMessage(Component.literal("Added " + actualRestore + " base heart(s) to " +
                 target.getName().getString() + ". They now have " + currentHearts + " base hearts.")
-                .withStyle(ChatFormatting.GREEN), true);
+                .withStyle(ChatFormatting.GREEN));
 
         if (source.getEntity() != target)
         {

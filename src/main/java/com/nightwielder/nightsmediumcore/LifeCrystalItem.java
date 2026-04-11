@@ -37,30 +37,37 @@ public class LifeCrystalItem extends Item
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
+        boolean isSupreme = heartsToRestore >= HeartLossHandler.MAX_HEARTS;
 
-        // Check combat status
-        long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
-        if (currentTime < combatExpiry)
+        // Check combat status (skip for supreme crystal)
+        if (!isSupreme)
         {
-            long remainingSeconds = (combatExpiry - currentTime) / 20;
-            serverPlayer.sendSystemMessage(
-                    Component.literal("You cannot use this in combat! " + remainingSeconds + "s remaining.")
-                            .withStyle(ChatFormatting.RED));
-            return InteractionResultHolder.fail(stack);
+            long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
+            if (currentTime < combatExpiry)
+            {
+                long remainingSeconds = (combatExpiry - currentTime) / 20;
+                serverPlayer.sendSystemMessage(
+                        Component.literal("You cannot use this in combat! " + remainingSeconds + "s remaining.")
+                                .withStyle(ChatFormatting.RED));
+                return InteractionResultHolder.fail(stack);
+            }
         }
 
-        // Check cooldown
-        long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
-        if (currentTime < expiry)
+        // Check cooldown (skip for supreme crystal)
+        if (!isSupreme)
         {
-            long remainingTicks = expiry - currentTime;
-            long remainingSeconds = remainingTicks / 20;
-            long minutes = remainingSeconds / 60;
-            long seconds = remainingSeconds % 60;
-            serverPlayer.sendSystemMessage(
-                    Component.literal("Crystal is on cooldown! " + minutes + "m " + seconds + "s remaining.")
-                            .withStyle(ChatFormatting.YELLOW));
-            return InteractionResultHolder.fail(stack);
+            long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
+            if (currentTime < expiry)
+            {
+                long remainingTicks = expiry - currentTime;
+                long remainingSeconds = remainingTicks / 20;
+                long minutes = remainingSeconds / 60;
+                long seconds = remainingSeconds % 60;
+                serverPlayer.sendSystemMessage(
+                        Component.literal("Crystal is on cooldown! " + minutes + "m " + seconds + "s remaining.")
+                                .withStyle(ChatFormatting.YELLOW));
+                return InteractionResultHolder.fail(stack);
+            }
         }
 
         // Check if player needs healing
@@ -74,16 +81,29 @@ public class LifeCrystalItem extends Item
         }
 
         // Restore hearts
-        int actualRestore = Math.min(heartsToRestore, currentLost);
-        int newLost = currentLost - actualRestore;
+        int newLost;
+        int actualRestore;
+        if (isSupreme)
+        {
+            newLost = 0;
+            actualRestore = currentLost;
+        }
+        else
+        {
+            actualRestore = Math.min(heartsToRestore, currentLost);
+            newLost = currentLost - actualRestore;
+        }
         data.setHeartsLost(serverPlayer.getUUID(), newLost);
 
         // Apply the updated modifier
         HeartLossHandler.applyModifier(serverPlayer, newLost);
 
-        // Apply cooldown from config
-        int cooldownTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
-        data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
+        // Apply cooldown (skip for supreme crystal)
+        if (!isSupreme)
+        {
+            int cooldownTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
+            data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
+        }
 
         // Consume item
         if (!serverPlayer.getAbilities().instabuild)
@@ -102,13 +122,19 @@ public class LifeCrystalItem extends Item
         serverLevel.playSound(null, serverPlayer.blockPosition(),
                 SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8f, 0.7f);
 
-        // Send message
-        int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
-        serverPlayer.sendSystemMessage(
-                Component.literal("Used " + itemDisplayName + "! Restored " + actualRestore +
-                        " base heart" + (actualRestore > 1 ? "s" : "") + ". You now have " +
-                        currentHearts + " base hearts.")
-                        .withStyle(ChatFormatting.GREEN));
+        // Force health sync to client
+        serverPlayer.setHealth(serverPlayer.getMaxHealth());
+
+        // Send message (skip for supreme crystal — particles and sound are enough)
+        if (!isSupreme)
+        {
+            int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
+            serverPlayer.sendSystemMessage(
+                    Component.literal("Used " + itemDisplayName + "! Restored " + actualRestore +
+                            " base heart" + (actualRestore > 1 ? "s" : "") + ". You now have " +
+                            currentHearts + " base hearts.")
+                            .withStyle(ChatFormatting.GREEN));
+        }
 
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }

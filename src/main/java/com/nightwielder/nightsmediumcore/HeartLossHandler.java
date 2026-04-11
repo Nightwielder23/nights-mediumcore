@@ -47,10 +47,8 @@ public class HeartLossHandler
         long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
         if (currentTime < graceExpiry)
         {
-            int remainingHearts = MAX_HEARTS - data.getHeartsLost(player.getUUID());
             player.sendSystemMessage(
-                    Component.literal("You died, but your heart was protected by the grace period. You still have " +
-                            remainingHearts + " base hearts.")
+                    Component.literal("Heart protected \u2014 death grace active.")
                             .withStyle(ChatFormatting.GOLD));
             return;
         }
@@ -99,6 +97,9 @@ public class HeartLossHandler
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         int heartsLost = data.getHeartsLost(player.getUUID());
+
+        // Clear combat status on respawn so crystals can be used immediately
+        data.setCombatCooldown(player.getUUID(), 0L);
 
         applyModifier(player, heartsLost);
     }

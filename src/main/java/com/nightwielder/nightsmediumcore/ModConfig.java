@@ -51,8 +51,9 @@ public class ModConfig
                 .comment("Controls two related cooldowns for life crystals:",
                          "1. After taking or dealing damage, the player cannot use a crystal for this many seconds.",
                          "2. After successfully using a crystal, the player cannot use another for this many seconds.",
-                         "Range: 0 to 3600. Default: 30")
-                .defineInRange("crystalCombatCooldownSeconds", 30, 0, 3600);
+                         "Supreme life crystals ignore both cooldowns entirely.",
+                         "Range: 0 to 3600. Default: 180")
+                .defineInRange("crystalCombatCooldownSeconds", 180, 0, 3600);
 
         builder.pop();
 
