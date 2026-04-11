@@ -16,7 +16,9 @@ public class ModCommands
     {
         dispatcher.register(Commands.literal("nightsmediumcore")
                 .then(Commands.literal("hearts")
-                        .executes(ctx -> showHearts(ctx.getSource())))
+                        .executes(ctx -> showHearts(ctx.getSource()))
+                        .then(Commands.literal("total")
+                                .executes(ctx -> showTotalHearts(ctx.getSource()))))
                 .then(Commands.literal("addheart")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
@@ -62,10 +64,41 @@ public class ModCommands
         int heartsLost = data.getHeartsLost(player.getUUID());
         int currentHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
 
-        player.sendSystemMessage(Component.literal("Mediumcore hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS + " base hearts")
+        player.sendSystemMessage(Component.literal("Mediumcore hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS)
                 .withStyle(ChatFormatting.GREEN));
-        player.sendSystemMessage(Component.literal("(Additional hearts from other mods are not tracked here.)")
-                .withStyle(ChatFormatting.GRAY));
+
+        return 1;
+    }
+
+    private static int showTotalHearts(CommandSourceStack source)
+    {
+        if (!(source.getEntity() instanceof ServerPlayer player))
+        {
+            source.sendFailure(Component.literal("This command can only be used by a player."));
+            return 0;
+        }
+
+        ServerLevel overworld = source.getServer().overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        int heartsLost = data.getHeartsLost(player.getUUID());
+        int baseHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+
+        int totalMaxHealth = (int) player.getMaxHealth();
+        int totalHearts = totalMaxHealth / 2;
+        int bonusHearts = totalHearts - baseHearts;
+
+        if (bonusHearts > 0)
+        {
+            player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts +
+                    " (" + baseHearts + " base + " + bonusHearts + " from other mods)")
+                    .withStyle(ChatFormatting.GREEN));
+        }
+        else
+        {
+            player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts +
+                    " (" + baseHearts + " base)")
+                    .withStyle(ChatFormatting.GREEN));
+        }
 
         return 1;
     }
