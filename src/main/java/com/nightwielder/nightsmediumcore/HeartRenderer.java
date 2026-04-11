@@ -5,9 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
@@ -59,58 +56,47 @@ public class HeartRenderer
         int left = screenWidth / 2 - 91;
         int top = screenHeight - 39;
 
-        // Read hearts lost from the synced attribute modifier on the client
-        int heartsLost = 0;
-        AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
-        if (healthAttr != null)
-        {
-            AttributeModifier modifier = healthAttr.getModifier(HeartLossHandler.MODIFIER_UUID);
-            if (modifier != null)
-            {
-                heartsLost = (int) (Math.abs(modifier.getAmount()) / 2.0);
-            }
-        }
-
-        int activeHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+        // Derive total hearts from actual max health (accounts for heart loss + relic bonus)
+        int totalHearts = Mth.ceil(player.getMaxHealth() / 2.0F);
         int healthHalf = Mth.ceil(player.getHealth());
         int absorbHalf = Mth.ceil(player.getAbsorptionAmount());
+        int rows = (totalHearts + 9) / 10;
 
-        // Draw all 10 heart positions right-to-left
-        for (int i = HeartLossHandler.MAX_HEARTS - 1; i >= 0; i--)
+        // Draw heart containers and fills, supporting multiple rows of 10
+        for (int i = totalHearts - 1; i >= 0; i--)
         {
-            int x = left + i * 8;
-            int y = top;
+            int col = i % 10;
+            int row = i / 10;
+            int x = left + col * 8;
+            int y = top - row * 10;
 
-            if (i < activeHearts)
+            // Container outline
+            gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
+
+            int hp = i * 2;
+            if (hp + 2 <= healthHalf)
             {
-                // Active heart slot — draw container outline, then fill based on current HP
-                gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
-
-                int hp = i * 2;
-                if (hp + 2 <= healthHalf)
-                {
-                    // Full heart — draw custom texture scaled to 9x9
-                    gfx.blit(HEART_TEXTURE, x, y, 9, 9,
-                            HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W, HEART_SRC_H, 256, 256);
-                }
-                else if (hp + 1 <= healthHalf)
-                {
-                    // Half heart — draw left half of custom texture
-                    gfx.blit(HEART_TEXTURE, x, y, 5, 9,
-                            HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W / 2, HEART_SRC_H, 256, 256);
-                }
+                // Full heart — draw custom texture scaled to 9x9
+                gfx.blit(HEART_TEXTURE, x, y, 9, 9,
+                        HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W, HEART_SRC_H, 256, 256);
             }
-            // Lost heart slots beyond current max — render nothing
+            else if (hp + 1 <= healthHalf)
+            {
+                // Half heart — draw left half of custom texture
+                gfx.blit(HEART_TEXTURE, x, y, 5, 9,
+                        HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W / 2, HEART_SRC_H, 256, 256);
+            }
         }
 
-        // Draw absorption hearts in a row above
+        // Draw absorption hearts above the topmost heart row
         if (absorbHalf > 0)
         {
+            int absTop = top - (rows - 1) * 10 - 10;
             int absCount = Mth.ceil(absorbHalf / 2.0F);
-            for (int i = 0; i < absCount && i < HeartLossHandler.MAX_HEARTS; i++)
+            for (int i = 0; i < absCount && i < 10; i++)
             {
                 int x = left + i * 8;
-                int y = top - 10;
+                int y = absTop;
 
                 gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
 

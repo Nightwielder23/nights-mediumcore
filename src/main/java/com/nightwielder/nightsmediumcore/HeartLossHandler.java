@@ -8,6 +8,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -122,6 +124,9 @@ public class HeartLossHandler
         // Only trigger on natural wake-up (not manually leaving bed)
         if (event.wakeImmediately())
             return;
+
+        // Always grant Regen 1 for 30 seconds on natural wake-up
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 0, false, true, true));
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
