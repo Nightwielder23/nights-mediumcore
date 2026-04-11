@@ -1,9 +1,12 @@
 package com.nightwielder.nightsmediumcore;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.Item;
@@ -33,9 +36,20 @@ public class LifeCrystalItem extends Item
 
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+
+        // Check combat status
+        long combatExpiry = data.getCombatExpiry(serverPlayer.getUUID());
+        if (currentTime < combatExpiry)
+        {
+            long remainingSeconds = (combatExpiry - currentTime) / 20;
+            serverPlayer.sendSystemMessage(
+                    Component.literal("You cannot use this in combat! " + remainingSeconds + "s remaining.")
+                            .withStyle(ChatFormatting.RED));
+            return InteractionResultHolder.fail(stack);
+        }
 
         // Check cooldown
-        long currentTime = overworld.getGameTime();
         long expiry = data.getCooldownExpiry(serverPlayer.getUUID());
         if (currentTime < expiry)
         {
@@ -76,6 +90,17 @@ public class LifeCrystalItem extends Item
         {
             stack.shrink(1);
         }
+
+        // Spawn heart particles around the player
+        ServerLevel serverLevel = serverPlayer.serverLevel();
+        double px = serverPlayer.getX();
+        double py = serverPlayer.getY() + 1.0;
+        double pz = serverPlayer.getZ();
+        serverLevel.sendParticles(ParticleTypes.HEART, px, py, pz, 12, 0.5, 0.5, 0.5, 0.1);
+
+        // Play level-up sound at reduced pitch
+        serverLevel.playSound(null, serverPlayer.blockPosition(),
+                SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8f, 0.7f);
 
         // Send message
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;

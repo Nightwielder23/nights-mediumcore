@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -98,6 +100,35 @@ public class HeartLossHandler
         int heartsLost = data.getHeartsLost(player.getUUID());
 
         applyModifier(player, heartsLost);
+    }
+
+    @SubscribeEvent
+    public void onPlayerAttack(LivingAttackEvent event)
+    {
+        // Player attacks something
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player))
+            return;
+
+        markInCombat(player);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDamaged(LivingDamageEvent event)
+    {
+        // Player takes damage
+        if (!(event.getEntity() instanceof ServerPlayer player))
+            return;
+
+        markInCombat(player);
+    }
+
+    private static void markInCombat(ServerPlayer player)
+    {
+        ServerLevel overworld = player.server.overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+        int combatTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
+        data.setCombatExpiry(player.getUUID(), currentTime + combatTicks);
     }
 
     public static void applyModifier(ServerPlayer player, int heartsLost)
