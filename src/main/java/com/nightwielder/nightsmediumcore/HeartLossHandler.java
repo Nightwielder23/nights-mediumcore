@@ -186,21 +186,14 @@ public class HeartLossHandler
             healthAttr.removeModifier(MODIFIER_UUID);
         }
 
-        if (heartsLost <= 0)
+        if (heartsLost > 0)
         {
-            float newMax = player.getMaxHealth();
-            if (player.getHealth() > newMax)
-            {
-                player.setHealth(newMax);
-            }
-            return;
+            // Each heart = 2 health points
+            double reduction = -(heartsLost * 2.0);
+            AttributeModifier modifier = new AttributeModifier(
+                    MODIFIER_UUID, MODIFIER_NAME, reduction, AttributeModifier.Operation.ADDITION);
+            healthAttr.addPermanentModifier(modifier);
         }
-
-        // Each heart = 2 health points
-        double reduction = -(heartsLost * 2.0);
-        AttributeModifier modifier = new AttributeModifier(
-                MODIFIER_UUID, MODIFIER_NAME, reduction, AttributeModifier.Operation.ADDITION);
-        healthAttr.addPermanentModifier(modifier);
 
         // Clamp current health if it exceeds new max
         float newMax = player.getMaxHealth();
@@ -208,5 +201,9 @@ public class HeartLossHandler
         {
             player.setHealth(newMax);
         }
+
+        // Force sync attributes to client so the HUD updates immediately
+        player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
+                player.getId(), java.util.Collections.singleton(healthAttr)));
     }
 }

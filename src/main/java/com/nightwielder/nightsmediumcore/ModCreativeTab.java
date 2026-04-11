@@ -14,7 +14,7 @@ public class ModCreativeTab
 
     public static final RegistryObject<CreativeModeTab> NIGHTS_MEDIUMCORE_TAB = CREATIVE_MODE_TABS.register("nights_mediumcore_tab",
             () -> CreativeModeTab.builder()
-                    .title(Component.literal("Night's Mediumcore"))
+                    .title(Component.translatable("itemGroup.nightsmediumcore.nights_mediumcore_tab"))
                     .icon(() -> new ItemStack(ModItems.LIFE_SHARD.get()))
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.LIFE_ORE_ITEM.get());

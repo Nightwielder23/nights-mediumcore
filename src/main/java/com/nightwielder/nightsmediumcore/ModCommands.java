@@ -62,10 +62,10 @@ public class ModCommands
         int heartsLost = data.getHeartsLost(player.getUUID());
         int currentHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
 
-        source.sendSuccess(() -> Component.literal("Mediumcore hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS + " base hearts")
-                .withStyle(ChatFormatting.GREEN), false);
-        source.sendSuccess(() -> Component.literal("(Additional hearts from other mods are not tracked here.)")
-                .withStyle(ChatFormatting.GRAY), false);
+        player.sendSystemMessage(Component.literal("Mediumcore hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS + " base hearts")
+                .withStyle(ChatFormatting.GREEN));
+        player.sendSystemMessage(Component.literal("(Additional hearts from other mods are not tracked here.)")
+                .withStyle(ChatFormatting.GRAY));
 
         return 1;
     }
@@ -113,9 +113,9 @@ public class ModCommands
 
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
 
-        source.sendSuccess(() -> Component.literal("Removed " + actualRemoved + " base heart(s) from " +
+        source.sendSystemMessage(Component.literal("Removed " + actualRemoved + " base heart(s) from " +
                 target.getName().getString() + ". They now have " + currentHearts + " base hearts.")
-                .withStyle(ChatFormatting.RED), true);
+                .withStyle(ChatFormatting.RED));
 
         if (source.getEntity() != target)
         {
@@ -138,9 +138,9 @@ public class ModCommands
         data.setHeartsLost(target.getUUID(), newLost);
         HeartLossHandler.applyModifier(target, newLost);
 
-        source.sendSuccess(() -> Component.literal("Set " + target.getName().getString() +
+        source.sendSystemMessage(Component.literal("Set " + target.getName().getString() +
                 "'s base hearts to " + clamped + ".")
-                .withStyle(ChatFormatting.GREEN), true);
+                .withStyle(ChatFormatting.GREEN));
 
         if (source.getEntity() != target)
         {
@@ -159,9 +159,9 @@ public class ModCommands
         data.setHeartsLost(target.getUUID(), 0);
         HeartLossHandler.applyModifier(target, 0);
 
-        source.sendSuccess(() -> Component.literal("Fully restored " + target.getName().getString() +
+        source.sendSystemMessage(Component.literal("Fully restored " + target.getName().getString() +
                 "'s base hearts to " + HeartLossHandler.MAX_HEARTS + ".")
-                .withStyle(ChatFormatting.GREEN), true);
+                .withStyle(ChatFormatting.GREEN));
 
         if (source.getEntity() != target)
         {
