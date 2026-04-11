@@ -69,7 +69,7 @@ public class ModConfig
                          "for this many seconds. Supreme Crystal Hearts ignore this cooldown.",
                          "This is separate from the combat cooldown.",
                          "Range: 0 to 3600. Default: 120")
-                .defineInRange("crystalUsageCooldownSeconds", 120, 0, 3600);
+                .defineInRange("crystalUsageCooldownSeconds", 180, 0, 3600);
 
         HEART_RECOVERY_MODE = builder
                 .comment("Controls which methods can restore lost maximum hearts.",

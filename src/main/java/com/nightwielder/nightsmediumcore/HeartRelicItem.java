@@ -104,10 +104,14 @@ public class HeartRelicItem extends Item implements ICurioItem
             currentMax -= existing.getAmount();
         }
 
-        // ceil(currentTotalMaxHearts * 0.20) * 2 health points
+        // ceil(currentTotalMaxHearts * 0.20) * 2 health points, minimum 2 hearts (4 HP)
         double baseHearts = currentMax / 2.0;
         int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
         double bonusHP = bonusHearts * 2.0;
+        if (bonusHP < 4.0)
+        {
+            bonusHP = 4.0;
+        }
 
         // Only apply or update if the value changed
         if (existing == null || existing.getAmount() != bonusHP)
