@@ -14,12 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 
-public class LifeCrystalItem extends Item
+public class CrystalHeartItem extends Item
 {
     private final int heartsToRestore;
     private final String itemDisplayName;
 
-    public LifeCrystalItem(Properties properties, int heartsToRestore, String itemDisplayName)
+    public CrystalHeartItem(Properties properties, int heartsToRestore, String itemDisplayName)
     {
         super(properties);
         this.heartsToRestore = heartsToRestore;

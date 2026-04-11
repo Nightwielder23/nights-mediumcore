@@ -10,11 +10,11 @@
       "item": "minecraft:gold_ingot"
     },
     "S": {
-      "item": "nightsmediumcore:life_shard"
+      "item": "nightsmediumcore:crystal_shard"
     }
   },
   "result": {
-    "item": "nightsmediumcore:life_crystal",
+    "item": "nightsmediumcore:crystal_heart",
     "count": 1
   }
 }

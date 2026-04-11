@@ -15,7 +15,7 @@ public class ModBlocks
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, NightsMediumcore.MODID);
 
-    public static final RegistryObject<Block> LIFE_ORE = BLOCKS.register("life_ore",
+    public static final RegistryObject<Block> HEART_ORE = BLOCKS.register("heart_ore",
             () -> new DropExperienceBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(3.0f, 3.0f)

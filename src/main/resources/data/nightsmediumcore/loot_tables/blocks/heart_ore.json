@@ -10,7 +10,7 @@
           "children": [
             {
               "type": "minecraft:item",
-              "name": "nightsmediumcore:life_ore",
+              "name": "nightsmediumcore:heart_ore",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -27,7 +27,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "nightsmediumcore:life_shard",
+              "name": "nightsmediumcore:crystal_shard",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -51,7 +51,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "nightsmediumcore:life_shard",
+              "name": "nightsmediumcore:crystal_shard",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -75,7 +75,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "nightsmediumcore:life_shard",
+              "name": "nightsmediumcore:crystal_shard",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -99,7 +99,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "nightsmediumcore:life_shard",
+              "name": "nightsmediumcore:crystal_shard",
               "functions": [
                 {
                   "function": "minecraft:set_count",

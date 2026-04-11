@@ -10,7 +10,7 @@
           "tag": "minecraft:stone_ore_replaceables"
         },
         "state": {
-          "Name": "nightsmediumcore:life_ore"
+          "Name": "nightsmediumcore:heart_ore"
         }
       },
       {
@@ -19,7 +19,7 @@
           "tag": "minecraft:deepslate_ore_replaceables"
         },
         "state": {
-          "Name": "nightsmediumcore:life_ore"
+          "Name": "nightsmediumcore:heart_ore"
         }
       }
     ]

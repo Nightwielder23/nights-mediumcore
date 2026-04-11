@@ -7,17 +7,17 @@
   ],
   "key": {
     "C": {
-      "item": "nightsmediumcore:life_crystal"
+      "item": "nightsmediumcore:crystal_heart"
     },
     "G": {
       "item": "minecraft:gold_block"
     },
     "S": {
-      "item": "nightsmediumcore:life_shard"
+      "item": "nightsmediumcore:crystal_shard"
     }
   },
   "result": {
-    "item": "nightsmediumcore:supreme_life_crystal",
+    "item": "nightsmediumcore:supreme_crystal_heart",
     "count": 1
   }
 }

@@ -15,12 +15,12 @@ public class ModCreativeTab
     public static final RegistryObject<CreativeModeTab> NIGHTS_MEDIUMCORE_TAB = CREATIVE_MODE_TABS.register("nights_mediumcore_tab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.nightsmediumcore.nights_mediumcore_tab"))
-                    .icon(() -> new ItemStack(ModItems.LIFE_SHARD.get()))
+                    .icon(() -> new ItemStack(ModItems.CRYSTAL_SHARD.get()))
                     .displayItems((parameters, output) -> {
-                        output.accept(ModItems.LIFE_ORE_ITEM.get());
-                        output.accept(ModItems.LIFE_SHARD.get());
-                        output.accept(ModItems.LIFE_CRYSTAL.get());
-                        output.accept(ModItems.SUPREME_LIFE_CRYSTAL.get());
+                        output.accept(ModItems.HEART_ORE_ITEM.get());
+                        output.accept(ModItems.CRYSTAL_SHARD.get());
+                        output.accept(ModItems.CRYSTAL_HEART.get());
+                        output.accept(ModItems.SUPREME_CRYSTAL_HEART.get());
                     })
                     .build());
 }

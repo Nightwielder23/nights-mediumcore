@@ -1,7 +1,7 @@
 {
-  "block.nightsmediumcore.life_ore": "Life Ore",
-  "item.nightsmediumcore.life_shard": "Life Shard",
-  "item.nightsmediumcore.life_crystal": "Life Crystal",
-  "item.nightsmediumcore.supreme_life_crystal": "Supreme Life Crystal",
+  "block.nightsmediumcore.heart_ore": "Heart Ore",
+  "item.nightsmediumcore.crystal_shard": "Crystal Shard",
+  "item.nightsmediumcore.crystal_heart": "Crystal Heart",
+  "item.nightsmediumcore.supreme_crystal_heart": "Supreme Crystal Heart",
   "itemGroup.nightsmediumcore.nights_mediumcore_tab": "Night's Mediumcore"
 }

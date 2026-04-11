@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "nightsmediumcore:block/life_ore"
+    "all": "nightsmediumcore:block/heart_ore"
   }
 }

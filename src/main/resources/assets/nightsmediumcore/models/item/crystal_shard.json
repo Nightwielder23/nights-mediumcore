@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "nightsmediumcore:item/life_crystal"
+    "layer0": "nightsmediumcore:item/crystal_shard"
   }
 }

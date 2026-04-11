@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew build:*)"
+      "Bash(./gradlew build:*)",
+      "Bash(find \"C:\\\\\\\\Users\\\\\\\\ayand\\\\\\\\OneDrive\\\\\\\\Documents\\\\\\\\Night's Mediumcore\\\\\\\\src\\\\\\\\main\\\\\\\\resources\" -type f)",
+      "Bash(grep -E '\\\\.\\(json|lang|properties|txt\\)$')",
+      "Bash(find C:\\\\\\\\Users\\\\\\\\ayand\\\\\\\\OneDrive\\\\\\\\Documents\\\\\\\\Night's Mediumcore\\\\\\\\src\\\\\\\\main\\\\\\\\java:*)"
     ]
   }
 }
