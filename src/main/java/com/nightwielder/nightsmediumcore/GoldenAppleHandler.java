@@ -1,9 +1,7 @@
 // Copyright 2026 Nightwielder23, licensed under CC BY-NC 4.0
 package com.nightwielder.nightsmediumcore;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -86,13 +84,7 @@ public class GoldenAppleHandler
             {
                 long combatExpiry = data.getCombatCooldown(player.getUUID());
                 if (currentTime < combatExpiry)
-                {
-                    long remainingSeconds = (combatExpiry - currentTime) / 20;
-                    player.sendSystemMessage(
-                            Component.literal("Heart restore blocked — in combat! " + remainingSeconds + "s remaining.")
-                                    .withStyle(ChatFormatting.RED));
                     return;
-                }
             }
 
             // Check apple cooldown if configured
@@ -101,16 +93,7 @@ public class GoldenAppleHandler
             {
                 long appleExpiry = data.getAppleCooldown(player.getUUID());
                 if (currentTime < appleExpiry)
-                {
-                    long remainingTicks = appleExpiry - currentTime;
-                    long remainingSec = remainingTicks / 20;
-                    long minutes = remainingSec / 60;
-                    long seconds = remainingSec % 60;
-                    player.sendSystemMessage(
-                            Component.literal("Heart restore on cooldown! " + minutes + "m " + seconds + "s remaining.")
-                                    .withStyle(ChatFormatting.YELLOW));
                     return;
-                }
             }
 
             // Restore 1 heart

@@ -39,12 +39,7 @@ public class CrystalHeartItem extends Item
 
         // Block crystal usage in "apple" mode
         if (ModConfig.HEART_RECOVERY_MODE.get().equals("apple"))
-        {
-            serverPlayer.sendSystemMessage(
-                    Component.literal("Crystal hearts are disabled! Use golden apples to restore hearts.")
-                            .withStyle(ChatFormatting.RED));
             return InteractionResultHolder.fail(stack);
-        }
 
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
@@ -58,13 +53,7 @@ public class CrystalHeartItem extends Item
         {
             long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
             if (currentTime < combatExpiry)
-            {
-                long remainingSeconds = (combatExpiry - currentTime) / 20;
-                serverPlayer.sendSystemMessage(
-                        Component.literal("You cannot use this in combat! " + remainingSeconds + "s remaining.")
-                                .withStyle(ChatFormatting.RED));
                 return InteractionResultHolder.fail(stack);
-            }
         }
 
         // Check cooldown (skip for supreme crystal and creative mode)
@@ -72,16 +61,7 @@ public class CrystalHeartItem extends Item
         {
             long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
             if (currentTime < expiry)
-            {
-                long remainingTicks = expiry - currentTime;
-                long remainingSeconds = remainingTicks / 20;
-                long minutes = remainingSeconds / 60;
-                long seconds = remainingSeconds % 60;
-                serverPlayer.sendSystemMessage(
-                        Component.literal("Crystal is on cooldown! " + minutes + "m " + seconds + "s remaining.")
-                                .withStyle(ChatFormatting.YELLOW));
                 return InteractionResultHolder.fail(stack);
-            }
         }
 
         // Check if player needs healing (creative mode bypasses this check)

@@ -1,8 +1,6 @@
 // Copyright 2026 Nightwielder23, licensed under CC BY-NC 4.0
 package com.nightwielder.nightsmediumcore;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -51,34 +49,18 @@ public class HeartLossHandler
         int currentLost = data.getHeartsLost(player.getUUID());
         int maxLoss = MAX_HEARTS - minHearts;
 
-        // Check floor first — no grace message if already at minimum
+        // Already at minimum — no heart to lose
         if (currentLost >= maxLoss)
-        {
-            player.sendSystemMessage(
-                    Component.literal("You died! You are at the minimum of " + minHearts + " base hearts.")
-                            .withStyle(ChatFormatting.RED));
             return;
-        }
 
         // Check death grace period only when a heart could actually be lost
         long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
         if (currentTime < graceExpiry)
-        {
-            player.sendSystemMessage(
-                    Component.literal("Heart protected \u2014 death grace active.")
-                            .withStyle(ChatFormatting.GOLD));
             return;
-        }
 
         int newLost = currentLost + 1;
         data.setHeartsLost(player.getUUID(), newLost);
         data.setDeathGraceExpiry(player.getUUID(), currentTime + getDeathGraceTicks());
-
-        int remainingHearts = MAX_HEARTS - newLost;
-
-        player.sendSystemMessage(
-                Component.literal("You died and lost a heart! You now have " + remainingHearts + " base hearts remaining.")
-                        .withStyle(ChatFormatting.RED));
     }
 
     @SubscribeEvent
@@ -160,10 +142,7 @@ public class HeartLossHandler
         int cooldownTicks = ModConfig.BED_REGEN_COOLDOWN_MINUTES.get() * 60 * 20;
         data.setBedRegenCooldown(player.getUUID(), currentTime + cooldownTicks);
 
-        int newHearts = MAX_HEARTS - newLost;
-        player.sendSystemMessage(
-                Component.literal("You feel rested and restored a heart! You now have " + newHearts + " base hearts.")
-                        .withStyle(ChatFormatting.GREEN));
+        // Bed regen applied silently
     }
 
     @SubscribeEvent
