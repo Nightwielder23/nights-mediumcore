@@ -84,9 +84,9 @@ public class CrystalHeartItem extends Item
             }
         }
 
-        // Check if player needs healing
+        // Check if player needs healing (creative mode bypasses this check)
         int currentLost = data.getHeartsLost(serverPlayer.getUUID());
-        if (currentLost <= 0)
+        if (currentLost <= 0 && !isCreative)
         {
             serverPlayer.sendSystemMessage(
                     Component.literal("You are already at maximum base hearts!")
@@ -132,6 +132,11 @@ public class CrystalHeartItem extends Item
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
+        }
+        else
+        {
+            // Regular crystal heart grants Regen 1 for 10 seconds (200 ticks)
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
         }
 
         // Spawn heart particles around the player
