@@ -1,3 +1,4 @@
+// Copyright 2026 Nightwielder23, licensed under CC BY-NC 4.0
 package com.nightwielder.nightsmediumcore;
 
 import net.minecraft.nbt.CompoundTag;

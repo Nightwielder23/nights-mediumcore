@@ -28,6 +28,10 @@ By default there is no cooldown on apple heart restore and it works regardless o
 
 Sleeping in a bed will restore one maximum heart if your current base heart count is below the configured threshold, which defaults to 7 hearts. This has a configurable cooldown that defaults to 15 minutes so you cannot just spam sleep to recover.
 
+## Heart Relic
+
+The Heart Relic is an endgame accessory crafted from eight Crystal Hearts surrounding a Supreme Crystal Heart. While it is in your possession it grants a 20 percent bonus to your maximum hearts, rounded up, plus constant Regeneration 1. If the Curios mod is installed, the Heart Relic works in the charm slot. If Curios is not installed, it works from anywhere in your main inventory.
+
 ## Commands
 
 `/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. This command is available to all players without any permissions.
