@@ -3,6 +3,7 @@ package com.nightwielder.nightsmediumcore;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -25,5 +26,20 @@ public class ModItems
             () -> new BlockItem(ModBlocks.HEART_ORE.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> HEART_RELIC = ITEMS.register("heart_relic",
-            () -> new Item(new Item.Properties().stacksTo(1)));
+            ModItems::createHeartRelic);
+
+    private static Item createHeartRelic()
+    {
+        if (ModList.get().isLoaded("curios"))
+        {
+            return createCuriosRelic();
+        }
+        return new Item(new Item.Properties().stacksTo(1));
+    }
+
+    // Separate method to avoid classloading HeartRelicItem when Curios is not installed
+    private static Item createCuriosRelic()
+    {
+        return new HeartRelicItem(new Item.Properties().stacksTo(1));
+    }
 }

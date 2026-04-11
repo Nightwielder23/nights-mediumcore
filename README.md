@@ -82,6 +82,12 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required. Curios API is supported as an optional dependency for the Heart Relic charm slot.
 
+## Compatability
+
+Curios API is supported as an optional dependency. If installed, the Heart Relic can be equipped in the charm slot. Without Curios, it works anywhere in your main inventory. Download Curios API at https://modrinth.com/mod/curios
+
+JEI is supported as an optional dependency for viewing Crystal Shard drop rates and crafting recipes. Download JEI at https://modrinth.com/mod/jei
+
 ## Credits
 
 The Crystal Heart and Supreme Crystal Heart textures are based on assets by the artist at https://temok.itch.io/heart-container-animated-in-pixel-art

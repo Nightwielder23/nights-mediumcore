@@ -31,12 +31,13 @@ public class HeartRelicHandler
         if (player.tickCount % 20 != 0)
             return;
 
-        boolean hasRelic = checkForRelic(player);
+        // Only check inventory — when Curios is loaded, HeartRelicItem handles the Curios slot
+        boolean hasRelicInInventory = checkInventory(player);
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
         if (healthAttr == null)
             return;
 
-        if (hasRelic)
+        if (hasRelicInInventory)
         {
             // Calculate base max health without the relic modifier
             double currentMax = player.getMaxHealth();
@@ -46,7 +47,7 @@ public class HeartRelicHandler
                 currentMax -= existing.getAmount();
             }
 
-            // 20% of total max hearts rounded up, each heart = 2 HP
+            // 20% of max hearts rounded up, each heart = 2 HP
             int baseHearts = (int) Math.round(currentMax / 2.0);
             int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
             double bonusHP = bonusHearts * 2.0;
@@ -76,6 +77,11 @@ public class HeartRelicHandler
         }
         else
         {
+            // Only remove inventory modifier if Curios is not handling the relic
+            // When Curios is loaded, the relic may be in a Curios slot (handled by HeartRelicItem)
+            if (ModList.get().isLoaded("curios"))
+                return;
+
             // Remove relic modifier if present
             AttributeModifier existing = healthAttr.getModifier(RELIC_MODIFIER_UUID);
             if (existing != null)
@@ -92,11 +98,10 @@ public class HeartRelicHandler
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                         player.getId(), Collections.singleton(healthAttr)));
             }
-            // Regen 1 will expire naturally within 25 ticks
         }
     }
 
-    private static boolean checkForRelic(ServerPlayer player)
+    private static boolean checkInventory(ServerPlayer player)
     {
         // Check main inventory slots 0-35 (hotbar + main inventory, not armor or offhand)
         for (int i = 0; i < 36; i++)
@@ -106,13 +111,6 @@ public class HeartRelicHandler
                 return true;
             }
         }
-
-        // Additionally check Curios charm slot if Curios is loaded
-        if (ModList.get().isLoaded("curios"))
-        {
-            return CuriosCompat.hasRelicEquipped(player, ModItems.HEART_RELIC.get());
-        }
-
         return false;
     }
 }

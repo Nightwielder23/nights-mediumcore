@@ -61,7 +61,16 @@ public class CrystalHeartItem extends Item
         {
             long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
             if (currentTime < expiry)
+            {
+                long remainingTicks = expiry - currentTime;
+                long remainingSeconds = remainingTicks / 20;
+                long minutes = remainingSeconds / 60;
+                long seconds = remainingSeconds % 60;
+                serverPlayer.sendSystemMessage(
+                        Component.literal("Crystal is on cooldown! " + minutes + "m " + seconds + "s remaining.")
+                                .withStyle(ChatFormatting.YELLOW));
                 return InteractionResultHolder.fail(stack);
+            }
         }
 
         // Check if player needs healing (creative mode bypasses this check)
