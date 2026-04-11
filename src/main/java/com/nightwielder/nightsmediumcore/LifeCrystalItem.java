@@ -39,7 +39,7 @@ public class LifeCrystalItem extends Item
         long currentTime = overworld.getGameTime();
 
         // Check combat status
-        long combatExpiry = data.getCombatExpiry(serverPlayer.getUUID());
+        long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
         if (currentTime < combatExpiry)
         {
             long remainingSeconds = (combatExpiry - currentTime) / 20;
@@ -50,7 +50,7 @@ public class LifeCrystalItem extends Item
         }
 
         // Check cooldown
-        long expiry = data.getCooldownExpiry(serverPlayer.getUUID());
+        long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
         if (currentTime < expiry)
         {
             long remainingTicks = expiry - currentTime;
@@ -68,7 +68,7 @@ public class LifeCrystalItem extends Item
         if (currentLost <= 0)
         {
             serverPlayer.sendSystemMessage(
-                    Component.literal("You are already at maximum health!")
+                    Component.literal("You are already at maximum base hearts!")
                             .withStyle(ChatFormatting.YELLOW));
             return InteractionResultHolder.fail(stack);
         }
@@ -83,7 +83,7 @@ public class LifeCrystalItem extends Item
 
         // Apply cooldown from config
         int cooldownTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
-        data.setCooldownExpiry(serverPlayer.getUUID(), currentTime + cooldownTicks);
+        data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
 
         // Consume item
         if (!serverPlayer.getAbilities().instabuild)
@@ -106,8 +106,8 @@ public class LifeCrystalItem extends Item
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
         serverPlayer.sendSystemMessage(
                 Component.literal("Used " + itemDisplayName + "! Restored " + actualRestore +
-                        " heart" + (actualRestore > 1 ? "s" : "") + ". You now have " +
-                        currentHearts + " max hearts.")
+                        " base heart" + (actualRestore > 1 ? "s" : "") + ". You now have " +
+                        currentHearts + " base hearts.")
                         .withStyle(ChatFormatting.GREEN));
 
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());

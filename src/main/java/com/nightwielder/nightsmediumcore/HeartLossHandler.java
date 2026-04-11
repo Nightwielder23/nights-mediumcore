@@ -49,8 +49,8 @@ public class HeartLossHandler
         {
             int remainingHearts = MAX_HEARTS - data.getHeartsLost(player.getUUID());
             player.sendSystemMessage(
-                    Component.literal("You died! Heart protected by recent death grace period. You still have " +
-                            remainingHearts + " max hearts.")
+                    Component.literal("You died, but your heart was protected by the grace period. You still have " +
+                            remainingHearts + " base hearts.")
                             .withStyle(ChatFormatting.GOLD));
             return;
         }
@@ -61,7 +61,7 @@ public class HeartLossHandler
         if (currentLost >= maxLoss)
         {
             player.sendSystemMessage(
-                    Component.literal("You died! You are at the minimum of " + minHearts + " hearts.")
+                    Component.literal("You died! You are at the minimum of " + minHearts + " base hearts.")
                             .withStyle(ChatFormatting.RED));
             return;
         }
@@ -73,7 +73,7 @@ public class HeartLossHandler
         int remainingHearts = MAX_HEARTS - newLost;
 
         player.sendSystemMessage(
-                Component.literal("You died! You now have " + remainingHearts + " max hearts remaining.")
+                Component.literal("You died and lost a heart! You now have " + remainingHearts + " base hearts remaining.")
                         .withStyle(ChatFormatting.RED));
     }
 
@@ -118,7 +118,7 @@ public class HeartLossHandler
         long currentTime = overworld.getGameTime();
 
         // Check bed regen cooldown
-        long bedExpiry = data.getBedRegenExpiry(player.getUUID());
+        long bedExpiry = data.getBedRegenCooldown(player.getUUID());
         if (currentTime < bedExpiry)
             return;
 
@@ -137,18 +137,17 @@ public class HeartLossHandler
 
         // Apply bed regen cooldown
         int cooldownTicks = ModConfig.BED_REGEN_COOLDOWN_MINUTES.get() * 60 * 20;
-        data.setBedRegenExpiry(player.getUUID(), currentTime + cooldownTicks);
+        data.setBedRegenCooldown(player.getUUID(), currentTime + cooldownTicks);
 
         int newHearts = MAX_HEARTS - newLost;
         player.sendSystemMessage(
-                Component.literal("You feel rested and restored a heart! You now have " + newHearts + " max hearts.")
+                Component.literal("You feel rested and restored a heart! You now have " + newHearts + " base hearts.")
                         .withStyle(ChatFormatting.GREEN));
     }
 
     @SubscribeEvent
     public void onPlayerAttack(LivingAttackEvent event)
     {
-        // Player attacks something
         if (!(event.getSource().getEntity() instanceof ServerPlayer player))
             return;
 
@@ -158,7 +157,6 @@ public class HeartLossHandler
     @SubscribeEvent
     public void onPlayerDamaged(LivingDamageEvent event)
     {
-        // Player takes damage
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
 
@@ -171,7 +169,7 @@ public class HeartLossHandler
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
         int combatTicks = ModConfig.CRYSTAL_COMBAT_COOLDOWN_SECONDS.get() * 20;
-        data.setCombatExpiry(player.getUUID(), currentTime + combatTicks);
+        data.setCombatCooldown(player.getUUID(), currentTime + combatTicks);
     }
 
     public static void applyModifier(ServerPlayer player, int heartsLost)
@@ -189,7 +187,6 @@ public class HeartLossHandler
 
         if (heartsLost <= 0)
         {
-            // No reduction needed, just clamp health
             float newMax = player.getMaxHealth();
             if (player.getHealth() > newMax)
             {

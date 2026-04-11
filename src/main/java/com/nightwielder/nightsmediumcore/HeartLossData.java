@@ -13,10 +13,10 @@ public class HeartLossData extends SavedData
     private static final String DATA_NAME = NightsMediumcore.MODID + "_heartloss";
 
     private final Map<UUID, Integer> heartsLost = new HashMap<>();
-    private final Map<UUID, Long> cooldownExpiry = new HashMap<>();
+    private final Map<UUID, Long> crystalCooldown = new HashMap<>();
     private final Map<UUID, Long> deathGraceExpiry = new HashMap<>();
-    private final Map<UUID, Long> combatExpiry = new HashMap<>();
-    private final Map<UUID, Long> bedRegenExpiry = new HashMap<>();
+    private final Map<UUID, Long> combatCooldown = new HashMap<>();
+    private final Map<UUID, Long> bedRegenCooldown = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -29,14 +29,14 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
-    public long getCooldownExpiry(UUID playerUUID)
+    public long getCrystalCooldown(UUID playerUUID)
     {
-        return cooldownExpiry.getOrDefault(playerUUID, 0L);
+        return crystalCooldown.getOrDefault(playerUUID, 0L);
     }
 
-    public void setCooldownExpiry(UUID playerUUID, long gameTime)
+    public void setCrystalCooldown(UUID playerUUID, long gameTime)
     {
-        cooldownExpiry.put(playerUUID, gameTime);
+        crystalCooldown.put(playerUUID, gameTime);
         setDirty();
     }
 
@@ -51,44 +51,44 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
-    public long getCombatExpiry(UUID playerUUID)
+    public long getCombatCooldown(UUID playerUUID)
     {
-        return combatExpiry.getOrDefault(playerUUID, 0L);
+        return combatCooldown.getOrDefault(playerUUID, 0L);
     }
 
-    public void setCombatExpiry(UUID playerUUID, long gameTime)
+    public void setCombatCooldown(UUID playerUUID, long gameTime)
     {
-        combatExpiry.put(playerUUID, gameTime);
+        combatCooldown.put(playerUUID, gameTime);
         setDirty();
     }
 
-    public long getBedRegenExpiry(UUID playerUUID)
+    public long getBedRegenCooldown(UUID playerUUID)
     {
-        return bedRegenExpiry.getOrDefault(playerUUID, 0L);
+        return bedRegenCooldown.getOrDefault(playerUUID, 0L);
     }
 
-    public void setBedRegenExpiry(UUID playerUUID, long gameTime)
+    public void setBedRegenCooldown(UUID playerUUID, long gameTime)
     {
-        bedRegenExpiry.put(playerUUID, gameTime);
+        bedRegenCooldown.put(playerUUID, gameTime);
         setDirty();
     }
 
     @Override
     public CompoundTag save(CompoundTag tag)
     {
-        CompoundTag playersTag = new CompoundTag();
+        CompoundTag heartsLostTag = new CompoundTag();
         for (Map.Entry<UUID, Integer> entry : heartsLost.entrySet())
         {
-            playersTag.putInt(entry.getKey().toString(), entry.getValue());
+            heartsLostTag.putInt(entry.getKey().toString(), entry.getValue());
         }
-        tag.put("players", playersTag);
+        tag.put("heartsLost", heartsLostTag);
 
-        CompoundTag cooldownTag = new CompoundTag();
-        for (Map.Entry<UUID, Long> entry : cooldownExpiry.entrySet())
+        CompoundTag crystalTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : crystalCooldown.entrySet())
         {
-            cooldownTag.putLong(entry.getKey().toString(), entry.getValue());
+            crystalTag.putLong(entry.getKey().toString(), entry.getValue());
         }
-        tag.put("cooldowns", cooldownTag);
+        tag.put("crystalCooldown", crystalTag);
 
         CompoundTag graceTag = new CompoundTag();
         for (Map.Entry<UUID, Long> entry : deathGraceExpiry.entrySet())
@@ -98,18 +98,18 @@ public class HeartLossData extends SavedData
         tag.put("deathGrace", graceTag);
 
         CompoundTag combatTag = new CompoundTag();
-        for (Map.Entry<UUID, Long> entry : combatExpiry.entrySet())
+        for (Map.Entry<UUID, Long> entry : combatCooldown.entrySet())
         {
             combatTag.putLong(entry.getKey().toString(), entry.getValue());
         }
-        tag.put("combat", combatTag);
+        tag.put("combatCooldown", combatTag);
 
-        CompoundTag bedRegenTag = new CompoundTag();
-        for (Map.Entry<UUID, Long> entry : bedRegenExpiry.entrySet())
+        CompoundTag bedTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : bedRegenCooldown.entrySet())
         {
-            bedRegenTag.putLong(entry.getKey().toString(), entry.getValue());
+            bedTag.putLong(entry.getKey().toString(), entry.getValue());
         }
-        tag.put("bedRegen", bedRegenTag);
+        tag.put("bedRegenCooldown", bedTag);
 
         return tag;
     }
@@ -117,31 +117,41 @@ public class HeartLossData extends SavedData
     private static HeartLossData load(CompoundTag tag)
     {
         HeartLossData data = new HeartLossData();
-        CompoundTag playersTag = tag.getCompound("players");
-        for (String key : playersTag.getAllKeys())
+
+        // Load heartsLost (supports legacy key "players")
+        CompoundTag heartsLostTag = tag.contains("heartsLost") ? tag.getCompound("heartsLost") : tag.getCompound("players");
+        for (String key : heartsLostTag.getAllKeys())
         {
-            data.heartsLost.put(UUID.fromString(key), playersTag.getInt(key));
+            data.heartsLost.put(UUID.fromString(key), heartsLostTag.getInt(key));
         }
-        CompoundTag cooldownTag = tag.getCompound("cooldowns");
-        for (String key : cooldownTag.getAllKeys())
+
+        // Load crystalCooldown (supports legacy key "cooldowns")
+        CompoundTag crystalTag = tag.contains("crystalCooldown") ? tag.getCompound("crystalCooldown") : tag.getCompound("cooldowns");
+        for (String key : crystalTag.getAllKeys())
         {
-            data.cooldownExpiry.put(UUID.fromString(key), cooldownTag.getLong(key));
+            data.crystalCooldown.put(UUID.fromString(key), crystalTag.getLong(key));
         }
+
         CompoundTag graceTag = tag.getCompound("deathGrace");
         for (String key : graceTag.getAllKeys())
         {
             data.deathGraceExpiry.put(UUID.fromString(key), graceTag.getLong(key));
         }
-        CompoundTag combatTag = tag.getCompound("combat");
+
+        // Load combatCooldown (supports legacy key "combat")
+        CompoundTag combatTag = tag.contains("combatCooldown") ? tag.getCompound("combatCooldown") : tag.getCompound("combat");
         for (String key : combatTag.getAllKeys())
         {
-            data.combatExpiry.put(UUID.fromString(key), combatTag.getLong(key));
+            data.combatCooldown.put(UUID.fromString(key), combatTag.getLong(key));
         }
-        CompoundTag bedRegenTag = tag.getCompound("bedRegen");
-        for (String key : bedRegenTag.getAllKeys())
+
+        // Load bedRegenCooldown (supports legacy key "bedRegen")
+        CompoundTag bedTag = tag.contains("bedRegenCooldown") ? tag.getCompound("bedRegenCooldown") : tag.getCompound("bedRegen");
+        for (String key : bedTag.getAllKeys())
         {
-            data.bedRegenExpiry.put(UUID.fromString(key), bedRegenTag.getLong(key));
+            data.bedRegenCooldown.put(UUID.fromString(key), bedTag.getLong(key));
         }
+
         return data;
     }
 

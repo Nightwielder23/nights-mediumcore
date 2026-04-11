@@ -62,8 +62,10 @@ public class ModCommands
         int heartsLost = data.getHeartsLost(player.getUUID());
         int currentHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
 
-        source.sendSuccess(() -> Component.literal("Your hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS)
+        source.sendSuccess(() -> Component.literal("Mediumcore hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS + " base hearts")
                 .withStyle(ChatFormatting.GREEN), false);
+        source.sendSuccess(() -> Component.literal("(Additional hearts from other mods are not tracked here.)")
+                .withStyle(ChatFormatting.GRAY), false);
 
         return 1;
     }
@@ -82,14 +84,14 @@ public class ModCommands
 
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
 
-        source.sendSuccess(() -> Component.literal("Added " + actualRestore + " heart(s) to " +
-                target.getName().getString() + ". They now have " + currentHearts + " max hearts.")
+        source.sendSuccess(() -> Component.literal("Added " + actualRestore + " base heart(s) to " +
+                target.getName().getString() + ". They now have " + currentHearts + " base hearts.")
                 .withStyle(ChatFormatting.GREEN), true);
 
         if (source.getEntity() != target)
         {
             target.sendSystemMessage(Component.literal("An admin restored " + actualRestore +
-                    " heart(s)! You now have " + currentHearts + " max hearts.")
+                    " base heart(s)! You now have " + currentHearts + " base hearts.")
                     .withStyle(ChatFormatting.GREEN));
         }
 
@@ -111,14 +113,14 @@ public class ModCommands
 
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
 
-        source.sendSuccess(() -> Component.literal("Removed " + actualRemoved + " heart(s) from " +
-                target.getName().getString() + ". They now have " + currentHearts + " max hearts.")
+        source.sendSuccess(() -> Component.literal("Removed " + actualRemoved + " base heart(s) from " +
+                target.getName().getString() + ". They now have " + currentHearts + " base hearts.")
                 .withStyle(ChatFormatting.RED), true);
 
         if (source.getEntity() != target)
         {
             target.sendSystemMessage(Component.literal("An admin removed " + actualRemoved +
-                    " heart(s). You now have " + currentHearts + " max hearts.")
+                    " base heart(s). You now have " + currentHearts + " base hearts.")
                     .withStyle(ChatFormatting.RED));
         }
 
@@ -137,12 +139,12 @@ public class ModCommands
         HeartLossHandler.applyModifier(target, newLost);
 
         source.sendSuccess(() -> Component.literal("Set " + target.getName().getString() +
-                "'s max hearts to " + clamped + ".")
+                "'s base hearts to " + clamped + ".")
                 .withStyle(ChatFormatting.GREEN), true);
 
         if (source.getEntity() != target)
         {
-            target.sendSystemMessage(Component.literal("An admin set your max hearts to " + clamped + ".")
+            target.sendSystemMessage(Component.literal("An admin set your base hearts to " + clamped + ".")
                     .withStyle(ChatFormatting.GREEN));
         }
 
@@ -158,12 +160,12 @@ public class ModCommands
         HeartLossHandler.applyModifier(target, 0);
 
         source.sendSuccess(() -> Component.literal("Fully restored " + target.getName().getString() +
-                "'s max hearts to " + HeartLossHandler.MAX_HEARTS + ".")
+                "'s base hearts to " + HeartLossHandler.MAX_HEARTS + ".")
                 .withStyle(ChatFormatting.GREEN), true);
 
         if (source.getEntity() != target)
         {
-            target.sendSystemMessage(Component.literal("An admin fully restored your max hearts to " +
+            target.sendSystemMessage(Component.literal("An admin fully restored your base hearts to " +
                     HeartLossHandler.MAX_HEARTS + "!")
                     .withStyle(ChatFormatting.GREEN));
         }
