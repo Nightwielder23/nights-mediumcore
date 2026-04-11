@@ -18,6 +18,7 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> combatCooldown = new HashMap<>();
     private final Map<UUID, Long> bedRegenCooldown = new HashMap<>();
     private final Map<UUID, Long> appleCooldown = new HashMap<>();
+    private final Map<UUID, Integer> peakMaxHearts = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -85,6 +86,21 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public int getPeakMaxHearts(UUID playerUUID)
+    {
+        return peakMaxHearts.getOrDefault(playerUUID, HeartLossHandler.MAX_HEARTS);
+    }
+
+    public void updatePeakMaxHearts(UUID playerUUID, int currentMaxHearts)
+    {
+        int existing = peakMaxHearts.getOrDefault(playerUUID, HeartLossHandler.MAX_HEARTS);
+        if (currentMaxHearts > existing)
+        {
+            peakMaxHearts.put(playerUUID, currentMaxHearts);
+            setDirty();
+        }
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag)
     {
@@ -129,6 +145,13 @@ public class HeartLossData extends SavedData
             appleTag.putLong(entry.getKey().toString(), entry.getValue());
         }
         tag.put("appleCooldown", appleTag);
+
+        CompoundTag peakTag = new CompoundTag();
+        for (Map.Entry<UUID, Integer> entry : peakMaxHearts.entrySet())
+        {
+            peakTag.putInt(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("peakMaxHearts", peakTag);
 
         return tag;
     }
@@ -175,6 +198,12 @@ public class HeartLossData extends SavedData
         for (String key : appleTag.getAllKeys())
         {
             data.appleCooldown.put(UUID.fromString(key), appleTag.getLong(key));
+        }
+
+        CompoundTag peakTag = tag.getCompound("peakMaxHearts");
+        for (String key : peakTag.getAllKeys())
+        {
+            data.peakMaxHearts.put(UUID.fromString(key), peakTag.getInt(key));
         }
 
         return data;

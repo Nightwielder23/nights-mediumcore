@@ -8,6 +8,7 @@ public class ModConfig
     public static final ForgeConfigSpec.IntValue DEATH_GRACE_PERIOD_SECONDS;
     public static final ForgeConfigSpec.IntValue CRYSTAL_COMBAT_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.IntValue BED_REGEN_COOLDOWN_MINUTES;
+    public static final ForgeConfigSpec.IntValue BED_REGEN_HEART_THRESHOLD;
     public static final ForgeConfigSpec.BooleanValue SHOW_HARDCORE_HEARTS;
     public static final ForgeConfigSpec.ConfigValue<String> HEART_RECOVERY_MODE;
     public static final ForgeConfigSpec.BooleanValue APPLE_COMBAT_COOLDOWN;
@@ -36,9 +37,14 @@ public class ModConfig
         BED_REGEN_COOLDOWN_MINUTES = builder
                 .comment("After restoring a heart by sleeping in a bed, the player must wait",
                          "this many minutes before sleeping can restore another heart.",
-                         "Bed regen only works when the player has fewer than 7 base hearts.",
                          "Range: 0 to 1440. Default: 15")
                 .defineInRange("bedRegenCooldownMinutes", 15, 0, 1440);
+
+        BED_REGEN_HEART_THRESHOLD = builder
+                .comment("The maximum number of base hearts a player can have before bed regen stops.",
+                         "If a player has this many or more base hearts, sleeping will not restore a heart.",
+                         "Range: 1 to 10. Default: 7")
+                .defineInRange("bedRegenHeartThreshold", 7, 1, 10);
 
         SHOW_HARDCORE_HEARTS = builder
                 .comment("When true, replaces the normal heart HUD with hardcore-style hearts.",

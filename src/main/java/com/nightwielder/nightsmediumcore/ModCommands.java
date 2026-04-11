@@ -80,7 +80,7 @@ public class ModCommands
         int heartsLost = data.getHeartsLost(player.getUUID());
         int currentHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
 
-        player.sendSystemMessage(Component.literal("Mediumcore hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS)
+        player.sendSystemMessage(Component.literal("Base hearts: " + currentHearts + "/" + HeartLossHandler.MAX_HEARTS)
                 .withStyle(ChatFormatting.GREEN));
 
         return 1;
@@ -96,25 +96,15 @@ public class ModCommands
 
         ServerLevel overworld = source.getServer().overworld();
         HeartLossData data = HeartLossData.get(overworld);
-        int heartsLost = data.getHeartsLost(player.getUUID());
-        int baseHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
 
-        int totalMaxHealth = (int) player.getMaxHealth();
-        int totalHearts = totalMaxHealth / 2;
-        int bonusHearts = totalHearts - baseHearts;
+        int totalHearts = (int) player.getMaxHealth() / 2;
 
-        if (bonusHearts > 0)
-        {
-            player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts +
-                    " (" + baseHearts + " base + " + bonusHearts + " from other mods)")
-                    .withStyle(ChatFormatting.GREEN));
-        }
-        else
-        {
-            player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts +
-                    " (" + baseHearts + " base)")
-                    .withStyle(ChatFormatting.GREEN));
-        }
+        // Update and retrieve peak max hearts
+        data.updatePeakMaxHearts(player.getUUID(), totalHearts);
+        int peakHearts = data.getPeakMaxHearts(player.getUUID());
+
+        player.sendSystemMessage(Component.literal("Total hearts: " + totalHearts + "/" + peakHearts)
+                .withStyle(ChatFormatting.GREEN));
 
         return 1;
     }

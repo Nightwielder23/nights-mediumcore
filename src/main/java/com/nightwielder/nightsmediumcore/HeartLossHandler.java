@@ -86,6 +86,10 @@ public class HeartLossHandler
         int heartsLost = data.getHeartsLost(player.getUUID());
 
         applyModifier(player, heartsLost);
+
+        // Update peak max hearts after modifier is applied
+        int totalHearts = (int) player.getMaxHealth() / 2;
+        data.updatePeakMaxHearts(player.getUUID(), totalHearts);
     }
 
     @SubscribeEvent
@@ -102,6 +106,10 @@ public class HeartLossHandler
         data.setCombatCooldown(player.getUUID(), 0L);
 
         applyModifier(player, heartsLost);
+
+        // Update peak max hearts after modifier is applied
+        int totalHearts = (int) player.getMaxHealth() / 2;
+        data.updatePeakMaxHearts(player.getUUID(), totalHearts);
     }
 
     @SubscribeEvent
@@ -128,7 +136,7 @@ public class HeartLossHandler
             return;
 
         int currentHearts = MAX_HEARTS - currentLost;
-        if (currentHearts >= 7)
+        if (currentHearts >= ModConfig.BED_REGEN_HEART_THRESHOLD.get())
             return;
 
         // Restore 1 heart

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "CGC",
-    "GSG",
+    "GCG",
     "CGC"
   ],
   "key": {
@@ -11,9 +11,6 @@
     },
     "G": {
       "item": "minecraft:gold_block"
-    },
-    "S": {
-      "item": "nightsmediumcore:crystal_shard"
     }
   },
   "result": {
