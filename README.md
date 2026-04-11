@@ -74,8 +74,8 @@ Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Fo
 
 ## Credits
 
-The Crystal Heart and Supreme Crystal Heart textures are based on assets by Temok, available at https://temok.itch.io/heart-container-animated-in-pixel-art
-
+The Crystal Heart and Supreme Crystal Heart textures were made by Temok, available at https://temok.itch.io/heart-container-animated-in-pixel-art
+The Heart Relic texture was made by studionamepending, available at https://studionamepending.itch.io/heart-pickup-animated
 ## License
 
 This mod is licensed under CC BY-NC 4.0. You are free to use it in modpacks and share it as long as you credit Nightwielder23. Commercial use is not permitted. Full license details at https://creativecommons.org/licenses/by-nc/4.0/

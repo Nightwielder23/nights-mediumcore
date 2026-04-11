@@ -22,4 +22,7 @@ public class ModItems
 
     public static final RegistryObject<Item> HEART_ORE_ITEM = ITEMS.register("heart_ore",
             () -> new BlockItem(ModBlocks.HEART_ORE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> HEART_RELIC = ITEMS.register("heart_relic",
+            () -> new Item(new Item.Properties().stacksTo(1)));
 }

@@ -21,6 +21,7 @@ public class ModCreativeTab
                         output.accept(ModItems.CRYSTAL_SHARD.get());
                         output.accept(ModItems.CRYSTAL_HEART.get());
                         output.accept(ModItems.SUPREME_CRYSTAL_HEART.get());
+                        output.accept(ModItems.HEART_RELIC.get());
                     })
                     .build());
 }
