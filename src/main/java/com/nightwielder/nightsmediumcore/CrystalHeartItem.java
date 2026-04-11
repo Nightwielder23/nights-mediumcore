@@ -53,7 +53,13 @@ public class CrystalHeartItem extends Item
         {
             long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
             if (currentTime < combatExpiry)
+            {
+                long remainingSeconds = (combatExpiry - currentTime) / 20;
+                serverPlayer.sendSystemMessage(
+                        Component.literal("Cannot use Crystal Heart while in combat! " + remainingSeconds + "s remaining.")
+                                .withStyle(ChatFormatting.RED));
                 return InteractionResultHolder.fail(stack);
+            }
         }
 
         // Check cooldown (skip for supreme crystal and creative mode)
