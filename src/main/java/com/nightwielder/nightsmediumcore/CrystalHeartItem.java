@@ -63,7 +63,13 @@ public class CrystalHeartItem extends Item
         int mcRestore = 0;
         int lsRestore = 0;
 
-        if (noneMode)
+        if (lsOnly && isSupreme && (mode.equals("crystal") || mode.equals("none") || mode.equals("both")))
+        {
+            restoresHearts = true;
+            int totalCap = Math.max(lsCap, 20);
+            lsRestore = Math.min(2, Math.max(0, totalCap - currentLs));
+        }
+        else if (noneMode)
         {
             restoresHearts = false;
         }
@@ -82,8 +88,7 @@ public class CrystalHeartItem extends Item
         else
         {
             restoresHearts = true;
-            int want = isSupreme ? 2 : 1;
-            lsRestore = Math.min(want, Math.max(0, lsCap - currentLs));
+            lsRestore = Math.min(1, Math.max(0, lsCap - currentLs));
         }
 
         // If restoration would do nothing, refuse (creative bypasses)
