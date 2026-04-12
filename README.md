@@ -48,9 +48,11 @@ By default there is no cooldown on apple heart restore and it works regardless o
 
 ## Enchantments
 
-**Life Leech** can be applied to any weapon except the Vampiric Scythe. Each level adds a 0.1% additive chance for hostile mobs to drop a Living Heart on kill. Max level 3. Found as enchanted books in Stronghold library chests and Bastion Treasure chests with higher levels being rarer.
+**Vampirism** can be applied to any weapon except the Vampiric Scythe. Each level adds a 0.1% additive chance for hostile mobs to drop a Living Heart on kill. Max level 3. Found as enchanted books in Nether Fortress chests and Ancient City chests with higher levels being rarer.
 
-**Life Steal** can be applied to any weapon except the Vampiric Scythe. Each level heals you for 3% of damage dealt to any entity. Max level 3. Found as enchanted books in Nether Fortress chests and Ancient City chests with higher levels being rarer.
+**Life Steal** can be applied to any weapon except the Vampiric Scythe. Each level heals you for 3% of damage dealt to hostile mobs. Max level 3. Found as enchanted books in Stronghold library chests and Bastion Treasure chests with higher levels being rarer.
+
+**Life Leech** can be applied to any weapon except the Vampiric Scythe. Each level heals you for 3% of damage dealt to players. Max level 3. Found as enchanted books in Stronghold library chests and Bastion Treasure chests with higher levels being rarer.
 
 ## Bed Regen
 

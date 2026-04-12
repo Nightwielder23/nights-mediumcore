@@ -32,7 +32,7 @@ public class EnchantmentHandler
             return;
 
         int level = EnchantmentHelper.getItemEnchantmentLevel(
-                ModEnchantments.LIFE_LEECH.get(), killer.getMainHandItem());
+                ModEnchantments.VAMPIRISM.get(), killer.getMainHandItem());
         if (level <= 0)
             return;
 
@@ -52,15 +52,25 @@ public class EnchantmentHandler
     {
         if (!(event.getSource().getEntity() instanceof ServerPlayer attacker))
             return;
-        if (attacker.equals(event.getEntity()))
+        LivingEntity victim = event.getEntity();
+        if (attacker.equals(victim))
             return;
 
-        int level = EnchantmentHelper.getItemEnchantmentLevel(
-                ModEnchantments.LIFE_STEAL.get(), attacker.getMainHandItem());
-        if (level <= 0)
+        ItemStack weapon = attacker.getMainHandItem();
+        int enchLevel;
+        if (victim instanceof Player)
+            enchLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                    ModEnchantments.LIFE_LEECH.get(), weapon);
+        else if (victim instanceof Enemy)
+            enchLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                    ModEnchantments.LIFE_STEAL.get(), weapon);
+        else
             return;
 
-        float heal = event.getAmount() * level * LIFESTEAL_PER_LEVEL;
+        if (enchLevel <= 0)
+            return;
+
+        float heal = event.getAmount() * enchLevel * LIFESTEAL_PER_LEVEL;
         if (heal > 0)
             attacker.heal(heal);
     }
