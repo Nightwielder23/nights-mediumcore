@@ -10,8 +10,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,22 +37,17 @@ public class LivingHeartItem extends Item
         HeartLossData data = HeartLossData.get(overworld);
 
         int currentLost = data.getHeartsLost(serverPlayer.getUUID());
-        if (currentLost > 0)
+        int minLost = HeartLossHandler.MAX_HEARTS - 20; // base mediumcore cap of 20 hearts
+        if (currentLost <= minLost)
         {
-            // Restoring a lost heart first
-            data.setHeartsLost(serverPlayer.getUUID(), currentLost - 1);
-            HeartLossHandler.applyModifier(serverPlayer, currentLost - 1);
-        }
-        else
-        {
-            // Add bonus heart beyond base max (can exceed heart cap)
-            int bonus = data.getBonusHearts(serverPlayer.getUUID());
-            data.setBonusHearts(serverPlayer.getUUID(), bonus + 1);
-            LifeStealHandler.applyBonusModifier(serverPlayer, bonus + 1);
+            serverPlayer.sendSystemMessage(Component.literal(
+                    "You already have the maximum of 20 base hearts!").withStyle(ChatFormatting.YELLOW));
+            return InteractionResultHolder.fail(stack);
         }
 
-        serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 600, 0));
-        serverPlayer.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 600, 0));
+        int newLost = currentLost - 1;
+        data.setHeartsLost(serverPlayer.getUUID(), newLost);
+        HeartLossHandler.applyModifier(serverPlayer, newLost);
 
         data.updatePeakMaxHearts(serverPlayer.getUUID(),
                 (int) serverPlayer.getMaxHealth() / 2);

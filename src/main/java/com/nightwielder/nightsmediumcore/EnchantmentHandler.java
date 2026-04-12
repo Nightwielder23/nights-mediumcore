@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = NightsMediumcore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EnchantmentHandler
 {
-    private static final float VAMPIRISM_PER_LEVEL = 0.0025F;
+    private static final float VAMPIRISM_PER_LEVEL = 0.001F;
     private static final float LIFESTEAL_PER_LEVEL = 0.03F;
 
     @SubscribeEvent

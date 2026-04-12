@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = NightsMediumcore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class VampiricScytheHandler
 {
-    private static final float DROP_CHANCE = 0.02F;
+    private static final float DROP_CHANCE = 0.005F;
     private static final float LIFESTEAL_FRACTION = 0.12F;
 
     @SubscribeEvent

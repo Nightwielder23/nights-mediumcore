@@ -24,7 +24,7 @@ import java.util.Collections;
 @Mod.EventBusSubscriber(modid = NightsMediumcore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BloodRelicHandler
 {
-    private static final float HOSTILE_DROP_CHANCE = 0.015F;
+    private static final float HOSTILE_DROP_CHANCE = 0.005F;
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event)
