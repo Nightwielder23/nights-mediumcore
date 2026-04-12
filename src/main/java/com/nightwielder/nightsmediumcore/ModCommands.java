@@ -42,7 +42,7 @@ public class ModCommands
                 .then(Commands.literal("setheart")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("amount", IntegerArgumentType.integer(1, 20))
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(1, HeartLossHandler.MAX_HEARTS))
                                         .executes(ctx -> setHeart(
                                                 ctx.getSource(),
                                                 EntityArgument.getPlayer(ctx, "player"),
@@ -140,9 +140,8 @@ public class ModCommands
         HeartLossData data = HeartLossData.get(overworld);
 
         int currentLost = data.getHeartsLost(target.getUUID());
-        int minLost = HeartLossHandler.MAX_HEARTS - 20;
-        int newLost = Math.max(currentLost - amount, minLost);
-        int actualRestore = currentLost - newLost;
+        int actualRestore = Math.min(amount, currentLost);
+        int newLost = currentLost - actualRestore;
 
         data.setHeartsLost(target.getUUID(), newLost);
         HeartLossHandler.applyModifier(target, newLost);
@@ -197,7 +196,7 @@ public class ModCommands
         ServerLevel overworld = source.getServer().overworld();
         HeartLossData data = HeartLossData.get(overworld);
 
-        int clamped = Math.max(HeartLossHandler.getMinHearts(), Math.min(hearts, 20));
+        int clamped = Math.max(HeartLossHandler.getMinHearts(), Math.min(hearts, HeartLossHandler.MAX_HEARTS));
         int newLost = HeartLossHandler.MAX_HEARTS - clamped;
 
         data.setHeartsLost(target.getUUID(), newLost);
@@ -289,37 +288,53 @@ public class ModCommands
         ServerLevel overworld = source.getServer().overworld();
         HeartLossData data = HeartLossData.get(overworld);
 
-        int senderLost = data.getHeartsLost(sender.getUUID());
         int minHearts = HeartLossHandler.getMinHearts();
-        int senderAvailable = (HeartLossHandler.MAX_HEARTS - senderLost) - minHearts;
-        if (senderAvailable <= 0)
+        int cap = LifeStealHandler.resolvedHeartCap();
+
+        int senderLs = data.getLifeStealHearts(sender.getUUID());
+        int senderLost = data.getHeartsLost(sender.getUUID());
+        int senderMcAvailable = (HeartLossHandler.MAX_HEARTS - senderLost) - minHearts;
+        int senderTotalAvailable = senderLs + senderMcAvailable;
+        if (senderTotalAvailable <= 0)
         {
-            source.sendFailure(Component.literal("You are already at the heart floor and cannot give hearts."));
+            source.sendFailure(Component.literal("You have no hearts to give."));
             return 0;
         }
 
+        int targetLs = data.getLifeStealHearts(target.getUUID());
         int targetLost = data.getHeartsLost(target.getUUID());
-        int targetMinLost = HeartLossHandler.MAX_HEARTS - 20;
-        int targetCanReceive = targetLost - targetMinLost;
-        int transferred = Math.min(Math.min(amount, senderAvailable), targetCanReceive);
+        int targetLsCapacity = Math.max(0, cap - targetLs);
+        int targetMcCapacity = targetLost;
+        int targetCapacity = targetLsCapacity + targetMcCapacity;
+
+        int transferred = Math.min(Math.min(amount, senderTotalAvailable), targetCapacity);
         if (transferred <= 0)
         {
             source.sendFailure(Component.literal(
-                    target.getName().getString() + " is already at the maximum of 20 base hearts."));
+                    target.getName().getString() + " cannot receive any more hearts."));
             return 0;
         }
 
-        int newSenderLost = senderLost + transferred;
+        // Drain sender: lifesteal first, then mediumcore
+        int fromSenderLs = Math.min(transferred, senderLs);
+        int fromSenderMc = transferred - fromSenderLs;
+        data.setLifeStealHearts(sender.getUUID(), senderLs - fromSenderLs);
+        int newSenderLost = senderLost + fromSenderMc;
         data.setHeartsLost(sender.getUUID(), newSenderLost);
         HeartLossHandler.applyModifier(sender, newSenderLost);
+        LifeStealHandler.applyBonusModifier(sender, senderLs - fromSenderLs);
 
-        int newTargetLost = targetLost - transferred;
+        // Fill target: lifesteal first, then mediumcore
+        int toTargetLs = Math.min(transferred, targetLsCapacity);
+        int toTargetMc = transferred - toTargetLs;
+        data.setLifeStealHearts(target.getUUID(), targetLs + toTargetLs);
+        int newTargetLost = targetLost - toTargetMc;
         data.setHeartsLost(target.getUUID(), newTargetLost);
         HeartLossHandler.applyModifier(target, newTargetLost);
+        LifeStealHandler.applyBonusModifier(target, targetLs + toTargetLs);
 
-        int senderHearts = HeartLossHandler.MAX_HEARTS - newSenderLost;
         sender.sendSystemMessage(Component.literal("Transferred " + transferred + " heart(s) to " +
-                target.getName().getString() + ". You now have " + senderHearts + " base hearts.")
+                target.getName().getString() + ".")
                 .withStyle(ChatFormatting.GOLD));
 
         target.sendSystemMessage(Component.literal(sender.getName().getString() +
@@ -341,16 +356,24 @@ public class ModCommands
         HeartLossData data = HeartLossData.get(overworld);
 
         int currentLost = data.getHeartsLost(player.getUUID());
+        int currentLs = data.getLifeStealHearts(player.getUUID());
         int minHearts = HeartLossHandler.getMinHearts();
-        int available = (HeartLossHandler.MAX_HEARTS - currentLost) - minHearts;
-        if (available <= 0)
+        int mcAvailable = (HeartLossHandler.MAX_HEARTS - currentLost) - minHearts;
+        int totalAvailable = currentLs + mcAvailable;
+        if (totalAvailable <= 0)
         {
-            source.sendFailure(Component.literal("You are already at the heart floor and cannot convert hearts."));
+            source.sendFailure(Component.literal("You have no hearts to convert."));
             return 0;
         }
 
-        int converted = Math.min(amount, available);
-        int newLost = currentLost + converted;
+        int converted = Math.min(amount, totalAvailable);
+        int fromLs = Math.min(converted, currentLs);
+        int fromMc = converted - fromLs;
+
+        data.setLifeStealHearts(player.getUUID(), currentLs - fromLs);
+        LifeStealHandler.applyBonusModifier(player, currentLs - fromLs);
+
+        int newLost = currentLost + fromMc;
         data.setHeartsLost(player.getUUID(), newLost);
         HeartLossHandler.applyModifier(player, newLost);
 
@@ -360,9 +383,8 @@ public class ModCommands
             player.drop(stack, false);
         }
 
-        int hearts = HeartLossHandler.MAX_HEARTS - newLost;
         player.sendSystemMessage(Component.literal("Converted " + converted +
-                " heart(s) into Crystal Heart item(s). You now have " + hearts + " base hearts.")
+                " heart(s) into Crystal Heart item(s).")
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;

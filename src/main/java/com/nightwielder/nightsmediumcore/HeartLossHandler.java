@@ -39,11 +39,22 @@ public class HeartLossHandler
     {
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
+        if (!ModConfig.MEDIUMCORE_ENABLED.get())
+            return;
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
         int minHearts = getMinHearts();
+
+        // Consume a lifesteal heart first if the player has any
+        int lsHearts = data.getLifeStealHearts(player.getUUID());
+        if (lsHearts > 0)
+        {
+            data.setLifeStealHearts(player.getUUID(), lsHearts - 1);
+            data.setDeathGraceExpiry(player.getUUID(), currentTime + getDeathGraceTicks());
+            return;
+        }
 
         // Use base mediumcore hearts from SavedData, not total health including modded bonuses
         int currentLost = data.getHeartsLost(player.getUUID());

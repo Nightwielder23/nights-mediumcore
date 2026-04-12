@@ -96,17 +96,12 @@ public class HeartRelicItem extends Item implements ICurioItem
         if (healthAttr == null)
             return;
 
-        // Calculate base max health excluding the relic modifier
-        double currentMax = player.getMaxHealth();
+        // Compute bonus from mediumcore base hearts only (exclude lifesteal & any other bonuses)
         AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
-        if (existing != null)
-        {
-            currentMax -= existing.getAmount();
-        }
-
-        // ceil(currentTotalMaxHearts * 0.20) * 2 health points, minimum 2 hearts (4 HP)
-        double baseHearts = currentMax / 2.0;
-        int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
+        HeartLossData data = HeartLossData.get(player.server.overworld());
+        int heartsLost = data.getHeartsLost(player.getUUID());
+        double mediumcoreHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+        int bonusHearts = (int) Math.ceil(mediumcoreHearts * 0.2);
         double bonusHP = bonusHearts * 2.0;
         if (bonusHP < 4.0)
         {

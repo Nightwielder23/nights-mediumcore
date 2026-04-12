@@ -36,18 +36,18 @@ public class LivingHeartItem extends Item
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
 
-        int currentLost = data.getHeartsLost(serverPlayer.getUUID());
-        int minLost = HeartLossHandler.MAX_HEARTS - 20; // base mediumcore cap of 20 hearts
-        if (currentLost <= minLost)
+        int current = data.getLifeStealHearts(serverPlayer.getUUID());
+        int cap = LifeStealHandler.resolvedHeartCap();
+        if (current >= cap)
         {
             serverPlayer.sendSystemMessage(Component.literal(
-                    "You already have the maximum of 20 base hearts!").withStyle(ChatFormatting.YELLOW));
+                    "You have reached the lifesteal heart cap!").withStyle(ChatFormatting.YELLOW));
             return InteractionResultHolder.fail(stack);
         }
 
-        int newLost = currentLost - 1;
-        data.setHeartsLost(serverPlayer.getUUID(), newLost);
-        HeartLossHandler.applyModifier(serverPlayer, newLost);
+        int updated = current + 1;
+        data.setLifeStealHearts(serverPlayer.getUUID(), updated);
+        LifeStealHandler.applyBonusModifier(serverPlayer, updated);
 
         data.updatePeakMaxHearts(serverPlayer.getUUID(),
                 (int) serverPlayer.getMaxHealth() / 2);

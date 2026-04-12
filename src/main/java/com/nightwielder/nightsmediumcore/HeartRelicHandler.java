@@ -41,17 +41,11 @@ public class HeartRelicHandler
 
         if (hasRelicInInventory)
         {
-            // Calculate base max health without the relic modifier
-            double currentMax = player.getMaxHealth();
             AttributeModifier existing = healthAttr.getModifier(RELIC_MODIFIER_UUID);
-            if (existing != null)
-            {
-                currentMax -= existing.getAmount();
-            }
-
-            // ceil(currentTotalMaxHearts * 0.20) * 2 health points, minimum 2 hearts (4 HP)
-            double baseHearts = currentMax / 2.0;
-            int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
+            HeartLossData data = HeartLossData.get(player.server.overworld());
+            int heartsLost = data.getHeartsLost(player.getUUID());
+            double mediumcoreHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+            int bonusHearts = (int) Math.ceil(mediumcoreHearts * 0.2);
             double bonusHP = bonusHearts * 2.0;
             if (bonusHP < 4.0)
             {

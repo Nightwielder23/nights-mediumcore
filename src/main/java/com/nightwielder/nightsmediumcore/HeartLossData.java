@@ -23,6 +23,7 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> respawnImmunityExpiry = new HashMap<>();
     private final Map<UUID, Integer> bonusHearts = new HashMap<>();
     private final Map<UUID, Long> lifeStealRespawnTime = new HashMap<>();
+    private final Map<UUID, Integer> lifeStealHearts = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -127,6 +128,17 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public int getLifeStealHearts(UUID playerUUID)
+    {
+        return lifeStealHearts.getOrDefault(playerUUID, 0);
+    }
+
+    public void setLifeStealHearts(UUID playerUUID, int amount)
+    {
+        lifeStealHearts.put(playerUUID, Math.max(0, amount));
+        setDirty();
+    }
+
     public long getLifeStealRespawnTime(UUID playerUUID)
     {
         return lifeStealRespawnTime.getOrDefault(playerUUID, 0L);
@@ -219,6 +231,13 @@ public class HeartLossData extends SavedData
         }
         tag.put("lifeStealRespawnTime", lsRespawnTag);
 
+        CompoundTag lsHeartsTag = new CompoundTag();
+        for (Map.Entry<UUID, Integer> entry : lifeStealHearts.entrySet())
+        {
+            lsHeartsTag.putInt(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("lifeStealHearts", lsHeartsTag);
+
         return tag;
     }
 
@@ -297,6 +316,13 @@ public class HeartLossData extends SavedData
         for (String key : lsRespawnTag.getAllKeys())
         {
             try { data.lifeStealRespawnTime.put(UUID.fromString(key), lsRespawnTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+
+        CompoundTag lsHeartsTag = tag.getCompound("lifeStealHearts");
+        for (String key : lsHeartsTag.getAllKeys())
+        {
+            try { data.lifeStealHearts.put(UUID.fromString(key), lsHeartsTag.getInt(key)); }
             catch (IllegalArgumentException ignored) {}
         }
 

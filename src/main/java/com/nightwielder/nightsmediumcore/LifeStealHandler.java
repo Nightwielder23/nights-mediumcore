@@ -64,7 +64,7 @@ public class LifeStealHandler
             return;
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
-        applyBonusModifier(player, data.getBonusHearts(player.getUUID()));
+        applyBonusModifier(player, data.getLifeStealHearts(player.getUUID()));
     }
 
     @SubscribeEvent
@@ -74,7 +74,7 @@ public class LifeStealHandler
             return;
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
-        applyBonusModifier(player, data.getBonusHearts(player.getUUID()));
+        applyBonusModifier(player, data.getLifeStealHearts(player.getUUID()));
         data.setLifeStealRespawnTime(player.getUUID(), overworld.getGameTime());
     }
 
@@ -100,10 +100,10 @@ public class LifeStealHandler
             return;
 
         UUID vid = victim.getUUID();
-        int bonus = data.getBonusHearts(vid);
-        if (bonus > 0)
+        int lsHearts = data.getLifeStealHearts(vid);
+        if (lsHearts > 0)
         {
-            data.setBonusHearts(vid, bonus - 1);
+            data.setLifeStealHearts(vid, lsHearts - 1);
         }
         else
         {

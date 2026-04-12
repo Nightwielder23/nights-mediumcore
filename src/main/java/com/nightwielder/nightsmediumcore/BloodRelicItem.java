@@ -88,13 +88,11 @@ public class BloodRelicItem extends Item implements ICurioItem
         if (healthAttr == null)
             return;
 
-        double currentMax = player.getMaxHealth();
         AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
-        if (existing != null)
-            currentMax -= existing.getAmount();
-
-        double baseHearts = currentMax / 2.0;
-        int bonusHearts = (int) Math.ceil(baseHearts * 0.2);
+        HeartLossData data = HeartLossData.get(player.server.overworld());
+        int heartsLost = data.getHeartsLost(player.getUUID());
+        double mediumcoreHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+        int bonusHearts = (int) Math.ceil(mediumcoreHearts * 0.2);
         double bonusHP = bonusHearts * 2.0;
         if (bonusHP < 4.0)
             bonusHP = 4.0;
