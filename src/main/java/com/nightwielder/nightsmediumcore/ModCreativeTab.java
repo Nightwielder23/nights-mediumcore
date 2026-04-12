@@ -27,6 +27,7 @@ public class ModCreativeTab
                         output.accept(ModItems.BLOOD_SHARD.get());
                         output.accept(ModItems.BLOODY_HEART.get());
                         output.accept(ModItems.BLOOD_RELIC.get());
+                        output.accept(ModItems.VAMPIRIC_SCYTHE.get());
                     })
                     .build());
 }

@@ -40,6 +40,9 @@ public class ModItems
     public static final RegistryObject<Item> BLOOD_RELIC = ITEMS.register("blood_relic",
             ModItems::createBloodRelic);
 
+    public static final RegistryObject<Item> VAMPIRIC_SCYTHE = ITEMS.register("vampiric_scythe",
+            () -> new VampiricScytheItem(new Item.Properties().stacksTo(1).durability(2031)));
+
     private static Item createBloodRelic()
     {
         if (ModList.get().isLoaded("curios"))
