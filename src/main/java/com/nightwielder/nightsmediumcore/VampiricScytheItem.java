@@ -12,7 +12,7 @@ public class VampiricScytheItem extends SwordItem
 {
     public VampiricScytheItem(Properties properties)
     {
-        super(Tiers.NETHERITE, 6, -2.4F, properties);
+        super(Tiers.NETHERITE, 6, -3.0F, properties);
     }
 
     @Override

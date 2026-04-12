@@ -1,6 +1,9 @@
 {
   "type": "minecraft:item",
+  "item": "nightsmediumcore:vampiric_scythe",
   "category": "GREATSWORD",
+  "style": "TWO_HAND",
   "hit_at_once": 2,
-  "impact": 1.5
+  "impact": 1.5,
+  "two_handed": true
 }
