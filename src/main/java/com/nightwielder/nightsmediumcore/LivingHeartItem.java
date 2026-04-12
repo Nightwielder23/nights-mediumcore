@@ -88,9 +88,10 @@ public class LivingHeartItem extends Item
             data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
         }
 
-        if (ModConfig.HEART_RECOVERY_MODE.get().equals("apple"))
-            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 2));
-        else
+        String mode = ModConfig.HEART_RECOVERY_MODE.get();
+        boolean mcOn = ModConfig.MEDIUMCORE_ENABLED.get();
+        boolean giveRegen = mcOn || mode.equals("both");
+        if (giveRegen)
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
 
         data.updatePeakMaxHearts(serverPlayer.getUUID(),

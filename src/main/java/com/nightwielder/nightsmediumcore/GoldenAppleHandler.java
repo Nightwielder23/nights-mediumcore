@@ -78,16 +78,36 @@ public class GoldenAppleHandler
         int currentLs = data.getLifeStealHearts(player.getUUID());
         int lsCap = HeartLossHandler.MAX_HEARTS;
         boolean isCreative = player.getAbilities().instabuild;
+        boolean mcOn = ModConfig.MEDIUMCORE_ENABLED.get();
+        boolean lsOnly = !mcOn && ModConfig.LIFESTEAL_ENABLED.get();
 
         if (isEnchanted)
         {
-            // Enchanted golden apple — restore all mediumcore and lifesteal hearts, no cooldowns
-            if (currentLost <= 0 && currentLs >= lsCap)
+            // Enchanted golden apple: no cooldown gating
+            if (mcOn)
+            {
+                // Restore all mediumcore + lifesteal hearts
+                if (currentLost <= 0 && currentLs >= lsCap)
+                    return;
+                data.setHeartsLost(player.getUUID(), 0);
+                HeartLossHandler.applyModifier(player, 0);
+                data.setLifeStealHearts(player.getUUID(), lsCap);
+                LifeStealHandler.applyBonusModifier(player, lsCap);
+            }
+            else if (lsOnly)
+            {
+                // Restore 2 lifesteal hearts (up to cap)
+                if (currentLs >= lsCap)
+                    return;
+                int add = Math.min(2, lsCap - currentLs);
+                int newLs = currentLs + add;
+                data.setLifeStealHearts(player.getUUID(), newLs);
+                LifeStealHandler.applyBonusModifier(player, newLs);
+            }
+            else
+            {
                 return;
-            data.setHeartsLost(player.getUUID(), 0);
-            HeartLossHandler.applyModifier(player, 0);
-            data.setLifeStealHearts(player.getUUID(), lsCap);
-            LifeStealHandler.applyBonusModifier(player, lsCap);
+            }
         }
         else
         {
@@ -117,7 +137,7 @@ public class GoldenAppleHandler
             }
 
             // Restore 1 heart: mediumcore first, then lifesteal
-            if (currentLost > 0)
+            if (mcOn && currentLost > 0)
             {
                 int newLost = currentLost - 1;
                 data.setHeartsLost(player.getUUID(), newLost);
