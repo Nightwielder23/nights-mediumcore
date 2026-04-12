@@ -158,7 +158,9 @@ Bloody Heart and Living Heart textures by Redreeh: https://redreeh.itch.io/pixel
 
 Heart Relic texture by studionamepending: https://studionamepending.itch.io/heart-pickup-animated
 
-Vampiric Scythe and Blood Relic textures are placeholder and will be updated in a future release.
+Blood Relic texture by Free Game Assets: https://free-game-assets.itch.io/free-shield-and-amulet-rpg-icons
+
+Vampiric Scythe texture is placeholder (netheirte hoe) and will be updated in a future release.
 
 ## License
 
