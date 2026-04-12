@@ -96,7 +96,7 @@ public class CrystalHeartItem extends Item
         }
 
         // Combat and usage cooldowns: skip for supreme and creative
-        if (!isSupreme && !isCreative)
+        if (!isSupreme && !isCreative && restoresHearts)
         {
             long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
             if (currentTime < combatExpiry)
@@ -136,7 +136,7 @@ public class CrystalHeartItem extends Item
         }
 
         // Apply usage cooldown (skip for supreme and creative)
-        if (!isSupreme && !isCreative)
+        if (!isSupreme && !isCreative && restoresHearts)
         {
             int cooldownTicks = ModConfig.CRYSTAL_USAGE_COOLDOWN_SECONDS.get() * 20;
             data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);

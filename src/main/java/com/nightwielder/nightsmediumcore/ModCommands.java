@@ -166,14 +166,14 @@ public class ModCommands
 
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
 
-        source.sendSystemMessage(Component.literal("Added " + actualRestore + " base heart(s) to " +
-                target.getName().getString() + ". They now have " + currentHearts + " base hearts.")
+        source.sendSystemMessage(Component.literal("Added " + actualRestore + " heart(s) to " +
+                target.getName().getString() + ". They now have " + currentHearts + " hearts.")
                 .withStyle(ChatFormatting.GREEN));
 
         if (source.getEntity() != target)
         {
             target.sendSystemMessage(Component.literal("An admin restored " + actualRestore +
-                    " base heart(s)! You now have " + currentHearts + " base hearts.")
+                    " heart(s)! You now have " + currentHearts + " hearts.")
                     .withStyle(ChatFormatting.GREEN));
         }
 
@@ -195,14 +195,14 @@ public class ModCommands
 
         int currentHearts = HeartLossHandler.MAX_HEARTS - newLost;
 
-        source.sendSystemMessage(Component.literal("Removed " + actualRemoved + " base heart(s) from " +
-                target.getName().getString() + ". They now have " + currentHearts + " base hearts.")
+        source.sendSystemMessage(Component.literal("Removed " + actualRemoved + " heart(s) from " +
+                target.getName().getString() + ". They now have " + currentHearts + " hearts.")
                 .withStyle(ChatFormatting.RED));
 
         if (source.getEntity() != target)
         {
             target.sendSystemMessage(Component.literal("An admin removed " + actualRemoved +
-                    " base heart(s). You now have " + currentHearts + " base hearts.")
+                    " heart(s). You now have " + currentHearts + " hearts.")
                     .withStyle(ChatFormatting.RED));
         }
 
@@ -229,7 +229,7 @@ public class ModCommands
         LifeStealHandler.applyBonusModifier(target, newLs);
 
         source.sendSystemMessage(Component.literal("Set " + target.getName().getString() +
-                "'s hearts to " + clamped + " (" + newMc + " mediumcore + " + newLs + " lifesteal).")
+                "'s hearts to " + clamped + ".")
                 .withStyle(ChatFormatting.GREEN));
 
         if (source.getEntity() != target)
@@ -477,12 +477,12 @@ public class ModCommands
         HeartLossHandler.applyModifier(target, 0);
 
         source.sendSystemMessage(Component.literal("Fully restored " + target.getName().getString() +
-                "'s base hearts to " + HeartLossHandler.MAX_HEARTS + ".")
+                "'s hearts to " + HeartLossHandler.MAX_HEARTS + ".")
                 .withStyle(ChatFormatting.GREEN));
 
         if (source.getEntity() != target)
         {
-            target.sendSystemMessage(Component.literal("An admin fully restored your base hearts to " +
+            target.sendSystemMessage(Component.literal("An admin fully restored your hearts to " +
                     HeartLossHandler.MAX_HEARTS + "!")
                     .withStyle(ChatFormatting.GREEN));
         }
