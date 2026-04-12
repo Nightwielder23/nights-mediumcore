@@ -3,7 +3,6 @@ package com.nightwielder.nightsmediumcore;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -43,13 +42,6 @@ public class ModItems
 
     public static final RegistryObject<Item> VAMPIRIC_SCYTHE = ITEMS.register("vampiric_scythe",
             () -> new VampiricScytheItem(new Item.Properties().stacksTo(1).durability(2031)));
-
-    public static ItemStack getHeartCodexStack()
-    {
-        if (!ModList.get().isLoaded("patchouli"))
-            return ItemStack.EMPTY;
-        return PatchouliBookFactory.createHeartCodexStack();
-    }
 
     private static Item createBloodRelic()
     {

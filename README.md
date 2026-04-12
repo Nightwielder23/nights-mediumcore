@@ -214,8 +214,6 @@ Heart Relic texture by studionamepending: https://studionamepending.itch.io/hear
 
 Blood Relic texture by Free Game Assets: https://free-game-assets.itch.io/free-shield-and-amulet-rpg-icons
 
-Heart Codex texture by Kirial: https://kirial1413.itch.io/pixel-book
-
 Vampiric Scythe texture is placeholder (netherite hoe) and will be updated in a future release.
 
 ## License
