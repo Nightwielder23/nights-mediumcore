@@ -28,6 +28,9 @@ public class ModCreativeTab
                         output.accept(ModItems.BLOODY_HEART.get());
                         output.accept(ModItems.BLOOD_RELIC.get());
                         output.accept(ModItems.VAMPIRIC_SCYTHE.get());
+                        ItemStack heartCodex = ModItems.getHeartCodexStack();
+                        if (!heartCodex.isEmpty())
+                            output.accept(heartCodex);
                     })
                     .build());
 }
