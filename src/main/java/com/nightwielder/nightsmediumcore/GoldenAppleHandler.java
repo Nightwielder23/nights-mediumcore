@@ -1,7 +1,9 @@
 // Copyright 2026 Nightwielder23, licensed under CC BY-NC 4.0
 package com.nightwielder.nightsmediumcore;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -73,16 +75,19 @@ public class GoldenAppleHandler
         long currentTime = overworld.getGameTime();
 
         int currentLost = data.getHeartsLost(player.getUUID());
-        if (currentLost <= 0)
-            return;
-
+        int currentLs = data.getLifeStealHearts(player.getUUID());
+        int lsCap = HeartLossHandler.MAX_HEARTS;
         boolean isCreative = player.getAbilities().instabuild;
 
         if (isEnchanted)
         {
-            // Enchanted golden apple — restore all hearts, no cooldowns
+            // Enchanted golden apple — restore all mediumcore and lifesteal hearts, no cooldowns
+            if (currentLost <= 0 && currentLs >= lsCap)
+                return;
             data.setHeartsLost(player.getUUID(), 0);
             HeartLossHandler.applyModifier(player, 0);
+            data.setLifeStealHearts(player.getUUID(), lsCap);
+            LifeStealHandler.applyBonusModifier(player, lsCap);
         }
         else
         {
@@ -100,13 +105,34 @@ public class GoldenAppleHandler
             {
                 long appleExpiry = data.getAppleCooldown(player.getUUID());
                 if (currentTime < appleExpiry)
+                {
+                    long remainingSeconds = (appleExpiry - currentTime) / 20;
+                    long minutes = remainingSeconds / 60;
+                    long seconds = remainingSeconds % 60;
+                    player.sendSystemMessage(Component.literal(
+                            "Golden apple heart restore is on cooldown! " + minutes + "m " + seconds + "s remaining.")
+                            .withStyle(ChatFormatting.YELLOW));
                     return;
+                }
             }
 
-            // Restore 1 heart
-            int newLost = currentLost - 1;
-            data.setHeartsLost(player.getUUID(), newLost);
-            HeartLossHandler.applyModifier(player, newLost);
+            // Restore 1 heart: mediumcore first, then lifesteal
+            if (currentLost > 0)
+            {
+                int newLost = currentLost - 1;
+                data.setHeartsLost(player.getUUID(), newLost);
+                HeartLossHandler.applyModifier(player, newLost);
+            }
+            else if (currentLs < lsCap)
+            {
+                int newLs = currentLs + 1;
+                data.setLifeStealHearts(player.getUUID(), newLs);
+                LifeStealHandler.applyBonusModifier(player, newLs);
+            }
+            else
+            {
+                return;
+            }
 
             // Apply apple cooldown if configured
             if (!isCreative && cooldownSeconds > 0)

@@ -394,7 +394,7 @@ public class ModCommands
         }
 
         player.sendSystemMessage(Component.literal("Converted " + converted +
-                " heart(s) into Crystal Heart item(s).")
+                (converted == 1 ? " heart into Crystal Heart item." : " hearts into Crystal Heart items."))
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;
@@ -438,7 +438,7 @@ public class ModCommands
             player.drop(stack, false);
 
         player.sendSystemMessage(Component.literal("Converted " + converted +
-                " heart(s) into Living Heart item(s).")
+                (converted == 1 ? " heart into Living Heart item." : " hearts into Living Heart items."))
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;
