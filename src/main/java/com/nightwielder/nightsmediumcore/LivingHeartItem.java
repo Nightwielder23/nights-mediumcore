@@ -4,6 +4,8 @@ package com.nightwielder.nightsmediumcore;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -35,6 +37,9 @@ public class LivingHeartItem extends Item
 
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
+        long currentTime = overworld.getGameTime();
+        boolean lifeStealOn = ModConfig.LIFESTEAL_ENABLED.get();
+        boolean isCreative = serverPlayer.getAbilities().instabuild;
 
         int current = data.getLifeStealHearts(serverPlayer.getUUID());
         int cap = LifeStealHandler.resolvedHeartCap();
@@ -45,9 +50,31 @@ public class LivingHeartItem extends Item
             return InteractionResultHolder.fail(stack);
         }
 
+        if (!lifeStealOn && !isCreative)
+        {
+            long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
+            if (currentTime < expiry)
+            {
+                long remainingSeconds = (expiry - currentTime) / 20;
+                long minutes = remainingSeconds / 60;
+                long seconds = remainingSeconds % 60;
+                serverPlayer.sendSystemMessage(
+                        Component.literal("Living Heart is on cooldown! " + minutes + "m " + seconds + "s remaining.")
+                                .withStyle(ChatFormatting.YELLOW));
+                return InteractionResultHolder.fail(stack);
+            }
+        }
+
         int updated = current + 1;
         data.setLifeStealHearts(serverPlayer.getUUID(), updated);
         LifeStealHandler.applyBonusModifier(serverPlayer, updated);
+
+        if (!lifeStealOn && !isCreative)
+        {
+            int cooldownTicks = ModConfig.CRYSTAL_USAGE_COOLDOWN_SECONDS.get() * 20;
+            data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 0));
+        }
 
         data.updatePeakMaxHearts(serverPlayer.getUUID(),
                 (int) serverPlayer.getMaxHealth() / 2);

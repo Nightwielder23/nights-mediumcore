@@ -22,7 +22,9 @@ public class ModCommands
                 .then(Commands.literal("hearts")
                         .executes(ctx -> showHearts(ctx.getSource()))
                         .then(Commands.literal("total")
-                                .executes(ctx -> showTotalHearts(ctx.getSource()))))
+                                .executes(ctx -> showTotalHearts(ctx.getSource())))
+                        .then(Commands.literal("living")
+                                .executes(ctx -> showLivingHearts(ctx.getSource()))))
                 .then(Commands.literal("addheart")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
@@ -90,6 +92,11 @@ public class ModCommands
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                         .executes(ctx -> convertCrystal(
                                                 ctx.getSource(),
+                                                IntegerArgumentType.getInteger(ctx, "amount")))))
+                        .then(Commands.literal("living")
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> convertLiving(
+                                                ctx.getSource(),
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
                 .then(Commands.literal("clearcooldown")
                         .requires(source -> source.hasPermission(2))
@@ -114,6 +121,25 @@ public class ModCommands
 
         player.sendSystemMessage(Component.literal(currentHearts + "/" + HeartLossHandler.MAX_HEARTS)
                 .withStyle(ChatFormatting.GREEN));
+
+        return 1;
+    }
+
+    private static int showLivingHearts(CommandSourceStack source)
+    {
+        if (!(source.getEntity() instanceof ServerPlayer player))
+        {
+            source.sendFailure(Component.literal("This command can only be used by a player."));
+            return 0;
+        }
+
+        ServerLevel overworld = source.getServer().overworld();
+        HeartLossData data = HeartLossData.get(overworld);
+        int ls = data.getLifeStealHearts(player.getUUID());
+        int cap = LifeStealHandler.resolvedHeartCap();
+
+        player.sendSystemMessage(Component.literal(ls + "/" + cap)
+                .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;
     }
@@ -385,6 +411,51 @@ public class ModCommands
 
         player.sendSystemMessage(Component.literal("Converted " + converted +
                 " heart(s) into Crystal Heart item(s).")
+                .withStyle(ChatFormatting.LIGHT_PURPLE));
+
+        return 1;
+    }
+
+    private static int convertLiving(CommandSourceStack source, int amount)
+    {
+        if (!(source.getEntity() instanceof ServerPlayer player))
+        {
+            source.sendFailure(Component.literal("This command can only be used by a player."));
+            return 0;
+        }
+
+        int available = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++)
+        {
+            ItemStack s = player.getInventory().getItem(i);
+            if (s.is(ModItems.CRYSTAL_HEART.get()))
+                available += s.getCount();
+        }
+        if (available <= 0)
+        {
+            source.sendFailure(Component.literal("You have no Crystal Hearts to convert."));
+            return 0;
+        }
+
+        int converted = Math.min(amount, available);
+        int toRemove = converted;
+        for (int i = 0; i < player.getInventory().getContainerSize() && toRemove > 0; i++)
+        {
+            ItemStack s = player.getInventory().getItem(i);
+            if (s.is(ModItems.CRYSTAL_HEART.get()))
+            {
+                int take = Math.min(s.getCount(), toRemove);
+                s.shrink(take);
+                toRemove -= take;
+            }
+        }
+
+        ItemStack result = new ItemStack(ModItems.LIVING_HEART.get(), converted);
+        if (!player.getInventory().add(result))
+            player.drop(result, false);
+
+        player.sendSystemMessage(Component.literal("Converted " + converted +
+                " Crystal Heart(s) into Living Heart(s).")
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;

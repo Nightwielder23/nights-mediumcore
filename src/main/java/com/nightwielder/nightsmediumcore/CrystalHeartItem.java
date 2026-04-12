@@ -50,10 +50,13 @@ public class CrystalHeartItem extends Item
 
         // Check if player needs healing first (creative mode bypasses this check)
         int currentLost = data.getHeartsLost(serverPlayer.getUUID());
-        if (currentLost <= 0 && !isCreative)
+        int currentLs = data.getLifeStealHearts(serverPlayer.getUUID());
+        int lsCap = LifeStealHandler.resolvedHeartCap();
+        boolean canRestoreLs = currentLost <= 0 && currentLs < lsCap;
+        if (currentLost <= 0 && !canRestoreLs && !isCreative)
         {
             serverPlayer.sendSystemMessage(
-                    Component.literal("You are already at maximum base hearts!")
+                    Component.literal("You are already at maximum hearts!")
                             .withStyle(ChatFormatting.YELLOW));
             return InteractionResultHolder.fail(stack);
         }
@@ -89,23 +92,33 @@ public class CrystalHeartItem extends Item
             }
         }
 
-        // Restore hearts
+        // Restore hearts: mediumcore first, then lifesteal
         int newLost;
         int actualRestore;
+        int remaining;
         if (isSupreme)
         {
             newLost = 0;
             actualRestore = currentLost;
+            remaining = heartsToRestore - actualRestore;
         }
         else
         {
             actualRestore = Math.min(heartsToRestore, currentLost);
             newLost = currentLost - actualRestore;
+            remaining = heartsToRestore - actualRestore;
         }
         data.setHeartsLost(serverPlayer.getUUID(), newLost);
-
-        // Apply the updated modifier
         HeartLossHandler.applyModifier(serverPlayer, newLost);
+
+        if (remaining > 0 && currentLs < lsCap)
+        {
+            int lsRestore = Math.min(remaining, lsCap - currentLs);
+            int newLs = currentLs + lsRestore;
+            data.setLifeStealHearts(serverPlayer.getUUID(), newLs);
+            LifeStealHandler.applyBonusModifier(serverPlayer, newLs);
+            actualRestore += lsRestore;
+        }
 
         // Apply usage cooldown (skip for supreme crystal and creative mode)
         if (!isSupreme && !isCreative)
