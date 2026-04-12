@@ -143,8 +143,12 @@ public class CrystalHeartItem extends Item
         }
         else
         {
-            // Regular crystal heart grants Regen 1 for 10 seconds (200 ticks)
-            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
+            // Regular crystal heart: Regen 2 for 30s in apple/both mode, else Regen 1 for 10s
+            String mode = ModConfig.HEART_RECOVERY_MODE.get();
+            if (mode.equals("apple") || mode.equals("both"))
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
+            else
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
         }
 
         // Spawn heart particles around the player
