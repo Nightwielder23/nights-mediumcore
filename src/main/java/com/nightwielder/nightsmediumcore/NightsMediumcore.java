@@ -24,6 +24,7 @@ public class NightsMediumcore
 
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModEnchantments.ENCHANTMENTS.register(modEventBus);
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(new HeartLossHandler());
