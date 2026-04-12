@@ -2,7 +2,7 @@
 
 A Minecraft 1.20.1 Forge mod adding permanent heart loss, an optional lifesteal system, and vampiric items and enchantments. Death has real weight without being as punishing as Hardcore mode.
 
-> The lifesteal PvP system requires multiple players to fully test. Minor multiplayer issues may be addressed in 1.1.2.
+> The lifesteal PvP system requires multiple players to fully test. Minor multiplayer issues may be addressed in 1.2.1.
 
 ## What This Mod Does
 
