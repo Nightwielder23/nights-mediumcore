@@ -1,12 +1,17 @@
 {
-  "type": "minecraft:item",
-  "item": "nightsmediumcore:vampiric_scythe",
-  "weapon_type": "epicfight:greatsword",
+  "type": "epicfight:greatsword",
+  "attributes": {
+    "common": {
+      "armor_negation": 0.0,
+      "impact": 1.5,
+      "max_strikes": 2
+    }
+  },
   "trail": {
     "texture_path": "epicfight:textures/particle/swing_trail.png",
-    "r": 255,
-    "g": 255,
-    "b": 255,
+    "r": 180,
+    "g": 0,
+    "b": 0,
     "a": 180,
     "lifetime": 6,
     "interpolations": 4,
