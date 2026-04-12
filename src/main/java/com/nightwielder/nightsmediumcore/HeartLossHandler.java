@@ -99,8 +99,12 @@ public class HeartLossHandler
         int totalHearts = (int) player.getMaxHealth() / 2;
         data.updatePeakMaxHearts(player.getUUID(), totalHearts);
 
-        // Set respawn immunity flag for 5 seconds (100 ticks)
-        data.setRespawnImmunityExpiry(player.getUUID(), overworld.getGameTime() + 100);
+        // Set respawn immunity if enabled
+        if (ModConfig.RESPAWN_IMMUNITY_ENABLED.get())
+        {
+            int immunityTicks = ModConfig.RESPAWN_IMMUNITY_SECONDS.get() * 20;
+            data.setRespawnImmunityExpiry(player.getUUID(), overworld.getGameTime() + immunityTicks);
+        }
     }
 
     @SubscribeEvent
@@ -160,11 +164,12 @@ public class HeartLossHandler
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
 
-        // Check respawn immunity — cancel all damage if active
+        // Check respawn immunity — cancel all damage if active and enabled
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
-        if (currentTime < data.getRespawnImmunityExpiry(player.getUUID()))
+        if (ModConfig.RESPAWN_IMMUNITY_ENABLED.get()
+                && currentTime < data.getRespawnImmunityExpiry(player.getUUID()))
         {
             event.setCanceled(true);
             return;

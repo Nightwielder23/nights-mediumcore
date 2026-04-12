@@ -12,6 +12,8 @@ public class ModConfig
     public static final ForgeConfigSpec.IntValue BED_REGEN_COOLDOWN_MINUTES;
     public static final ForgeConfigSpec.IntValue BED_REGEN_HEART_THRESHOLD;
     public static final ForgeConfigSpec.BooleanValue SHOW_HARDCORE_HEARTS;
+    public static final ForgeConfigSpec.BooleanValue RESPAWN_IMMUNITY_ENABLED;
+    public static final ForgeConfigSpec.IntValue RESPAWN_IMMUNITY_SECONDS;
     public static final ForgeConfigSpec.ConfigValue<String> HEART_RECOVERY_MODE;
     public static final ForgeConfigSpec.BooleanValue APPLE_COMBAT_COOLDOWN;
     public static final ForgeConfigSpec.IntValue APPLE_COOLDOWN_SECONDS;
@@ -54,6 +56,18 @@ public class ModConfig
                          "Set to false to use the vanilla heart display instead.",
                          "Default: true")
                 .define("showHardcoreHearts", true);
+
+        RESPAWN_IMMUNITY_ENABLED = builder
+                .comment("When true, the player receives temporary damage immunity after respawning.",
+                         "Set to false to disable respawn immunity entirely.",
+                         "Default: true")
+                .define("respawnImmunityEnabled", true);
+
+        RESPAWN_IMMUNITY_SECONDS = builder
+                .comment("How many seconds of damage immunity the player receives after respawning.",
+                         "Only applies when respawnImmunityEnabled is true.",
+                         "Range: 1 to 60. Default: 5")
+                .defineInRange("respawnImmunitySeconds", 5, 1, 60);
 
         builder.pop();
         builder.push("crystals");
