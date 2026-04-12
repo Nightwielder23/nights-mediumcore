@@ -85,10 +85,6 @@ public class HeartLossHandler
         int heartsLost = data.getHeartsLost(player.getUUID());
 
         applyModifier(player, heartsLost);
-
-        // Update peak max hearts after modifier is applied
-        int totalHearts = (int) player.getMaxHealth() / 2;
-        data.updatePeakMaxHearts(player.getUUID(), totalHearts);
     }
 
     @SubscribeEvent
@@ -105,10 +101,6 @@ public class HeartLossHandler
         data.setCombatCooldown(player.getUUID(), 0L);
 
         applyModifier(player, heartsLost);
-
-        // Update peak max hearts after modifier is applied
-        int totalHearts = (int) player.getMaxHealth() / 2;
-        data.updatePeakMaxHearts(player.getUUID(), totalHearts);
 
         // Set respawn immunity if enabled
         if (ModConfig.RESPAWN_IMMUNITY_ENABLED.get())

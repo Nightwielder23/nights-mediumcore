@@ -19,9 +19,7 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> combatCooldown = new HashMap<>();
     private final Map<UUID, Long> bedRegenCooldown = new HashMap<>();
     private final Map<UUID, Long> appleCooldown = new HashMap<>();
-    private final Map<UUID, Integer> peakMaxHearts = new HashMap<>();
     private final Map<UUID, Long> respawnImmunityExpiry = new HashMap<>();
-    private final Map<UUID, Integer> bonusHearts = new HashMap<>();
     private final Map<UUID, Long> lifeStealRespawnTime = new HashMap<>();
     private final Map<UUID, Integer> lifeStealHearts = new HashMap<>();
 
@@ -91,21 +89,6 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
-    public int getPeakMaxHearts(UUID playerUUID)
-    {
-        return peakMaxHearts.getOrDefault(playerUUID, HeartLossHandler.MAX_HEARTS);
-    }
-
-    public void updatePeakMaxHearts(UUID playerUUID, int currentMaxHearts)
-    {
-        int existing = peakMaxHearts.getOrDefault(playerUUID, HeartLossHandler.MAX_HEARTS);
-        if (currentMaxHearts > existing)
-        {
-            peakMaxHearts.put(playerUUID, currentMaxHearts);
-            setDirty();
-        }
-    }
-
     public long getRespawnImmunityExpiry(UUID playerUUID)
     {
         return respawnImmunityExpiry.getOrDefault(playerUUID, 0L);
@@ -114,17 +97,6 @@ public class HeartLossData extends SavedData
     public void setRespawnImmunityExpiry(UUID playerUUID, long gameTime)
     {
         respawnImmunityExpiry.put(playerUUID, gameTime);
-        setDirty();
-    }
-
-    public int getBonusHearts(UUID playerUUID)
-    {
-        return bonusHearts.getOrDefault(playerUUID, 0);
-    }
-
-    public void setBonusHearts(UUID playerUUID, int amount)
-    {
-        bonusHearts.put(playerUUID, Math.max(0, amount));
         setDirty();
     }
 
@@ -203,26 +175,12 @@ public class HeartLossData extends SavedData
         }
         tag.put("appleCooldown", appleTag);
 
-        CompoundTag peakTag = new CompoundTag();
-        for (Map.Entry<UUID, Integer> entry : peakMaxHearts.entrySet())
-        {
-            peakTag.putInt(entry.getKey().toString(), entry.getValue());
-        }
-        tag.put("peakMaxHearts", peakTag);
-
         CompoundTag immunityTag = new CompoundTag();
         for (Map.Entry<UUID, Long> entry : respawnImmunityExpiry.entrySet())
         {
             immunityTag.putLong(entry.getKey().toString(), entry.getValue());
         }
         tag.put("respawnImmunityExpiry", immunityTag);
-
-        CompoundTag bonusTag = new CompoundTag();
-        for (Map.Entry<UUID, Integer> entry : bonusHearts.entrySet())
-        {
-            bonusTag.putInt(entry.getKey().toString(), entry.getValue());
-        }
-        tag.put("bonusHearts", bonusTag);
 
         CompoundTag lsRespawnTag = new CompoundTag();
         for (Map.Entry<UUID, Long> entry : lifeStealRespawnTime.entrySet())
@@ -291,24 +249,10 @@ public class HeartLossData extends SavedData
             catch (IllegalArgumentException ignored) {}
         }
 
-        CompoundTag peakTag = tag.getCompound("peakMaxHearts");
-        for (String key : peakTag.getAllKeys())
-        {
-            try { data.peakMaxHearts.put(UUID.fromString(key), peakTag.getInt(key)); }
-            catch (IllegalArgumentException ignored) {}
-        }
-
         CompoundTag immunityTag = tag.getCompound("respawnImmunityExpiry");
         for (String key : immunityTag.getAllKeys())
         {
             try { data.respawnImmunityExpiry.put(UUID.fromString(key), immunityTag.getLong(key)); }
-            catch (IllegalArgumentException ignored) {}
-        }
-
-        CompoundTag bonusTag = tag.getCompound("bonusHearts");
-        for (String key : bonusTag.getAllKeys())
-        {
-            try { data.bonusHearts.put(UUID.fromString(key), bonusTag.getInt(key)); }
             catch (IllegalArgumentException ignored) {}
         }
 

@@ -94,9 +94,6 @@ public class LivingHeartItem extends Item
         if (giveRegen)
             serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
 
-        data.updatePeakMaxHearts(serverPlayer.getUUID(),
-                (int) serverPlayer.getMaxHealth() / 2);
-
         if (!serverPlayer.getAbilities().instabuild)
             stack.shrink(1);
 
