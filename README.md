@@ -94,9 +94,15 @@ JEI is supported as an optional dependency for conveniently browsing all mod rec
 
 ## Credits
 
-The Crystal Heart and Supreme Crystal Heart textures are by Temok, find the original at https://temok.itch.io/heart-container-animated-in-pixel-art
+The Crystal Heart and Supreme Crystal Heart textures are by Stella Heartilly, find the originals at https://stella-heartilly.itch.io/heart-gems
+
+The Crystal Shard and Blood Shard textures are by Pekschi, find the originals at https://pekschi.itch.io/crystal-animation
+
+The Bloody Heart and Living Heart textures are by Redreeh, find the originals at https://redreeh.itch.io/pixelhearts-16x16
 
 The Heart Relic texture is by studionamepending, find the original at https://studionamepending.itch.io/heart-pickup-animated
+
+The Vampiric Scythe and Blood Relic textures are placeholder and will be updated in a future release.
 
 ## License
 

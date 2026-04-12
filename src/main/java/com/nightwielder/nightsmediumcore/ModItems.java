@@ -28,6 +28,9 @@ public class ModItems
     public static final RegistryObject<Item> HEART_RELIC = ITEMS.register("heart_relic",
             ModItems::createHeartRelic);
 
+    public static final RegistryObject<Item> LIVING_HEART = ITEMS.register("living_heart",
+            () -> new LivingHeartItem(new Item.Properties().stacksTo(16)));
+
     private static Item createHeartRelic()
     {
         if (ModList.get().isLoaded("curios"))

@@ -17,6 +17,11 @@ public class ModConfig
     public static final ForgeConfigSpec.ConfigValue<String> HEART_RECOVERY_MODE;
     public static final ForgeConfigSpec.BooleanValue APPLE_COMBAT_COOLDOWN;
     public static final ForgeConfigSpec.IntValue APPLE_COOLDOWN_SECONDS;
+    public static final ForgeConfigSpec.BooleanValue LIFESTEAL_ENABLED;
+    public static final ForgeConfigSpec.BooleanValue MEDIUMCORE_ENABLED;
+    public static final ForgeConfigSpec.DoubleValue LIFESTEAL_DROP_CHANCE;
+    public static final ForgeConfigSpec.IntValue LIFESTEAL_RESPAWN_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue LIFESTEAL_HEART_CAP;
 
     public static final ForgeConfigSpec SPEC;
 
@@ -105,6 +110,40 @@ public class ModConfig
                          "Enchanted golden apples always ignore this.",
                          "Range: 0 to 3600. Default: 0")
                 .defineInRange("appleCooldownSeconds", 0, 0, 3600);
+
+        builder.pop();
+        builder.push("lifesteal");
+
+        MEDIUMCORE_ENABLED = builder
+                .comment("When true, the base mediumcore heart-loss mechanics are active.",
+                         "Default: true")
+                .define("mediumcoreEnabled", true);
+
+        LIFESTEAL_ENABLED = builder
+                .comment("When true, killing a player can drop a Living Heart and",
+                         "reduces the victim's maximum hearts by 1 (respecting the heart floor).",
+                         "Default: false")
+                .define("lifeStealEnabled", false);
+
+        LIFESTEAL_DROP_CHANCE = builder
+                .comment("Chance (0.0 to 1.0) for a Living Heart to drop on PvP kill.",
+                         "Set to -1.0 for automatic: 0.5 when both mediumcore and lifesteal are on,",
+                         "1.0 when only lifesteal is on.",
+                         "Default: -1.0")
+                .defineInRange("lifeStealDropChance", -1.0D, -1.0D, 1.0D);
+
+        LIFESTEAL_RESPAWN_COOLDOWN = builder
+                .comment("Seconds after respawn during which a player cannot be lifestealed.",
+                         "Range: 0 to 3600. Default: 60")
+                .defineInRange("lifeStealRespawnCooldown", 60, 0, 3600);
+
+        LIFESTEAL_HEART_CAP = builder
+                .comment("Maximum hearts for informational purposes / external systems.",
+                         "Set to -1 for automatic: 10 when both mediumcore and lifesteal are on,",
+                         "unlimited (Integer.MAX_VALUE) when only lifesteal is on.",
+                         "Living Heart use can exceed this cap regardless.",
+                         "Default: -1")
+                .defineInRange("lifeStealHeartCap", -1, -1, Integer.MAX_VALUE);
 
         builder.pop();
 

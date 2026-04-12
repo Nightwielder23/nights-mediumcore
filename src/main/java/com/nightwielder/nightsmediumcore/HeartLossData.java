@@ -21,6 +21,8 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> appleCooldown = new HashMap<>();
     private final Map<UUID, Integer> peakMaxHearts = new HashMap<>();
     private final Map<UUID, Long> respawnImmunityExpiry = new HashMap<>();
+    private final Map<UUID, Integer> bonusHearts = new HashMap<>();
+    private final Map<UUID, Long> lifeStealRespawnTime = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -114,6 +116,28 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
+    public int getBonusHearts(UUID playerUUID)
+    {
+        return bonusHearts.getOrDefault(playerUUID, 0);
+    }
+
+    public void setBonusHearts(UUID playerUUID, int amount)
+    {
+        bonusHearts.put(playerUUID, Math.max(0, amount));
+        setDirty();
+    }
+
+    public long getLifeStealRespawnTime(UUID playerUUID)
+    {
+        return lifeStealRespawnTime.getOrDefault(playerUUID, 0L);
+    }
+
+    public void setLifeStealRespawnTime(UUID playerUUID, long gameTime)
+    {
+        lifeStealRespawnTime.put(playerUUID, gameTime);
+        setDirty();
+    }
+
     public void clearRespawnImmunity(UUID playerUUID)
     {
         if (respawnImmunityExpiry.remove(playerUUID) != null)
@@ -181,6 +205,20 @@ public class HeartLossData extends SavedData
         }
         tag.put("respawnImmunityExpiry", immunityTag);
 
+        CompoundTag bonusTag = new CompoundTag();
+        for (Map.Entry<UUID, Integer> entry : bonusHearts.entrySet())
+        {
+            bonusTag.putInt(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("bonusHearts", bonusTag);
+
+        CompoundTag lsRespawnTag = new CompoundTag();
+        for (Map.Entry<UUID, Long> entry : lifeStealRespawnTime.entrySet())
+        {
+            lsRespawnTag.putLong(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("lifeStealRespawnTime", lsRespawnTag);
+
         return tag;
     }
 
@@ -245,6 +283,20 @@ public class HeartLossData extends SavedData
         for (String key : immunityTag.getAllKeys())
         {
             try { data.respawnImmunityExpiry.put(UUID.fromString(key), immunityTag.getLong(key)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+
+        CompoundTag bonusTag = tag.getCompound("bonusHearts");
+        for (String key : bonusTag.getAllKeys())
+        {
+            try { data.bonusHearts.put(UUID.fromString(key), bonusTag.getInt(key)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+
+        CompoundTag lsRespawnTag = tag.getCompound("lifeStealRespawnTime");
+        for (String key : lsRespawnTag.getAllKeys())
+        {
+            try { data.lifeStealRespawnTime.put(UUID.fromString(key), lsRespawnTag.getLong(key)); }
             catch (IllegalArgumentException ignored) {}
         }
 

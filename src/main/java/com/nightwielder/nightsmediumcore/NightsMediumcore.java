@@ -27,6 +27,7 @@ public class NightsMediumcore
         ModCreativeTab.CREATIVE_MODE_TABS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(new HeartLossHandler());
+        MinecraftForge.EVENT_BUS.register(new LifeStealHandler());
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
         LOGGER.info("Night's Mediumcore loaded");
