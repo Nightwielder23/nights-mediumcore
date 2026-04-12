@@ -10,6 +10,8 @@ With the optional lifesteal system enabled, killing another player has a chance 
 
 Both the mediumcore and lifesteal systems can be toggled independently in the config or with commands, so you can run just one or both together.
 
+> **Note:** The lifesteal PvP system requires multiple players to fully test. Some multiplayer interactions may have minor issues in this release that will be addressed in 1.1.1.
+
 ## Items and Blocks
 
 **Heart Ore** generates underground between Y=-20 and Y=20, slightly rarer than gold. You need at least an iron pickaxe to mine it. Each ore drops 1 to 2 Crystal Shards and a bit of XP, and Fortune enchantments work on it.
@@ -20,7 +22,7 @@ Both the mediumcore and lifesteal systems can be toggled independently in the co
 
 **Supreme Crystal Hearts** are crafted from five Crystal Hearts and four Gold Blocks. Right-clicking one restores all of your lost maximum hearts at once and grants Regeneration 2, Absorption 4, Resistance, and Fire Resistance for 30 seconds, the same effects as an Enchanted Golden Apple. There is no cooldown on Supreme Crystal Hearts.
 
-**Living Hearts** are dropped by players when killed in lifesteal mode. Right-clicking one gives you a permanent maximum heart, grants Strength 1 and Speed 1 for 30 seconds, and can push you above the normal heart cap. Living Hearts are soulbound and will drop on your death, but can be freely traded and given to other players. They do not have a cooldown.
+**Living Hearts** are dropped by players when killed in lifesteal mode. Right-clicking one permanently increases your lifesteal heart count by 1, up to a maximum of 20 lifesteal hearts. When lifesteal mode is off, Living Hearts share the Crystal Heart cooldown and grant Regen 1 for 30 seconds on use. When lifesteal mode is on, Living Hearts have no cooldown. Living Hearts are soulbound and will drop on your death if mediumcore is enabled, but can be freely traded and given to other players.
 
 **Blood Shards** are a rare drop from Evokers at 3% chance and can also be found in Stronghold library chests at 2% chance. They are used to craft Bloody Hearts.
 
@@ -28,15 +30,15 @@ Both the mediumcore and lifesteal systems can be toggled independently in the co
 
 **Heart Relics** are crafted from eight Crystal Hearts surrounding one Supreme Crystal Heart. When worn in the Curios charm slot, or anywhere in your main inventory if Curios is not installed, the relic increases your maximum hearts by 20% rounded up and gives you a permanent Regen 1 effect while equipped. The bonus hearts show as an extra row above your base hearts. If Curios is installed you can right click the relic to equip it directly into the charm slot.
 
-**Blood Relics** are an endgame upgrade to the Heart Relic, crafted at a smithing table using a Heart Relic, a Netherite Upgrade Smithing Template, and a Bloody Heart. The Blood Relic has all the effects of the Heart Relic and additionally gives a 1.5% additive chance for hostile mobs to drop a Living Heart on kill.
+**Blood Relics** are an endgame upgrade to the Heart Relic, crafted at a smithing table using a Heart Relic, a Netherite Upgrade Smithing Template, and a Bloody Heart. The Blood Relic has all the effects of the Heart Relic and additionally gives a 0.5% additive chance for hostile mobs to drop a Living Heart on kill.
 
-**Vampiric Scythes** are powerful endgame weapons crafted at a smithing table using a Netherite Hoe, a Netherite Upgrade Smithing Template, and a Bloody Heart. The scythe has a built in 2% additive chance for hostile mobs to drop a Living Heart on kill and heals you for 12% of all damage dealt. The Vampirism and Lifesteal enchantments cannot be applied to it.
+**Vampiric Scythes** are powerful endgame weapons crafted at a smithing table using a Netherite Hoe, a Netherite Upgrade Smithing Template, and a Bloody Heart. The scythe has a built in 0.5% additive chance for hostile mobs to drop a Living Heart on kill and heals you for 12% of all damage dealt. The Life Leech and Life Steal enchantments cannot be applied to it.
 
 ## Lifesteal System
 
 When lifesteal mode is enabled, killing another player has a configurable chance to permanently remove one of their hearts and drop it as a Living Heart item. The victim still respects the 3 heart floor and cannot be stolen from below that. Players who have recently respawned are protected from lifesteal for a configurable cooldown period to prevent spawn killing.
 
-Hearts gained from Living Hearts can push you above the normal heart cap, making aggressive PvP playstyles genuinely rewarding.
+Hearts gained from Living Hearts are tracked separately as lifesteal hearts and are removed before mediumcore hearts when you die. Crystal Hearts restore mediumcore hearts first, and if those are full they will restore lifesteal hearts instead. Lifesteal hearts can also be transferred and converted through commands just like mediumcore hearts.
 
 ## Golden Apple Mode
 
@@ -46,9 +48,9 @@ By default there is no cooldown on apple heart restore and it works regardless o
 
 ## Enchantments
 
-**Vampirism** can be applied to any weapon except the Vampiric Scythe. Each level adds a 0.25% additive chance for hostile mobs to drop a Living Heart on kill. Max level 3. Found as enchanted books in Stronghold library chests and Bastion Treasure chests with higher levels being rarer.
+**Life Leech** can be applied to any weapon except the Vampiric Scythe. Each level adds a 0.1% additive chance for hostile mobs to drop a Living Heart on kill. Max level 3. Found as enchanted books in Stronghold library chests and Bastion Treasure chests with higher levels being rarer.
 
-**Lifesteal** can be applied to any weapon except the Vampiric Scythe. Each level heals you for 3% of damage dealt to any entity. Max level 3. Found as enchanted books in Nether Fortress chests and Ancient City chests with higher levels being rarer.
+**Life Steal** can be applied to any weapon except the Vampiric Scythe. Each level heals you for 3% of damage dealt to any entity. Max level 3. Found as enchanted books in Nether Fortress chests and Ancient City chests with higher levels being rarer.
 
 ## Bed Regen
 
@@ -64,13 +66,15 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 ## Commands
 
-`/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. Available to all players.
+`/nightsmediumcore hearts` shows your current base mediumcore heart count and maximum, for example 3/10. Available to all players.
 
-`/nightsmediumcore hearts total` shows your full heart count including any bonuses from other mods or the Heart Relic. Available to all players.
+`/nightsmediumcore hearts living` shows your current lifesteal heart count and maximum, for example 3/20. Available to all players.
 
-`/nightsmediumcore addheart <player> <amount>` adds maximum hearts to a player. Requires OP level 2.
+`/nightsmediumcore hearts total` shows your total heart count including all hearts and bonuses as a plain number, for example 14. Available to all players.
 
-`/nightsmediumcore removeheart <player> <amount>` removes maximum hearts from a player. Requires OP level 2.
+`/nightsmediumcore addheart <player> <amount>` adds mediumcore hearts to a player. Requires OP level 2.
+
+`/nightsmediumcore removeheart <player> <amount>` removes hearts from a player, removing lifesteal hearts first then mediumcore hearts. Requires OP level 2.
 
 `/nightsmediumcore setheart <player> <amount>` sets a player's maximum hearts to a specific number. Requires OP level 2.
 
@@ -82,9 +86,11 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 `/nightsmediumcore mode lifesteal <on|off>` toggles the lifesteal system at runtime. Requires OP level 2.
 
-`/nightsmediumcore give hearts <player> <amount>` transfers hearts from you to another player. You lose that many hearts and they gain them. Requires OP level 2.
+`/nightsmediumcore give hearts <player> <amount>` transfers hearts from you to another player. Lifesteal hearts are transferred first. Requires OP level 2.
 
-`/nightsmediumcore convert crystal <amount>` converts your base hearts into Crystal Heart items. You permanently lose those hearts. Requires OP level 2.
+`/nightsmediumcore convert crystal <amount>` converts your hearts into Crystal Heart items. Lifesteal hearts are converted first. Requires OP level 2.
+
+`/nightsmediumcore convert living <amount>` converts Crystal Hearts from your inventory into Living Heart items. Requires OP level 2.
 
 `/nightsmediumcore clearcooldown <player>` clears all active cooldowns for a player. Requires OP level 2.
 
@@ -120,7 +126,7 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 `lifeStealDropChance` controls the percentage chance a player drops a Living Heart when killed in lifesteal mode. Default is 50 if mediumcore is also enabled, 100 if only lifesteal is enabled.
 
-`lifeStealHeartCap` controls the maximum hearts a player can have from lifesteal. Default is 10 if mediumcore is also enabled, unlimited if only lifesteal is enabled.
+`lifeStealHeartCap` controls the maximum lifesteal hearts a player can have from Living Hearts. Default is 20.
 
 `lifeStealRespawnCooldown` controls how many seconds after respawning a player is protected from lifesteal. Default is 60.
 

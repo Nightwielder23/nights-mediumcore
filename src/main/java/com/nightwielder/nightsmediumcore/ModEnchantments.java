@@ -57,6 +57,32 @@ public class ModEnchantments
         }
 
         @Override
+        public boolean canApplyAtEnchantingTable(ItemStack stack)
+        {
+            if (stack.getItem() == ModItems.VAMPIRIC_SCYTHE.get())
+                return false;
+            return super.canApplyAtEnchantingTable(stack);
+        }
+
+        @Override
+        public boolean isAllowedOnBooks()
+        {
+            return true;
+        }
+
+        @Override
+        public boolean isDiscoverable()
+        {
+            return true;
+        }
+
+        @Override
+        public boolean isTradeable()
+        {
+            return true;
+        }
+
+        @Override
         protected boolean checkCompatibility(Enchantment other)
         {
             return super.checkCompatibility(other) && other != this;
