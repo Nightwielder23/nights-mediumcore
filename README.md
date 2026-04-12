@@ -1,12 +1,14 @@
 # Night's Mediumcore
 
-A Minecraft 1.20.1 Forge mod that adds a permanent heart loss system. Death carries real consequences without being as brutal as Hardcore mode.
+A Minecraft 1.20.1 Forge mod that adds a permanent heart loss system, a lifesteal system, and a suite of vampiric items and enchantments. Death carries real consequences without being as brutal as Hardcore mode.
 
 ## What This Mod Does
 
 Every time you die, you permanently lose one maximum heart, down to a minimum of 3 hearts. To get them back you need to craft and use a Crystal Heart, which requires a rare new ore found deep underground. If you prefer, you can also configure the mod so that Golden Apples restore hearts instead, or have both options available at once.
 
-It is designed for players who want survival to feel meaningful. Death matters here, but it is never game over.
+With the optional lifesteal system enabled, killing another player has a chance to steal one of their hearts, dropping it as a Living Heart item you can use to gain a permanent heart of your own.
+
+Both the mediumcore and lifesteal systems can be toggled independently in the config or with commands, so you can run just one or both together.
 
 ## Items and Blocks
 
@@ -18,13 +20,35 @@ It is designed for players who want survival to feel meaningful. Death matters h
 
 **Supreme Crystal Hearts** are crafted from five Crystal Hearts and four Gold Blocks. Right-clicking one restores all of your lost maximum hearts at once and grants Regeneration 2, Absorption 4, Resistance, and Fire Resistance for 30 seconds, the same effects as an Enchanted Golden Apple. There is no cooldown on Supreme Crystal Hearts.
 
+**Living Hearts** are dropped by players when killed in lifesteal mode. Right-clicking one gives you a permanent maximum heart, grants Strength 1 and Speed 1 for 30 seconds, and can push you above the normal heart cap. Living Hearts are soulbound and will drop on your death, but can be freely traded and given to other players. They do not have a cooldown.
+
+**Blood Shards** are a rare drop from Evokers at 3% chance and can also be found in Stronghold library chests at 2% chance. They are used to craft Bloody Hearts.
+
+**Bloody Hearts** are crafted from four Blood Shards surrounding one Living Heart. They are used as the upgrade material for both the Blood Relic and the Vampiric Scythe.
+
 **Heart Relics** are crafted from eight Crystal Hearts surrounding one Supreme Crystal Heart. When worn in the Curios charm slot, or anywhere in your main inventory if Curios is not installed, the relic increases your maximum hearts by 20% rounded up and gives you a permanent Regen 1 effect while equipped. The bonus hearts show as an extra row above your base hearts. If Curios is installed you can right click the relic to equip it directly into the charm slot.
+
+**Blood Relics** are an endgame upgrade to the Heart Relic, crafted at a smithing table using a Heart Relic, a Netherite Upgrade Smithing Template, and a Bloody Heart. The Blood Relic has all the effects of the Heart Relic and additionally gives a 1.5% additive chance for hostile mobs to drop a Living Heart on kill.
+
+**Vampiric Scythes** are powerful endgame weapons crafted at a smithing table using a Netherite Hoe, a Netherite Upgrade Smithing Template, and a Bloody Heart. The scythe has a built in 2% additive chance for hostile mobs to drop a Living Heart on kill and heals you for 12% of all damage dealt. The Vampirism and Lifesteal enchantments cannot be applied to it.
+
+## Lifesteal System
+
+When lifesteal mode is enabled, killing another player has a configurable chance to permanently remove one of their hearts and drop it as a Living Heart item. The victim still respects the 3 heart floor and cannot be stolen from below that. Players who have recently respawned are protected from lifesteal for a configurable cooldown period to prevent spawn killing.
+
+Hearts gained from Living Hearts can push you above the normal heart cap, making aggressive PvP playstyles genuinely rewarding.
 
 ## Golden Apple Mode
 
 The mod supports three heart recovery modes that you can switch between at any time. In **crystal mode** (the default), only Crystal Hearts restore hearts. In **apple mode**, consuming a regular Golden Apple restores one heart and an Enchanted Golden Apple restores all hearts, on top of their normal vanilla effects. In **both mode**, Crystal Hearts and Golden Apples both work.
 
 By default there is no cooldown on apple heart restore and it works regardless of whether you are in combat. Both of these behaviours can be changed in the config if you want a stricter experience. If a cooldown is set and you eat a Golden Apple before it expires, you will still receive the vanilla apple effects but the heart restore simply will not happen that time.
+
+## Enchantments
+
+**Vampirism** can be applied to any weapon except the Vampiric Scythe. Each level adds a 0.25% additive chance for hostile mobs to drop a Living Heart on kill. Max level 3. Found as enchanted books in Stronghold library chests and Bastion Treasure chests with higher levels being rarer.
+
+**Lifesteal** can be applied to any weapon except the Vampiric Scythe. Each level heals you for 3% of damage dealt to any entity. Max level 3. Found as enchanted books in Nether Fortress chests and Ancient City chests with higher levels being rarer.
 
 ## Bed Regen
 
@@ -40,9 +64,9 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 ## Commands
 
-`/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. This command is available to all players without any permissions.
+`/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. Available to all players.
 
-`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods or the Heart Relic, for example Total hearts: 12/12. Also available to all players.
+`/nightsmediumcore hearts total` shows your full heart count including any bonuses from other mods or the Heart Relic. Available to all players.
 
 `/nightsmediumcore addheart <player> <amount>` adds maximum hearts to a player. Requires OP level 2.
 
@@ -52,7 +76,15 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 `/nightsmediumcore restoreheart <player>` fully restores all hearts for a player. Requires OP level 2.
 
-`/nightsmediumcore mode <crystal|apple|both>` changes the heart recovery mode at runtime without a restart. Requires OP level 2.
+`/nightsmediumcore recovery <crystal|apple|both>` changes the heart recovery mode at runtime. Requires OP level 2.
+
+`/nightsmediumcore mode mediumcore <on|off>` toggles the mediumcore heart loss system at runtime. Requires OP level 2.
+
+`/nightsmediumcore mode lifesteal <on|off>` toggles the lifesteal system at runtime. Requires OP level 2.
+
+`/nightsmediumcore give hearts <player> <amount>` transfers hearts from you to another player. You lose that many hearts and they gain them. Requires OP level 2.
+
+`/nightsmediumcore convert crystal <amount>` converts your base hearts into Crystal Heart items. You permanently lose those hearts. Requires OP level 2.
 
 `/nightsmediumcore clearcooldown <player>` clears all active cooldowns for a player. Requires OP level 2.
 
@@ -60,11 +92,13 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 A config file is generated at `config/nightsmediumcore-common.toml` the first time you launch. The following options are available.
 
+`mediumcoreEnabled` controls whether the mediumcore heart loss on death system is active. Default is true.
+
 `heartFloor` controls the minimum number of hearts a player can reach. Default is 3.
 
 `deathGracePeriodSeconds` controls how many seconds must pass after a death before another heart can be lost. Default is 60.
 
-`crystalCombatCooldownSeconds` controls how many seconds after combat must pass before Crystal Hearts can be used. Default is 180.
+`crystalCombatCooldownSeconds` controls how many seconds after combat must pass before Crystal Hearts can be used. Default is 30.
 
 `bedRegenCooldownMinutes` controls how many minutes must pass between bed heart regeneration. Default is 15.
 
@@ -82,13 +116,21 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 `respawnImmunitySeconds` controls how many seconds of immunity players receive on respawn. Default is 5.
 
+`lifeStealEnabled` controls whether the lifesteal system is active. Default is false.
+
+`lifeStealDropChance` controls the percentage chance a player drops a Living Heart when killed in lifesteal mode. Default is 50 if mediumcore is also enabled, 100 if only lifesteal is enabled.
+
+`lifeStealHeartCap` controls the maximum hearts a player can have from lifesteal. Default is 10 if mediumcore is also enabled, unlimited if only lifesteal is enabled.
+
+`lifeStealRespawnCooldown` controls how many seconds after respawning a player is protected from lifesteal. Default is 60.
+
 ## Installation
 
 Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required.
 
 ## Compatibility
 
-Curios API is supported as an optional dependency. If installed, the Heart Relic can be equipped in the charm slot and right clicking it in your hand will automatically equip it. Without Curios it works anywhere in your main inventory. Download Curios API at https://modrinth.com/mod/curios
+Curios API is supported as an optional dependency. If installed, the Heart Relic and Blood Relic can be equipped in the charm slot and right clicking them in your hand will automatically equip them. Without Curios they work anywhere in your main inventory. Download Curios API at https://modrinth.com/mod/curios
 
 JEI is supported as an optional dependency for conveniently browsing all mod recipes and items. Download JEI at https://modrinth.com/mod/jei
 
