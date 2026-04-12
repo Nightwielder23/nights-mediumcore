@@ -35,6 +35,7 @@ public class VampiricScytheItem extends SwordItem
         if (id == null)
             return false;
         String path = id.getPath().toLowerCase();
-        return path.contains("vampirism") || path.contains("lifesteal");
+        return path.contains("life_leech") || path.contains("life_steal")
+                || path.contains("vampirism") || path.contains("lifesteal");
     }
 }

@@ -14,11 +14,11 @@ public class ModEnchantments
     public static final DeferredRegister<Enchantment> ENCHANTMENTS =
             DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, NightsMediumcore.MODID);
 
-    public static final RegistryObject<Enchantment> VAMPIRISM = ENCHANTMENTS.register(
-            "vampirism", () -> new WeaponEnchantment(Enchantment.Rarity.RARE, 3));
+    public static final RegistryObject<Enchantment> LIFE_LEECH = ENCHANTMENTS.register(
+            "life_leech", () -> new WeaponEnchantment(Enchantment.Rarity.RARE, 3));
 
-    public static final RegistryObject<Enchantment> LIFESTEAL = ENCHANTMENTS.register(
-            "lifesteal", () -> new WeaponEnchantment(Enchantment.Rarity.RARE, 3));
+    public static final RegistryObject<Enchantment> LIFE_STEAL = ENCHANTMENTS.register(
+            "life_steal", () -> new WeaponEnchantment(Enchantment.Rarity.RARE, 3));
 
     public static class WeaponEnchantment extends Enchantment
     {

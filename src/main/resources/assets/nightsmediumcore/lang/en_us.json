@@ -9,7 +9,7 @@
   "item.nightsmediumcore.bloody_heart": "Bloody Heart",
   "item.nightsmediumcore.blood_relic": "Blood Relic",
   "item.nightsmediumcore.vampiric_scythe": "Vampiric Scythe",
-  "enchantment.nightsmediumcore.vampirism": "Vampirism",
-  "enchantment.nightsmediumcore.lifesteal": "Lifesteal",
+  "enchantment.nightsmediumcore.life_leech": "Life Leech",
+  "enchantment.nightsmediumcore.life_steal": "Life Steal",
   "itemGroup.nightsmediumcore.nights_mediumcore_tab": "Night's Mediumcore"
 }

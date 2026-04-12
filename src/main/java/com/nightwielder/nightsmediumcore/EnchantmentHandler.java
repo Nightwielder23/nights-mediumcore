@@ -32,7 +32,7 @@ public class EnchantmentHandler
             return;
 
         int level = EnchantmentHelper.getItemEnchantmentLevel(
-                ModEnchantments.VAMPIRISM.get(), killer.getMainHandItem());
+                ModEnchantments.LIFE_LEECH.get(), killer.getMainHandItem());
         if (level <= 0)
             return;
 
@@ -56,7 +56,7 @@ public class EnchantmentHandler
             return;
 
         int level = EnchantmentHelper.getItemEnchantmentLevel(
-                ModEnchantments.LIFESTEAL.get(), attacker.getMainHandItem());
+                ModEnchantments.LIFE_STEAL.get(), attacker.getMainHandItem());
         if (level <= 0)
             return;
 
