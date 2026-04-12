@@ -14,7 +14,7 @@ It is designed for players who want survival to feel meaningful. Death matters h
 
 **Crystal Shards** are what you get from mining Heart Ore. They are used to craft Crystal Hearts.
 
-**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart and grants Regen 1 for 10 seconds as a small bonus for using it strategically. There is a 2 minute cooldown between uses and you cannot use one within 3 minutes of being in combat. You will see a message if you try to use one while either cooldown is active. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
+**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart and grants Regen 1 for 10 seconds as a small bonus for using it strategically. There is a 3 minute cooldown between uses and you cannot use one within 30 seconds of being in combat. You will see a message if you try to use one while either cooldown is active. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
 
 **Supreme Crystal Hearts** are crafted from five Crystal Hearts and four Gold Blocks. Right-clicking one restores all of your lost maximum hearts at once and grants Regeneration 2, Absorption 4, Resistance, and Fire Resistance for 30 seconds, the same effects as an Enchanted Golden Apple. There is no cooldown on Supreme Crystal Hearts.
 
