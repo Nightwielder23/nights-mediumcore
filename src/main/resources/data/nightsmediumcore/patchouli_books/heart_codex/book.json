@@ -2,10 +2,10 @@
   "name": "Heart Codex",
   "landing_text": "Welcome to Night's Mediumcore. This mod adds a layered heart system where dying can cost you a maximum heart, crystal items can restore lost hearts, and an optional lifesteal mode lets players steal hearts from each other. Read on to learn about items, recovery modes, lifesteal, commands, and configuration.",
   "book_texture": "patchouli:textures/gui/book_brown.png",
+  "filler_texture": "patchouli:textures/gui/page_filler.png",
   "model": "nightsmediumcore:item/heart_codex",
   "show_progress": false,
-  "disable_book_drop": true,
+  "i_made_this": true,
   "version": 1,
-  "use_resource_pack": true,
-  "i18n": false
+  "use_resource_pack": true
 }
