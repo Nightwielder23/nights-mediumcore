@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:item",
+  "category": "GREATSWORD",
+  "hit_at_once": 2,
+  "impact": 1.5
+}
