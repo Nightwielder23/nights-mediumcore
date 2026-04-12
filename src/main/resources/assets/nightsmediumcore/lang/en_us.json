@@ -10,6 +10,13 @@
   "item.nightsmediumcore.blood_relic": "Blood Relic",
   "item.nightsmediumcore.vampiric_scythe": "Vampiric Scythe",
   "enchantment.nightsmediumcore.life_leech": "Life Leech",
+  "enchantment.nightsmediumcore.life_leech.desc": "Gives a chance for hostile mobs to drop a Living Heart on kill. Each level adds 0.1% drop chance.",
   "enchantment.nightsmediumcore.life_steal": "Life Steal",
+  "enchantment.nightsmediumcore.life_steal.desc": "Heals you for a percentage of damage dealt to any entity. Each level heals 3% of damage dealt.",
+  "item.nightsmediumcore.living_heart.tooltip": "Right-click to permanently gain a lifesteal heart. Drops on death if mediumcore is enabled.",
+  "item.nightsmediumcore.crystal_heart.tooltip": "Right-click to restore one lost mediumcore heart. Has a cooldown and cannot be used in combat.",
+  "item.nightsmediumcore.supreme_crystal_heart.tooltip": "Right-click to restore all lost mediumcore hearts. No cooldown.",
+  "item.nightsmediumcore.blood_relic.tooltip": "Upgraded Heart Relic. Gives bonus hearts, Regen 1, and a chance for mobs to drop Living Hearts.",
+  "item.nightsmediumcore.vampiric_scythe.tooltip": "Heals on hit and gives a chance for mobs to drop Living Hearts on kill.",
   "itemGroup.nightsmediumcore.nights_mediumcore_tab": "Night's Mediumcore"
 }
