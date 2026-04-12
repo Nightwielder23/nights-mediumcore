@@ -1,0 +1,16 @@
+{
+  "name": "Blood Relic",
+  "icon": "nightsmediumcore:blood_relic",
+  "category": "nightsmediumcore:items",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nightsmediumcore:blood_relic"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Blood Relic is a curio themed around PvP combat and vampirism. Like the Heart Relic, it integrates with the Curios mod when installed, and otherwise exists as a standalone collectible."
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Commands",
+  "description": "Every command registered by Night's Mediumcore, with what each one does.",
+  "icon": "minecraft:book",
+  "sortnum": 4
+}

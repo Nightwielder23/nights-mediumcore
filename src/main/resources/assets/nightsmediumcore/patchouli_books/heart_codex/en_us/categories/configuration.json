@@ -1,0 +1,6 @@
+{
+  "name": "Configuration",
+  "description": "Every config option exposed by Night's Mediumcore, with its default value.",
+  "icon": "minecraft:writable_book",
+  "sortnum": 5
+}

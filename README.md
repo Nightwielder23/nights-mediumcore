@@ -192,6 +192,16 @@ Curios API is an optional dependency for the Heart Relic and Blood Relic charm s
 
 JEI is an optional dependency for browsing recipes and items. Download at https://modrinth.com/mod/jei
 
+JER is supported automatically for Heart Ore spawn and drop information. Download at https://modrinth.com/mod/just-enough-resources-jer
+
+Jade is supported automatically for block and item information overlays. Download at https://modrinth.com/mod/jade
+
+Epic Fight is an optional dependency for Vampiric Scythe greatsword animations. Download at https://modrinth.com/mod/epic-fight
+
+Better Combat is an optional dependency for Vampiric Scythe claymore attack animations. Download at https://modrinth.com/mod/better-combat
+
+Patchouli is an optional dependency that adds the Heart Codex, an in-game guidebook covering all mod mechanics. New players receive it automatically on first join. Download at https://modrinth.com/mod/patchouli
+
 ## Credits
 
 Crystal Heart and Supreme Crystal Heart textures by Stella Heartilly: https://stella-heartilly.itch.io/heart-gems

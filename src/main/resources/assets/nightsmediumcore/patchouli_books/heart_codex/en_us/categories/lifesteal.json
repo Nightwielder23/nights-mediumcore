@@ -1,0 +1,6 @@
+{
+  "name": "Lifesteal",
+  "description": "An optional PvP mode where killing players can drop Living Hearts and reduce the victim's maximum hearts.",
+  "icon": "nightsmediumcore:living_heart",
+  "sortnum": 3
+}

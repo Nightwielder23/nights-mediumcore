@@ -1,0 +1,6 @@
+{
+  "name": "Recovery Modes",
+  "description": "Night's Mediumcore has four ways to control how lost hearts can be restored: none, crystal, apple, and both.",
+  "icon": "minecraft:golden_apple",
+  "sortnum": 2
+}

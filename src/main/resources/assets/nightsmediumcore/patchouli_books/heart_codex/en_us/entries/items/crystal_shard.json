@@ -1,0 +1,16 @@
+{
+  "name": "Crystal Shard",
+  "icon": "nightsmediumcore:crystal_shard",
+  "category": "nightsmediumcore:items",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nightsmediumcore:crystal_shard"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Crystal Shards drop from Heart Ore. They are the basic crafting ingredient for Crystal Hearts and Supreme Crystal Hearts. Keep a steady supply if you expect to die often."
+    }
+  ]
+}

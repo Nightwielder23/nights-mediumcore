@@ -1,0 +1,20 @@
+{
+  "name": "Vampiric Scythe",
+  "icon": "nightsmediumcore:vampiric_scythe",
+  "category": "nightsmediumcore:items",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nightsmediumcore:vampiric_scythe"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Vampiric Scythe is a heavy two handed weapon that deals 11 attack damage and has netherite tier durability. It cannot be enchanted with Life Leech, Life Steal, or Vampirism, since those effects would duplicate its innate power."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If the optional Epic Fight or Better Combat mods are installed, the scythe picks up sweeping greatsword behavior automatically. Without them, it still works as a strong vanilla sword."
+    }
+  ]
+}

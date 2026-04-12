@@ -1,0 +1,16 @@
+{
+  "name": "Heart Relic",
+  "icon": "nightsmediumcore:heart_relic",
+  "category": "nightsmediumcore:items",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nightsmediumcore:heart_relic"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Heart Relic is a curio that provides a passive bonus while equipped. It integrates with the Curios mod when installed. Without Curios, the relic exists as a collectible item only."
+    }
+  ]
+}

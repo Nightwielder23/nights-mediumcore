@@ -1,0 +1,20 @@
+{
+  "name": "Vampiric Items and Enchantments",
+  "icon": "nightsmediumcore:vampiric_scythe",
+  "category": "nightsmediumcore:lifesteal",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Three enchantments support the lifesteal theme: Life Leech, Life Steal, and Vampirism. Each can reach level 3 on any weapon. They apply to the main hand slot and are mutually exclusive."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Vampiric Scythe is the flagship lifesteal weapon. It deals 11 damage with netherite durability, and refuses the three vampiric enchantments since its power already reflects that theme."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Blood Relic and Heart Relic round out the set. When Curios is installed they can be worn in curio slots for passive bonuses. Without Curios they still exist as items."
+    }
+  ]
+}
