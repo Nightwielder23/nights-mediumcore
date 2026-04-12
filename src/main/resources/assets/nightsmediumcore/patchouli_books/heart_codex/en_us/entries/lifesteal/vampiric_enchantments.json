@@ -1,0 +1,24 @@
+{
+  "name": "Vampiric Enchantments",
+  "icon": "minecraft:enchanted_book",
+  "category": "nightsmediumcore:lifesteal",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Three enchantments support the lifesteal theme. Each reaches level 3 on any main hand weapon, and the three are mutually exclusive, so one weapon can carry only one of them at a time."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Vampirism converts a share of damage dealt into healing for the attacker, scaling with level. It is the most balanced of the three, suited to general combat."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Life Steal goes further than Vampirism by transferring the victim's missing max hearts to the attacker on a killing blow. Use it in PvP to lock in the steal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Life Leech favors attrition, returning health over time after each hit rather than instantly. It rewards sustained fights over single burst kills."
+    }
+  ]
+}
