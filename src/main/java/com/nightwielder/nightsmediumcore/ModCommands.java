@@ -59,7 +59,7 @@ public class ModCommands
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("mode", StringArgumentType.word())
                                 .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
-                                        new String[]{"crystal", "apple", "both"}, builder))
+                                        new String[]{"crystal", "apple", "both", "none"}, builder))
                                 .executes(ctx -> setMode(
                                         ctx.getSource(),
                                         StringArgumentType.getString(ctx, "mode")))))
@@ -243,9 +243,9 @@ public class ModCommands
 
     private static int setMode(CommandSourceStack source, String mode)
     {
-        if (!mode.equals("crystal") && !mode.equals("apple") && !mode.equals("both"))
+        if (!mode.equals("crystal") && !mode.equals("apple") && !mode.equals("both") && !mode.equals("none"))
         {
-            source.sendFailure(Component.literal("Invalid mode! Use: crystal, apple, or both."));
+            source.sendFailure(Component.literal("Invalid mode! Use: crystal, apple, both, or none."));
             return 0;
         }
 

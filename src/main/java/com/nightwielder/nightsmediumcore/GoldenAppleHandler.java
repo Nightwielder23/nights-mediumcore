@@ -65,7 +65,7 @@ public class GoldenAppleHandler
             return;
 
         String mode = ModConfig.HEART_RECOVERY_MODE.get();
-        if (mode.equals("crystal"))
+        if (mode.equals("crystal") || mode.equals("none"))
             return;
 
         boolean isEnchanted = consumed == Items.ENCHANTED_GOLDEN_APPLE;

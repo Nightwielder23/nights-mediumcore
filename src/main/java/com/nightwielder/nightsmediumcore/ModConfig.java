@@ -95,9 +95,10 @@ public class ModConfig
                          "crystal = only Crystal Heart items restore hearts (default).",
                          "apple = only golden apples restore hearts.",
                          "both = both Crystal Hearts and golden apples restore hearts.",
+                         "none = no items restore hearts (Crystal Hearts still grant regen; golden apples are vanilla-only).",
                          "Default: crystal")
                 .define("heartRecoveryMode", "crystal", v -> v instanceof String s
-                        && (s.equals("crystal") || s.equals("apple") || s.equals("both")));
+                        && (s.equals("crystal") || s.equals("apple") || s.equals("both") || s.equals("none")));
 
         APPLE_COMBAT_COOLDOWN = builder
                 .comment("If true, golden apples cannot restore hearts while in combat.",

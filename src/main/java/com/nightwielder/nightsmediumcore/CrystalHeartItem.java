@@ -52,6 +52,8 @@ public class CrystalHeartItem extends Item
         if (lsOnly && mode.equals("apple"))
             return InteractionResultHolder.fail(stack);
 
+        boolean noneMode = mode.equals("none");
+
         int currentLost = data.getHeartsLost(serverPlayer.getUUID());
         int currentLs = data.getLifeStealHearts(serverPlayer.getUUID());
         int lsCap = LifeStealHandler.resolvedHeartCap();
@@ -61,7 +63,11 @@ public class CrystalHeartItem extends Item
         int mcRestore = 0;
         int lsRestore = 0;
 
-        if (mcOn)
+        if (noneMode)
+        {
+            restoresHearts = false;
+        }
+        else if (mcOn)
         {
             if (mode.equals("apple"))
             {
@@ -143,7 +149,7 @@ public class CrystalHeartItem extends Item
         // Apply effects per spec
         if (isSupreme)
         {
-            if (mcOn)
+            if (noneMode || mcOn)
             {
                 // crystal/both/apple with mediumcore on — full suite
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
@@ -160,7 +166,11 @@ public class CrystalHeartItem extends Item
         }
         else
         {
-            if (mcOn)
+            if (noneMode)
+            {
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
+            }
+            else if (mcOn)
             {
                 if (mode.equals("apple"))
                     serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 2));
