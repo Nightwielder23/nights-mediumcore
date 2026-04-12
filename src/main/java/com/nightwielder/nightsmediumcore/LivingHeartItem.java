@@ -41,12 +41,16 @@ public class LivingHeartItem extends Item
         boolean lifeStealOn = ModConfig.LIFESTEAL_ENABLED.get();
         boolean isCreative = serverPlayer.getAbilities().instabuild;
 
-        int current = data.getLifeStealHearts(serverPlayer.getUUID());
-        int cap = LifeStealHandler.resolvedHeartCap();
-        if (current >= cap)
+        int heartsLost = data.getHeartsLost(serverPlayer.getUUID());
+        int currentLs = data.getLifeStealHearts(serverPlayer.getUUID());
+        int mcMax = HeartLossHandler.MAX_HEARTS;
+        int lsMax = HeartLossHandler.MAX_HEARTS;
+        int mcHearts = mcMax - heartsLost;
+
+        if (mcHearts >= mcMax && currentLs >= lsMax)
         {
             serverPlayer.sendSystemMessage(Component.literal(
-                    "You have reached the lifesteal heart cap!").withStyle(ChatFormatting.YELLOW));
+                    "You have reached the maximum heart cap!").withStyle(ChatFormatting.YELLOW));
             return InteractionResultHolder.fail(stack);
         }
 
@@ -65,9 +69,18 @@ public class LivingHeartItem extends Item
             }
         }
 
-        int updated = current + 1;
-        data.setLifeStealHearts(serverPlayer.getUUID(), updated);
-        LifeStealHandler.applyBonusModifier(serverPlayer, updated);
+        if (mcHearts < mcMax)
+        {
+            int newLost = heartsLost - 1;
+            data.setHeartsLost(serverPlayer.getUUID(), newLost);
+            HeartLossHandler.applyModifier(serverPlayer, newLost);
+        }
+        else
+        {
+            int newLs = currentLs + 1;
+            data.setLifeStealHearts(serverPlayer.getUUID(), newLs);
+            LifeStealHandler.applyBonusModifier(serverPlayer, newLs);
+        }
 
         if (!lifeStealOn && !isCreative)
         {
