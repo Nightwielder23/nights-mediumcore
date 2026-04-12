@@ -42,7 +42,7 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 `/nightsmediumcore hearts` shows your current and maximum base mediumcore hearts, for example Base hearts: 7/10. This command is available to all players without any permissions.
 
-`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods or the Heart Relic, for example Total hearts: 12/10. Also available to all players.
+`/nightsmediumcore hearts total` shows your full heart count including any bonuses added by other mods or the Heart Relic, for example Total hearts: 12/12. Also available to all players.
 
 `/nightsmediumcore addheart <player> <amount>` adds maximum hearts to a player. Requires OP level 2.
 
