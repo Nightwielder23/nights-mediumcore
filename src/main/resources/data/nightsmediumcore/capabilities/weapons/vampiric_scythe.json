@@ -1,9 +1,16 @@
 {
   "type": "minecraft:item",
   "item": "nightsmediumcore:vampiric_scythe",
-  "category": "GREATSWORD",
-  "style": "TWO_HAND",
-  "hit_at_once": 2,
-  "impact": 1.5,
-  "two_handed": true
+  "weapon_type": "epicfight:greatsword",
+  "trail": {
+    "texture_path": "epicfight:textures/particle/swing_trail.png",
+    "r": 255,
+    "g": 255,
+    "b": 255,
+    "a": 180,
+    "lifetime": 6,
+    "interpolations": 4,
+    "begin": [0.0, 0.0, -2.5],
+    "end": [0.0, 0.0, 0.0]
+  }
 }
