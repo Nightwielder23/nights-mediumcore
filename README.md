@@ -18,11 +18,11 @@ Both the mediumcore and lifesteal systems can be toggled independently in the co
 
 **Crystal Shards** are what you get from mining Heart Ore. They are used to craft Crystal Hearts.
 
-**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart and grants Regen 1 for 10 seconds as a small bonus for using it strategically. There is a 3 minute cooldown between uses and you cannot use one within 30 seconds of being in combat. You will see a message if you try to use one while either cooldown is active. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
+**Crystal Hearts** are crafted from one Crystal Shard surrounded by four Gold Ingots. Right-clicking one restores a single maximum heart, filling mediumcore hearts first then lifesteal hearts. In crystal mode it grants Regen 1 for 10 seconds on use.In crystal mode it grants Regen 2 for 10 seconds on use. In apple recovery mode only it grants Regen 3 for 30 seconds instead. There is a 3 minute cooldown between uses and you cannot use one within 30 seconds of being in combat. You will see a message if you try to use one while either cooldown is active. Cooldowns never apply in creative mode, and the item will not be consumed in creative mode either.
 
 **Supreme Crystal Hearts** are crafted from five Crystal Hearts and four Gold Blocks. Right-clicking one restores all of your lost maximum hearts at once and grants Regeneration 2, Absorption 4, Resistance, and Fire Resistance for 30 seconds, the same effects as an Enchanted Golden Apple. There is no cooldown on Supreme Crystal Hearts.
 
-**Living Hearts** are dropped by players when killed in lifesteal mode. Right-clicking one permanently increases your lifesteal heart count by 1, up to a maximum of 20 lifesteal hearts. When lifesteal mode is off, Living Hearts share the Crystal Heart cooldown and grant Regen 1 for 30 seconds on use. When lifesteal mode is on, Living Hearts have no cooldown. Living Hearts are soulbound and will drop on your death if mediumcore is enabled, but can be freely traded and given to other players.
+**Living Hearts** are dropped by players when killed in lifesteal mode. Right-clicking one permanently increases your heart count by 1. If your mediumcore hearts are below 10 it fills mediumcore hearts first, otherwise it fills lifesteal hearts. When lifesteal mode is off, Living Hearts share the Crystal Heart cooldown and grant Regen 1 for 30 seconds on use. When lifesteal mode is on, Living Hearts have no cooldown. Living Hearts are soulbound and will drop on your death if mediumcore is enabled, but can be freely traded and given to other players.
 
 **Blood Shards** are a rare drop from Evokers at 3% chance and can also be found in Stronghold library chests at 2% chance. They are used to craft Bloody Hearts.
 
@@ -32,19 +32,23 @@ Both the mediumcore and lifesteal systems can be toggled independently in the co
 
 **Blood Relics** are an endgame upgrade to the Heart Relic, crafted at a smithing table using a Heart Relic, a Netherite Upgrade Smithing Template, and a Bloody Heart. The Blood Relic has all the effects of the Heart Relic and additionally gives a 0.5% additive chance for hostile mobs to drop a Living Heart on kill.
 
-**Vampiric Scythes** are powerful endgame weapons crafted at a smithing table using a Netherite Hoe, a Netherite Upgrade Smithing Template, and a Bloody Heart. The scythe has a built in 0.5% additive chance for hostile mobs to drop a Living Heart on kill and heals you for 12% of all damage dealt. The Life Leech and Life Steal enchantments cannot be applied to it.
+**Vampiric Scythes** are powerful endgame weapons crafted at a smithing table using a Netherite Hoe, a Netherite Upgrade Smithing Template, and a Bloody Heart. The scythe has a built in 0.5% additive chance for hostile mobs to drop a Living Heart on kill and heals you for 12% of all damage dealt. The Vampirism, Life Steal, and Life Leech enchantments cannot be applied to it.
 
 ## Lifesteal System
 
 When lifesteal mode is enabled, killing another player has a configurable chance to permanently remove one of their hearts and drop it as a Living Heart item. The victim still respects the 3 heart floor and cannot be stolen from below that. Players who have recently respawned are protected from lifesteal for a configurable cooldown period to prevent spawn killing.
 
-Hearts gained from Living Hearts are tracked separately as lifesteal hearts and are removed before mediumcore hearts when you die. Crystal Hearts restore mediumcore hearts first, and if those are full they will restore lifesteal hearts instead. Lifesteal hearts can also be transferred and converted through commands just like mediumcore hearts.
+Hearts gained from Living Hearts are tracked separately as lifesteal hearts and are removed before mediumcore hearts when you die. Crystal Hearts and Golden Apples restore mediumcore hearts first, and if those are full they restore lifesteal hearts instead. Lifesteal hearts can be transferred and converted through commands just like mediumcore hearts.
+
+The heart cap depends on which modes are active. In mediumcore only mode the cap is 10 mediumcore hearts. In lifesteal only mode the cap is 20 lifesteal hearts. When both are enabled the cap is 20 total hearts split as up to 10 mediumcore and up to 10 lifesteal.
 
 ## Golden Apple Mode
 
 The mod supports three heart recovery modes that you can switch between at any time. In **crystal mode** (the default), only Crystal Hearts restore hearts. In **apple mode**, consuming a regular Golden Apple restores one heart and an Enchanted Golden Apple restores all hearts, on top of their normal vanilla effects. In **both mode**, Crystal Hearts and Golden Apples both work.
 
-By default there is no cooldown on apple heart restore and it works regardless of whether you are in combat. Both of these behaviours can be changed in the config if you want a stricter experience. If a cooldown is set and you eat a Golden Apple before it expires, you will still receive the vanilla apple effects but the heart restore simply will not happen that time.
+Golden Apples follow the same heart filling logic as Crystal Hearts, filling mediumcore hearts first then lifesteal hearts. If a cooldown is active when you eat a Golden Apple you will see a message letting you know. The vanilla apple effects still apply regardless.
+
+By default there is no cooldown on apple heart restore and it works regardless of whether you are in combat. Both of these behaviours can be changed in the config. If a cooldown is set and you eat a Golden Apple before it expires, the heart restore simply will not happen that time.
 
 ## Enchantments
 
@@ -68,25 +72,27 @@ If you die twice within 60 seconds only one heart is lost. A grace period activa
 
 ## Commands
 
-`/nightsmediumcore hearts` shows your current base mediumcore heart count and maximum, for example 3/10. Available to all players.
+`/nightsmediumcore hearts` shows your current mediumcore heart count and maximum, for example 3/10. Available to all players.
 
-`/nightsmediumcore hearts living` shows your current lifesteal heart count and maximum, for example 3/20. Available to all players.
+`/nightsmediumcore hearts living` shows your current lifesteal heart count and maximum, for example 3/10. Available to all players.
 
-`/nightsmediumcore hearts total` shows your total heart count including all hearts and bonuses as a plain number, for example 14. Available to all players.
+`/nightsmediumcore hearts total` shows your total heart count including all hearts and accessory bonuses as a plain number, for example 14. Available to all players.
 
 `/nightsmediumcore addheart <player> <amount>` adds mediumcore hearts to a player. Requires OP level 2.
 
 `/nightsmediumcore removeheart <player> <amount>` removes hearts from a player, removing lifesteal hearts first then mediumcore hearts. Requires OP level 2.
 
-`/nightsmediumcore setheart <player> <amount>` sets a player's maximum hearts to a specific number. Requires OP level 2.
+`/nightsmediumcore setheart <player> <amount>` sets a player's total heart count, adjusting lifesteal hearts first then mediumcore hearts. Requires OP level 2.
 
 `/nightsmediumcore restoreheart <player>` fully restores all hearts for a player. Requires OP level 2.
 
 `/nightsmediumcore recovery <crystal|apple|both>` changes the heart recovery mode at runtime. Requires OP level 2.
 
-`/nightsmediumcore mode mediumcore <on|off>` toggles the mediumcore heart loss system at runtime. Requires OP level 2.
+`/nightsmediumcore mode lifesteal` toggles the lifesteal system at runtime. Requires OP level 2.
 
-`/nightsmediumcore mode lifesteal <on|off>` toggles the lifesteal system at runtime. Requires OP level 2.
+`/nightsmediumcore mode mediumcore` toggles the mediumcore heart loss system at runtime. Requires OP level 2.
+
+`/nightsmediumcore mode both` toggles both systems at runtime. Requires OP level 2.
 
 `/nightsmediumcore give hearts <player> <amount>` transfers hearts from you to another player. Lifesteal hearts are transferred first. Requires OP level 2.
 
@@ -128,7 +134,7 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 `lifeStealDropChance` controls the percentage chance a player drops a Living Heart when killed in lifesteal mode. Default is 50 if mediumcore is also enabled, 100 if only lifesteal is enabled.
 
-`lifeStealHeartCap` controls the maximum lifesteal hearts a player can have from Living Hearts. Default is 20.
+`lifeStealHeartCap` controls the maximum lifesteal hearts a player can have. Default is 10.
 
 `lifeStealRespawnCooldown` controls how many seconds after respawning a player is protected from lifesteal. Default is 60.
 

@@ -37,23 +37,51 @@ public class CrystalHeartItem extends Item
         if (!(player instanceof ServerPlayer serverPlayer))
             return InteractionResultHolder.pass(stack);
 
-        // Block crystal usage in "apple" mode
-        if (ModConfig.HEART_RECOVERY_MODE.get().equals("apple"))
-            return InteractionResultHolder.fail(stack);
-
         ServerLevel overworld = serverPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
         boolean isSupreme = heartsToRestore >= HeartLossHandler.MAX_HEARTS;
-
         boolean isCreative = serverPlayer.getAbilities().instabuild;
 
-        // Check if player needs healing first (creative mode bypasses this check)
+        String mode = ModConfig.HEART_RECOVERY_MODE.get();
+        boolean mcOn = ModConfig.MEDIUMCORE_ENABLED.get();
+        boolean lsOnly = !mcOn && ModConfig.LIFESTEAL_ENABLED.get();
+
+        if (!mcOn && !lsOnly)
+            return InteractionResultHolder.fail(stack);
+        if (lsOnly && mode.equals("apple"))
+            return InteractionResultHolder.fail(stack);
+
         int currentLost = data.getHeartsLost(serverPlayer.getUUID());
         int currentLs = data.getLifeStealHearts(serverPlayer.getUUID());
         int lsCap = LifeStealHandler.resolvedHeartCap();
-        boolean canRestoreLs = currentLost <= 0 && currentLs < lsCap;
-        if (currentLost <= 0 && !canRestoreLs && !isCreative)
+
+        // Determine whether hearts are restored and how many
+        boolean restoresHearts;
+        int mcRestore = 0;
+        int lsRestore = 0;
+
+        if (mcOn)
+        {
+            if (mode.equals("apple"))
+            {
+                restoresHearts = false;
+            }
+            else
+            {
+                restoresHearts = true;
+                mcRestore = isSupreme ? currentLost : Math.min(1, currentLost);
+            }
+        }
+        else
+        {
+            restoresHearts = true;
+            int want = isSupreme ? 2 : 1;
+            lsRestore = Math.min(want, Math.max(0, lsCap - currentLs));
+        }
+
+        // If restoration would do nothing, refuse (creative bypasses)
+        if (restoresHearts && mcRestore <= 0 && lsRestore <= 0 && !isCreative)
         {
             serverPlayer.sendSystemMessage(
                     Component.literal("You are already at maximum hearts!")
@@ -61,7 +89,7 @@ public class CrystalHeartItem extends Item
             return InteractionResultHolder.fail(stack);
         }
 
-        // Check combat status (skip for supreme crystal and creative mode)
+        // Combat and usage cooldowns: skip for supreme and creative
         if (!isSupreme && !isCreative)
         {
             long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
@@ -73,16 +101,11 @@ public class CrystalHeartItem extends Item
                                 .withStyle(ChatFormatting.RED));
                 return InteractionResultHolder.fail(stack);
             }
-        }
 
-        // Check usage cooldown (skip for supreme crystal and creative mode)
-        if (!isSupreme && !isCreative)
-        {
             long expiry = data.getCrystalCooldown(serverPlayer.getUUID());
             if (currentTime < expiry)
             {
-                long remainingTicks = expiry - currentTime;
-                long remainingSeconds = remainingTicks / 20;
+                long remainingSeconds = (expiry - currentTime) / 20;
                 long minutes = remainingSeconds / 60;
                 long seconds = remainingSeconds % 60;
                 serverPlayer.sendSystemMessage(
@@ -92,35 +115,21 @@ public class CrystalHeartItem extends Item
             }
         }
 
-        // Restore hearts: mediumcore first, then lifesteal
-        int newLost;
-        int actualRestore;
-        int remaining;
-        if (isSupreme)
+        // Apply heart restoration
+        if (mcRestore > 0)
         {
-            newLost = 0;
-            actualRestore = currentLost;
-            remaining = heartsToRestore - actualRestore;
+            int newLost = currentLost - mcRestore;
+            data.setHeartsLost(serverPlayer.getUUID(), newLost);
+            HeartLossHandler.applyModifier(serverPlayer, newLost);
         }
-        else
+        if (lsRestore > 0)
         {
-            actualRestore = Math.min(heartsToRestore, currentLost);
-            newLost = currentLost - actualRestore;
-            remaining = heartsToRestore - actualRestore;
-        }
-        data.setHeartsLost(serverPlayer.getUUID(), newLost);
-        HeartLossHandler.applyModifier(serverPlayer, newLost);
-
-        if (remaining > 0 && currentLs < lsCap)
-        {
-            int lsRestore = Math.min(remaining, lsCap - currentLs);
             int newLs = currentLs + lsRestore;
             data.setLifeStealHearts(serverPlayer.getUUID(), newLs);
             LifeStealHandler.applyBonusModifier(serverPlayer, newLs);
-            actualRestore += lsRestore;
         }
 
-        // Apply usage cooldown (skip for supreme crystal and creative mode)
+        // Apply usage cooldown (skip for supreme and creative)
         if (!isSupreme && !isCreative)
         {
             int cooldownTicks = ModConfig.CRYSTAL_USAGE_COOLDOWN_SECONDS.get() * 20;
@@ -128,41 +137,51 @@ public class CrystalHeartItem extends Item
         }
 
         // Consume item
-        if (!serverPlayer.getAbilities().instabuild)
-        {
+        if (!isCreative)
             stack.shrink(1);
-        }
 
-        // Apply enchanted golden apple effects for supreme crystal (30 seconds = 600 ticks)
+        // Apply effects per spec
         if (isSupreme)
         {
-            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
-            serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
-            serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
-            serverPlayer.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
+            if (mcOn)
+            {
+                // crystal/both/apple with mediumcore on — full suite
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
+            }
+            else
+            {
+                // lifesteal only — crystal: no effects, both: Regen 2 for 10s
+                if (mode.equals("both"))
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
+            }
         }
         else
         {
-            // Regular crystal heart: Regen 2 for 30s in apple/both mode, else Regen 1 for 10s
-            String mode = ModConfig.HEART_RECOVERY_MODE.get();
-            if (mode.equals("apple") || mode.equals("both"))
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
+            if (mcOn)
+            {
+                if (mode.equals("apple"))
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 2));
+                else
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
+            }
             else
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 0));
+            {
+                // lifesteal only — crystal: no regen, both: Regen 2 for 10s
+                if (mode.equals("both"))
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
+            }
         }
 
-        // Spawn heart particles around the player
+        // Particles + sound + sync
         ServerLevel serverLevel = serverPlayer.serverLevel();
-        double px = serverPlayer.getX();
-        double py = serverPlayer.getY() + 1.0;
-        double pz = serverPlayer.getZ();
-        serverLevel.sendParticles(ParticleTypes.HEART, px, py, pz, 12, 0.5, 0.5, 0.5, 0.1);
-
-        // Play level-up sound at reduced pitch
+        serverLevel.sendParticles(ParticleTypes.HEART,
+                serverPlayer.getX(), serverPlayer.getY() + 1.0, serverPlayer.getZ(),
+                12, 0.5, 0.5, 0.5, 0.1);
         serverLevel.playSound(null, serverPlayer.blockPosition(),
                 SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8f, 0.7f);
-
-        // Force health sync to client
         serverPlayer.setHealth(serverPlayer.getMaxHealth());
 
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
