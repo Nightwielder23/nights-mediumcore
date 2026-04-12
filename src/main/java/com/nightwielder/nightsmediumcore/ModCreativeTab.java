@@ -24,6 +24,9 @@ public class ModCreativeTab
                         output.accept(ModItems.SUPREME_CRYSTAL_HEART.get());
                         output.accept(ModItems.HEART_RELIC.get());
                         output.accept(ModItems.LIVING_HEART.get());
+                        output.accept(ModItems.BLOOD_SHARD.get());
+                        output.accept(ModItems.BLOODY_HEART.get());
+                        output.accept(ModItems.BLOOD_RELIC.get());
                     })
                     .build());
 }

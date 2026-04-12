@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SLS",
+    " S "
+  ],
+  "key": {
+    "S": { "item": "nightsmediumcore:blood_shard" },
+    "L": { "item": "nightsmediumcore:living_heart" }
+  },
+  "result": {
+    "item": "nightsmediumcore:bloody_heart",
+    "count": 1
+  }
+}

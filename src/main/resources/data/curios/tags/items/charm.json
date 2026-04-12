@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "nightsmediumcore:heart_relic"
+    "nightsmediumcore:heart_relic",
+    "nightsmediumcore:blood_relic"
   ]
 }
