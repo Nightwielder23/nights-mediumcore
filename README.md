@@ -78,6 +78,10 @@ A config file is generated at `config/nightsmediumcore-common.toml` the first ti
 
 `showHardcoreHearts` controls whether the custom heart style is shown. Default is true.
 
+`respawnImmunityEnabled` controls whether players receive damage immunity on respawn. Default is true.
+
+`respawnImmunitySeconds` controls how many seconds of immunity players receive on respawn. Default is 5.
+
 ## Installation
 
 Download Minecraft Forge 1.20.1 (build 47.4.10 recommended) from the official Forge site, then place the Night's Mediumcore jar file in your mods folder and launch the game. No other mods are required.
