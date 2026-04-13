@@ -33,7 +33,7 @@ public class BloodRelicHandler
             return;
         if (!(event.player instanceof ServerPlayer player))
             return;
-        if (ModList.get().isLoaded("curios"))
+        if (!ModList.get().isLoaded("curios"))
             return;
 
         boolean has = hasInMainInventory(player);

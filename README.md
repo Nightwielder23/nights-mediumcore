@@ -2,8 +2,6 @@
 
 A Minecraft 1.20.1 Forge mod adding permanent heart loss, an optional lifesteal system, and vampiric items and enchantments. Death has real weight without being as punishing as Hardcore mode.
 
-> The lifesteal PvP system requires multiple players to fully test. Minor multiplayer issues may be addressed in 1.2.1.
-
 ## What This Mod Does
 
 Every time you die you permanently lose one maximum heart, down to a minimum of 3. To recover you craft Crystal Hearts from a rare underground ore. Sleep in a bed to slowly recover hearts over time. That is the default experience.
