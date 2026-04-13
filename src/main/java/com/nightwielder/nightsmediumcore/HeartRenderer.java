@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -64,6 +65,16 @@ public class HeartRenderer
         int healthHalf = Mth.ceil(player.getHealth());
         int absorbHalf = Mth.ceil(player.getAbsorptionAmount());
         int rows = (totalHearts + 9) / 10;
+
+        // Tell ForgeGui how tall our health bar is so the armor overlay (which renders
+        // after this event and reads ForgeGui.leftHeight) positions itself above our
+        // topmost heart row instead of overlapping it. Vanilla's PLAYER_HEALTH overlay
+        // normally does this; since we cancel it, we must replicate the bookkeeping.
+        int absorbRows = absorbHalf > 0 ? 1 : 0;
+        if (mc.gui instanceof ForgeGui forgeGui)
+        {
+            forgeGui.leftHeight += 10 * (rows + absorbRows);
+        }
 
         // Draw heart containers and fills, supporting multiple rows of 10
         for (int i = totalHearts - 1; i >= 0; i--)
