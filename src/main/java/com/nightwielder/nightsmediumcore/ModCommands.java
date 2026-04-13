@@ -289,6 +289,11 @@ public class ModCommands
             source.sendFailure(Component.literal("This command can only be used by a player."));
             return 0;
         }
+        if (!ModConfig.LIFESTEAL_ENABLED.get())
+        {
+            source.sendFailure(Component.literal("Heart trading is only available in lifesteal mode."));
+            return 0;
+        }
         if (sender.getUUID().equals(target.getUUID()))
         {
             source.sendFailure(Component.literal("You cannot give hearts to yourself."));
