@@ -2,6 +2,7 @@
 package com.nightwielder.nightsmediumcore;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.ChatFormatting;
@@ -18,7 +19,7 @@ public class ModCommands
 {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        dispatcher.register(Commands.literal("nightsmediumcore")
+        LiteralCommandNode<CommandSourceStack> node = dispatcher.register(Commands.literal("nightsmediumcore")
                 .then(Commands.literal("hearts")
                         .executes(ctx -> showHearts(ctx.getSource()))
                         .then(Commands.literal("total")
@@ -96,6 +97,7 @@ public class ModCommands
                                 .executes(ctx -> clearCooldown(
                                         ctx.getSource(),
                                         EntityArgument.getPlayer(ctx, "player"))))));
+        dispatcher.register(Commands.literal("nm").redirect(node));
     }
 
     private static int showHearts(CommandSourceStack source)
@@ -348,12 +350,14 @@ public class ModCommands
         HeartLossHandler.applyModifier(target, newTargetLost);
         LifeStealHandler.applyBonusModifier(target, targetLs + toTargetLs);
 
-        sender.sendSystemMessage(Component.literal("Transferred " + transferred + " heart(s) to " +
+        String heartWord = transferred == 1 ? "heart" : "hearts";
+
+        sender.sendSystemMessage(Component.literal("You gave " + transferred + " " + heartWord + " to " +
                 target.getName().getString() + ".")
                 .withStyle(ChatFormatting.GOLD));
 
         target.sendSystemMessage(Component.literal(sender.getName().getString() +
-                " gave you " + transferred + " heart(s)!")
+                " gave you " + transferred + " " + heartWord + "!")
                 .withStyle(ChatFormatting.GREEN));
 
         return 1;
