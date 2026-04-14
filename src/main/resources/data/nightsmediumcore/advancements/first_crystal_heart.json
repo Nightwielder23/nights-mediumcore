@@ -1,0 +1,17 @@
+{
+  "parent": "nightsmediumcore:root",
+  "display": {
+    "icon": {"item": "nightsmediumcore:crystal_heart"},
+    "title": {"translate": "advancements.nightsmediumcore.first_crystal_heart.title"},
+    "description": {"translate": "advancements.nightsmediumcore.first_crystal_heart.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["nightsmediumcore:crystal_heart"]}]}
+    }
+  }
+}

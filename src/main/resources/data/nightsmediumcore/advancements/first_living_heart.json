@@ -1,0 +1,17 @@
+{
+  "parent": "nightsmediumcore:root",
+  "display": {
+    "icon": {"item": "nightsmediumcore:living_heart"},
+    "title": {"translate": "advancements.nightsmediumcore.first_living_heart.title"},
+    "description": {"translate": "advancements.nightsmediumcore.first_living_heart.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["nightsmediumcore:living_heart"]}]}
+    }
+  }
+}

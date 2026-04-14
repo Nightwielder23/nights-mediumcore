@@ -1,0 +1,14 @@
+{
+  "parent": "nightsmediumcore:full_health",
+  "display": {
+    "icon": {"item": "nightsmediumcore:heart_relic"},
+    "title": {"translate": "advancements.nightsmediumcore.heart_hoarder.title"},
+    "description": {"translate": "advancements.nightsmediumcore.heart_hoarder.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "impossible": {"trigger": "minecraft:impossible"}
+  }
+}

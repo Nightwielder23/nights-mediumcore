@@ -1,0 +1,17 @@
+{
+  "parent": "nightsmediumcore:first_living_heart",
+  "display": {
+    "icon": {"item": "nightsmediumcore:blood_shard"},
+    "title": {"translate": "advancements.nightsmediumcore.blood_path.title"},
+    "description": {"translate": "advancements.nightsmediumcore.blood_path.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["nightsmediumcore:blood_shard"]}]}
+    }
+  }
+}

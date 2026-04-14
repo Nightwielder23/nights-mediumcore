@@ -244,5 +244,7 @@ public class HeartLossHandler
         // Force sync attributes to client so the HUD updates immediately
         player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                 player.getId(), java.util.Collections.singleton(healthAttr)));
+
+        ModAdvancements.checkMaxHealthMilestones(player);
     }
 }

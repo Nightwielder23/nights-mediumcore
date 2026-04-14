@@ -55,6 +55,8 @@ public class LifeStealHandler
             player.setHealth(newMax);
         player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                 player.getId(), java.util.Collections.singleton(attr)));
+
+        ModAdvancements.checkMaxHealthMilestones(player);
     }
 
     @SubscribeEvent
