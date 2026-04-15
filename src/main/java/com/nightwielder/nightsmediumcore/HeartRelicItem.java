@@ -21,7 +21,7 @@ import java.util.UUID;
 public class HeartRelicItem extends Item implements ICurioItem
 {
     private static final UUID MODIFIER_UUID = HeartRelicHandler.RELIC_MODIFIER_UUID;
-    private static final String MODIFIER_NAME = "nightsmediumcore.heart_relic";
+    private static final String MODIFIER_NAME = "nights_mediumcore.heart_relic";
 
     public HeartRelicItem(Properties properties)
     {

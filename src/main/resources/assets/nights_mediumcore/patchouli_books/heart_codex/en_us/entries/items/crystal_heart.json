@@ -1,0 +1,20 @@
+{
+  "name": "Crystal Heart",
+  "icon": "nights_mediumcore:crystal_heart",
+  "category": "nights_mediumcore:items",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nights_mediumcore:crystal_heart"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Using a Crystal Heart restores one lost maximum heart, up to the vanilla cap of 10. It is subject to combat and usage cooldowns so it cannot be spammed in a fight. It also grants a short regeneration effect on use."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When the heart recovery mode is set to crystal or both, Crystal Hearts restore lost maximums. In apple or none mode they still grant regeneration but cannot raise your cap."
+    }
+  ]
+}

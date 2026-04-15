@@ -21,7 +21,7 @@ import java.util.UUID;
 public class HeartLossHandler
 {
     public static final UUID MODIFIER_UUID = UUID.fromString("d5ec7a62-1b8c-4f92-9e5a-3c7d1f0a2b4e");
-    private static final String MODIFIER_NAME = "nightsmediumcore.heart_loss";
+    private static final String MODIFIER_NAME = "nights_mediumcore.heart_loss";
     public static final int MAX_HEARTS = 10;
 
     public static int getMinHearts()

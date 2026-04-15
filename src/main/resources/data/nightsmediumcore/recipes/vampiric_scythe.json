@@ -1,7 +1,0 @@
-{
-  "type": "minecraft:smithing_transform",
-  "template": { "item": "minecraft:netherite_upgrade_smithing_template" },
-  "base": { "item": "minecraft:netherite_hoe" },
-  "addition": { "item": "nightsmediumcore:bloody_heart" },
-  "result": { "item": "nightsmediumcore:vampiric_scythe" }
-}

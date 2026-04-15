@@ -1,0 +1,16 @@
+{
+  "name": "Lifesteal Overview",
+  "icon": "nights_mediumcore:living_heart",
+  "category": "nights_mediumcore:lifesteal",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Lifesteal is an optional PvP layer. When enabled, killing another player reduces the victim's maximum hearts by one and can drop a Living Heart for the killer, respecting the heart floor."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Lifesteal can run alongside the base mediumcore mechanics, or on its own. Use /nights_mediumcore mode to switch between mediumcore only, lifesteal only, or both."
+    }
+  ]
+}

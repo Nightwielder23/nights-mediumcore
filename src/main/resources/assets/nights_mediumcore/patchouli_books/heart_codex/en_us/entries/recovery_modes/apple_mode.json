@@ -1,0 +1,16 @@
+{
+  "name": "Apple Mode",
+  "icon": "minecraft:golden_apple",
+  "category": "nights_mediumcore:recovery_modes",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "In apple mode, only golden apples restore lost maximum hearts. Eating a golden apple will return one heart, respecting the optional combat lockout and usage cooldown."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Enchanted golden apples always bypass the combat lockout and the usage cooldown. Crystal Hearts still grant regeneration on use but cannot raise your cap in this mode."
+    }
+  ]
+}

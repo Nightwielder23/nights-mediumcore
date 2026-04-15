@@ -1,0 +1,16 @@
+{
+  "name": "None Mode",
+  "icon": "minecraft:barrier",
+  "category": "nights_mediumcore:recovery_modes",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "In none mode, no items can restore lost maximum hearts. Crystal Hearts still grant their regeneration buff when used, but will not increase your cap. Golden apples behave exactly as in vanilla."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "None mode is the strictest setting. Use it when you want heart loss to feel permanent, with bed regen or admin commands as the only paths back."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Living Hearts",
+  "icon": "nights_mediumcore:living_heart",
+  "category": "nights_mediumcore:lifesteal",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Living Hearts are the physical form of a stolen heart. Using one grants you a bonus maximum heart, separate from the mediumcore heart pool. Living Hearts can push your total above 10."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If both mediumcore and lifesteal are on, and the victim still has mediumcore hearts above the floor, the kill removes a mediumcore heart first. If the victim is already at the floor, a lifesteal heart is taken instead."
+    }
+  ]
+}

@@ -23,7 +23,7 @@ public class BloodShardLoot
         if (EVOKER.equals(name))
         {
             event.getTable().addPool(LootPool.lootPool()
-                    .name("nightsmediumcore_blood_shard")
+                    .name("nights_mediumcore_blood_shard")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(ModItems.BLOOD_SHARD.get())
                             .when(LootItemRandomChanceCondition.randomChance(0.03F)))
@@ -32,7 +32,7 @@ public class BloodShardLoot
         else if (STRONGHOLD_LIBRARY.equals(name))
         {
             event.getTable().addPool(LootPool.lootPool()
-                    .name("nightsmediumcore_blood_shard")
+                    .name("nights_mediumcore_blood_shard")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(ModItems.BLOOD_SHARD.get())
                             .when(LootItemRandomChanceCondition.randomChance(0.02F)))

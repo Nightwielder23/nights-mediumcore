@@ -1,0 +1,16 @@
+{
+  "name": "Heart Ore",
+  "icon": "nights_mediumcore:heart_ore",
+  "category": "nights_mediumcore:items",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nights_mediumcore:heart_ore"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Heart Ore is the natural source of Crystal Shards. Mine it to obtain shards, which can be combined into Crystal Hearts to restore lost maximum hearts."
+    }
+  ]
+}

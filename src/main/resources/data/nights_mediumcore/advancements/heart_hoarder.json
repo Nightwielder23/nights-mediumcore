@@ -1,0 +1,14 @@
+{
+  "parent": "nights_mediumcore:root",
+  "display": {
+    "icon": {"item": "nights_mediumcore:heart_relic"},
+    "title": {"translate": "advancements.nights_mediumcore.heart_hoarder.title"},
+    "description": {"translate": "advancements.nights_mediumcore.heart_hoarder.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "impossible": {"trigger": "minecraft:impossible"}
+  }
+}

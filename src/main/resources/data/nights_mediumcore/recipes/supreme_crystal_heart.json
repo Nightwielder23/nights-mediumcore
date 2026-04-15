@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CGC",
+    "GCG",
+    "CGC"
+  ],
+  "key": {
+    "C": {
+      "item": "nights_mediumcore:crystal_heart"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    }
+  },
+  "result": {
+    "item": "nights_mediumcore:supreme_crystal_heart",
+    "count": 1
+  }
+}

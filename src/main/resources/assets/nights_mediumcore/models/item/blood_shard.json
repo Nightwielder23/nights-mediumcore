@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "nights_mediumcore:item/blood_shard"
+  }
+}

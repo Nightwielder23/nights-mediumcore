@@ -19,7 +19,7 @@ import java.util.UUID;
 public class HeartRelicHandler
 {
     public static final UUID RELIC_MODIFIER_UUID = UUID.fromString("a1b2c3d4-e5f6-7890-abcd-ef1234567890");
-    private static final String MODIFIER_NAME = "nightsmediumcore.heart_relic";
+    private static final String MODIFIER_NAME = "nights_mediumcore.heart_relic";
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event)

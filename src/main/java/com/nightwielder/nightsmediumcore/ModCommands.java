@@ -19,7 +19,7 @@ public class ModCommands
 {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        LiteralCommandNode<CommandSourceStack> node = dispatcher.register(Commands.literal("nightsmediumcore")
+        LiteralCommandNode<CommandSourceStack> node = dispatcher.register(Commands.literal("nights_mediumcore")
                 .then(Commands.literal("hearts")
                         .executes(ctx -> showHearts(ctx.getSource()))
                         .then(Commands.literal("total")

@@ -1,0 +1,14 @@
+{
+  "display": {
+    "icon": {"item": "nights_mediumcore:crystal_heart"},
+    "title": {"translate": "advancements.nights_mediumcore.root.title"},
+    "description": {"translate": "advancements.nights_mediumcore.root.description"},
+    "background": "minecraft:textures/block/netherite_block.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "in_game": {"trigger": "minecraft:tick"}
+  }
+}

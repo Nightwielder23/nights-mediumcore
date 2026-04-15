@@ -21,7 +21,7 @@ import java.util.UUID;
 public class BloodRelicItem extends Item implements ICurioItem
 {
     public static final UUID MODIFIER_UUID = UUID.fromString("b2c3d4e5-f6a7-8901-bcde-f23456789012");
-    private static final String MODIFIER_NAME = "nightsmediumcore.blood_relic";
+    private static final String MODIFIER_NAME = "nights_mediumcore.blood_relic";
 
     public BloodRelicItem(Properties properties)
     {

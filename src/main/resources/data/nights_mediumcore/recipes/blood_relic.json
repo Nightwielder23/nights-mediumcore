@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "minecraft:netherite_upgrade_smithing_template" },
+  "base": { "item": "nights_mediumcore:heart_relic" },
+  "addition": { "item": "nights_mediumcore:bloody_heart" },
+  "result": { "item": "nights_mediumcore:blood_relic" }
+}

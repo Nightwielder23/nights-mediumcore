@@ -1,0 +1,16 @@
+{
+  "name": "Crystal Mode",
+  "icon": "nights_mediumcore:crystal_heart",
+  "category": "nights_mediumcore:recovery_modes",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Crystal mode is the default. Only Crystal Heart items can restore your lost maximum hearts. Each Crystal Heart gives back one heart, subject to combat and usage cooldowns."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Supreme Crystal Hearts restore every lost heart in one use and ignore all cooldowns. Golden apples behave as vanilla in this mode."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
   "biomes": "#minecraft:is_overworld",
-  "features": "nightsmediumcore:heart_ore",
+  "features": "nights_mediumcore:heart_ore",
   "step": "underground_ores"
 }

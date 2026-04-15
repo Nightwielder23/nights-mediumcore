@@ -1,0 +1,32 @@
+{
+  "name": "Player Commands",
+  "icon": "minecraft:book",
+  "category": "nights_mediumcore:commands",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)/nights_mediumcore hearts$(): shows your current base hearts in the form current/max."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)/nights_mediumcore hearts total$(): shows your total hearts including lifesteal bonuses."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)/nights_mediumcore hearts living$(): shows your current lifesteal hearts against the cap."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)/nights_mediumcore give hearts <player> <amount>$(): transfers that many of your own hearts to another player. Lifesteal hearts drain first."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)/nights_mediumcore convert crystal <amount>$(): spends your hearts to receive Crystal Heart items. Lifesteal hearts spend first."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(bold)/nights_mediumcore convert living <amount>$(): spends your hearts to receive Living Heart items."
+    }
+  ]
+}

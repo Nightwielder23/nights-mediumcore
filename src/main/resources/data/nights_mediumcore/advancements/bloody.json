@@ -1,0 +1,17 @@
+{
+  "parent": "nights_mediumcore:blood_path",
+  "display": {
+    "icon": {"item": "nights_mediumcore:bloody_heart"},
+    "title": {"translate": "advancements.nights_mediumcore.bloody.title"},
+    "description": {"translate": "advancements.nights_mediumcore.bloody.description"},
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {"items": [{"items": ["nights_mediumcore:bloody_heart"]}]}
+    }
+  }
+}

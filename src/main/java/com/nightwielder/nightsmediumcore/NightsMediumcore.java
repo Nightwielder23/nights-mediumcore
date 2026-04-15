@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 @Mod(NightsMediumcore.MODID)
 public class NightsMediumcore
 {
-    public static final String MODID = "nightsmediumcore";
+    public static final String MODID = "nights_mediumcore";
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public NightsMediumcore(FMLJavaModLoadingContext context)

@@ -1,0 +1,20 @@
+{
+  "name": "Living Heart",
+  "icon": "nights_mediumcore:living_heart",
+  "category": "nights_mediumcore:items",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "nights_mediumcore:living_heart"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Living Hearts are the currency of lifesteal. Killing another player in lifesteal mode has a chance to drop one. Using a Living Heart grants one extra maximum heart, which can stack above the vanilla 10."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "You can also create Living Hearts by spending your own hearts with /nights_mediumcore convert living. Use them to push your total heart count past 10, up to the configured cap."
+    }
+  ]
+}

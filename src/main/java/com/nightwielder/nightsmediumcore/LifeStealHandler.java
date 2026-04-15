@@ -18,7 +18,7 @@ import java.util.UUID;
 public class LifeStealHandler
 {
     public static final UUID BONUS_MODIFIER_UUID = UUID.fromString("a7b3c1d2-4e5f-6a7b-8c9d-0e1f2a3b4c5d");
-    private static final String BONUS_MODIFIER_NAME = "nightsmediumcore.lifesteal_bonus";
+    private static final String BONUS_MODIFIER_NAME = "nights_mediumcore.lifesteal_bonus";
 
     public static double resolvedDropChance()
     {
