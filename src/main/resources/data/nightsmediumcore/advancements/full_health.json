@@ -1,10 +1,10 @@
 {
-  "parent": "nightsmediumcore:root",
+  "parent": "nightsmediumcore:heart_hoarder",
   "display": {
     "icon": {"item": "nightsmediumcore:supreme_crystal_heart"},
     "title": {"translate": "advancements.nightsmediumcore.full_health.title"},
     "description": {"translate": "advancements.nightsmediumcore.full_health.description"},
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true
   },

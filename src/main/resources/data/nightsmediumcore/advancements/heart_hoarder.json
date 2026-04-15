@@ -1,5 +1,5 @@
 {
-  "parent": "nightsmediumcore:full_health",
+  "parent": "nightsmediumcore:root",
   "display": {
     "icon": {"item": "nightsmediumcore:heart_relic"},
     "title": {"translate": "advancements.nightsmediumcore.heart_hoarder.title"},

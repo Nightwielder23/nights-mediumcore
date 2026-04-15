@@ -29,9 +29,9 @@ public class ModAdvancements
     public static void checkMaxHealthMilestones(ServerPlayer player)
     {
         float max = player.getMaxHealth();
-        if (max >= 20.0F)
-            grant(player, "full_health");
         if (max >= 30.0F)
             grant(player, "heart_hoarder");
+        if (max >= 40.0F)
+            grant(player, "full_health");
     }
 }
