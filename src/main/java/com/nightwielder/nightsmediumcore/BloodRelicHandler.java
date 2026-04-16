@@ -33,7 +33,7 @@ public class BloodRelicHandler
             return;
         if (!(event.player instanceof ServerPlayer player))
             return;
-        if (!ModList.get().isLoaded("curios"))
+        if (ModList.get().isLoaded("curios"))
             return;
 
         boolean has = hasInMainInventory(player);
@@ -55,8 +55,6 @@ public class BloodRelicHandler
             if (existing != null)
             {
                 healthAttr.removeModifier(BloodRelicItem.MODIFIER_UUID);
-                if (player.getHealth() > player.getMaxHealth())
-                    player.setHealth(player.getMaxHealth());
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                         player.getId(), Collections.singleton(healthAttr)));
             }
@@ -92,6 +90,14 @@ public class BloodRelicHandler
         {
             if (player.getInventory().getItem(i).is(ModItems.BLOOD_RELIC.get()))
                 return true;
+        }
+        if (ModList.get().isLoaded("curios"))
+        {
+            try
+            {
+                return CuriosItemFactory.isEquippedInCurios(player, ModItems.BLOOD_RELIC.get());
+            }
+            catch (Throwable ignored) {}
         }
         return false;
     }
