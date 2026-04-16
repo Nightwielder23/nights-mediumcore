@@ -24,14 +24,14 @@ The mod also includes an optional lifesteal system, configurable recovery modes,
 
 Night's Mediumcore includes 8 advancements tracking your progression through the heart and blood systems:
 
-- **Heart Collector** — obtain your first Crystal Heart
-- **Full Hearts** — reach 20 maximum hearts
-- **Heart Hoarder** — reach 30 maximum hearts
-- **Still Beating** — obtain your first Living Heart
-- **Blood Path** — obtain your first Blood Shard
-- **Bloody** — craft a Bloody Heart
-- **Blood Knight** — obtain the Blood Relic
-- **Vampiric** — obtain the Vampiric Scythe
+- **Heart Collector**: obtain your first Crystal Heart
+- **Full Hearts**: reach 20 maximum hearts
+- **Heart Hoarder**: reach 30 maximum hearts
+- **Still Beating**: obtain your first Living Heart
+- **Blood Path**: obtain your first Blood Shard
+- **Bloody**: craft a Bloody Heart
+- **Blood Knight**: obtain the Blood Relic
+- **Vampiric**: obtain the Vampiric Scythe
 
 ## Bed Regen
 
