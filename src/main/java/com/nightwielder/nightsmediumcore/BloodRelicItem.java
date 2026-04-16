@@ -20,9 +20,6 @@ import java.util.UUID;
 
 public class BloodRelicItem extends Item implements ICurioItem
 {
-    public static final UUID MODIFIER_UUID = UUID.fromString("b2c3d4e5-f6a7-8901-bcde-f23456789012");
-    private static final String MODIFIER_NAME = "nights_mediumcore.blood_relic";
-
     public BloodRelicItem(Properties properties)
     {
         super(properties);
@@ -40,7 +37,7 @@ public class BloodRelicItem extends Item implements ICurioItem
         if (!(slotContext.entity() instanceof ServerPlayer player))
             return;
 
-        applyOrUpdateModifier(player);
+        BloodRelicHandler.applyOrUpdateModifier(player);
 
         if (player.tickCount % 20 == 0)
         {
@@ -53,7 +50,7 @@ public class BloodRelicItem extends Item implements ICurioItem
     {
         if (slotContext.entity() instanceof ServerPlayer player)
         {
-            applyOrUpdateModifier(player);
+            BloodRelicHandler.applyOrUpdateModifier(player);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
         }
     }
@@ -66,7 +63,7 @@ public class BloodRelicItem extends Item implements ICurioItem
             AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
             if (healthAttr != null)
             {
-                healthAttr.removeModifier(MODIFIER_UUID);
+                healthAttr.removeModifier(BloodRelicHandler.MODIFIER_UUID);
                 if (player.getHealth() > player.getMaxHealth())
                     player.setHealth(player.getMaxHealth());
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
@@ -80,31 +77,5 @@ public class BloodRelicItem extends Item implements ICurioItem
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack)
     {
         return true;
-    }
-
-    public static void applyOrUpdateModifier(ServerPlayer player)
-    {
-        AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
-        if (healthAttr == null)
-            return;
-
-        AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
-        HeartLossData data = HeartLossData.get(player.server.overworld());
-        int heartsLost = data.getHeartsLost(player.getUUID());
-        double mediumcoreHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
-        int bonusHearts = (int) Math.ceil(mediumcoreHearts * 0.2);
-        double bonusHP = bonusHearts * 2.0;
-        if (bonusHP < 4.0)
-            bonusHP = 4.0;
-
-        if (existing == null || existing.getAmount() != bonusHP)
-        {
-            if (existing != null)
-                healthAttr.removeModifier(MODIFIER_UUID);
-            healthAttr.addPermanentModifier(new AttributeModifier(
-                    MODIFIER_UUID, MODIFIER_NAME, bonusHP, AttributeModifier.Operation.ADDITION));
-            player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
-                    player.getId(), Collections.singleton(healthAttr)));
-        }
     }
 }

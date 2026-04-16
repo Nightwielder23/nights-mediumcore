@@ -20,10 +20,13 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = NightsMediumcore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BloodRelicHandler
 {
+    public static final UUID MODIFIER_UUID = UUID.fromString("b2c3d4e5-f6a7-8901-bcde-f23456789012");
+    private static final String MODIFIER_NAME = "nights_mediumcore.blood_relic";
     private static final float HOSTILE_DROP_CHANCE = 0.005F;
 
     @SubscribeEvent
@@ -33,9 +36,12 @@ public class BloodRelicHandler
             return;
         if (!(event.player instanceof ServerPlayer player))
             return;
+
+        // When Curios is loaded, BloodRelicItem handles everything via ICurioItem
         if (ModList.get().isLoaded("curios"))
             return;
 
+        // Inventory fallback — only runs when Curios is NOT installed
         boolean has = hasInMainInventory(player);
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
         if (healthAttr == null)
@@ -43,7 +49,7 @@ public class BloodRelicHandler
 
         if (has)
         {
-            BloodRelicItem.applyOrUpdateModifier(player);
+            applyOrUpdateModifier(player);
             if (player.tickCount % 20 == 0)
             {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
@@ -51,10 +57,10 @@ public class BloodRelicHandler
         }
         else
         {
-            AttributeModifier existing = healthAttr.getModifier(BloodRelicItem.MODIFIER_UUID);
+            AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
             if (existing != null)
             {
-                healthAttr.removeModifier(BloodRelicItem.MODIFIER_UUID);
+                healthAttr.removeModifier(MODIFIER_UUID);
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                         player.getId(), Collections.singleton(healthAttr)));
             }
@@ -84,20 +90,38 @@ public class BloodRelicHandler
         }
     }
 
+    public static void applyOrUpdateModifier(ServerPlayer player)
+    {
+        AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (healthAttr == null)
+            return;
+
+        AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
+        HeartLossData data = HeartLossData.get(player.server.overworld());
+        int heartsLost = data.getHeartsLost(player.getUUID());
+        double mediumcoreHearts = HeartLossHandler.MAX_HEARTS - heartsLost;
+        int bonusHearts = (int) Math.ceil(mediumcoreHearts * 0.2);
+        double bonusHP = bonusHearts * 2.0;
+        if (bonusHP < 4.0)
+            bonusHP = 4.0;
+
+        if (existing == null || existing.getAmount() != bonusHP)
+        {
+            if (existing != null)
+                healthAttr.removeModifier(MODIFIER_UUID);
+            healthAttr.addPermanentModifier(new AttributeModifier(
+                    MODIFIER_UUID, MODIFIER_NAME, bonusHP, AttributeModifier.Operation.ADDITION));
+            player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
+                    player.getId(), Collections.singleton(healthAttr)));
+        }
+    }
+
     private static boolean hasInMainInventory(Player player)
     {
         for (int i = 0; i < 36; i++)
         {
             if (player.getInventory().getItem(i).is(ModItems.BLOOD_RELIC.get()))
                 return true;
-        }
-        if (ModList.get().isLoaded("curios"))
-        {
-            try
-            {
-                return CuriosItemFactory.isEquippedInCurios(player, ModItems.BLOOD_RELIC.get());
-            }
-            catch (Throwable ignored) {}
         }
         return false;
     }
@@ -110,10 +134,20 @@ public class BloodRelicHandler
         {
             try
             {
-                return CuriosItemFactory.isEquippedInCurios(player, ModItems.BLOOD_RELIC.get());
+                return CuriosCheck.isEquipped(player);
             }
             catch (Throwable ignored) {}
         }
         return false;
+    }
+
+    // Inner helper — isolates Curios API references so this class verifies and loads
+    // cleanly when Curios is absent. Only touched behind a ModList.isLoaded check.
+    private static final class CuriosCheck
+    {
+        static boolean isEquipped(ServerPlayer player)
+        {
+            return CuriosItemFactory.isEquippedInCurios(player, ModItems.BLOOD_RELIC.get());
+        }
     }
 }
