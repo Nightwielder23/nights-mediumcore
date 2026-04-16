@@ -52,7 +52,7 @@ public class BloodRelicHandler
             applyOrUpdateModifier(player);
             if (player.tickCount % 20 == 0)
             {
-                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
             }
         }
         else

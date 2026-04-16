@@ -20,6 +20,19 @@ The mod also includes an optional lifesteal system, configurable recovery modes,
 
 **Heart Relics** are crafted from eight Crystal Hearts surrounding one Supreme Crystal Heart. Increases your maximum hearts by 20% rounded up and gives permanent Regen 1 while equipped. Works in the Curios charm slot or anywhere in your main inventory without Curios. Right click to auto-equip if Curios is installed.
 
+## Advancements
+
+Night's Mediumcore includes 8 advancements tracking your progression through the heart and blood systems:
+
+- **Heart Collector** — obtain your first Crystal Heart
+- **Full Hearts** — reach 20 maximum hearts
+- **Heart Hoarder** — reach 30 maximum hearts
+- **Still Beating** — obtain your first Living Heart
+- **Blood Path** — obtain your first Blood Shard
+- **Bloody** — craft a Bloody Heart
+- **Blood Knight** — obtain the Blood Relic
+- **Vampiric** — obtain the Vampiric Scythe
+
 ## Bed Regen
 
 Sleeping restores one heart if your base hearts are below the configured threshold (default 7) and the cooldown has expired. Regen 1 for 30 seconds always applies on wake regardless of cooldown.
@@ -34,43 +47,43 @@ Dying twice within 60 seconds only loses one heart. The grace period does not tr
 
 ## Commands
 
-All commands require OP level 2 unless noted.
+All commands require OP level 2 unless noted. The command can be run as `/nightsmediumcore` or the shorter alias `/nm`.
 
-`/nightsmediumcore hearts` shows your mediumcore hearts, for example 3/10. No permission required.
+`/nm hearts` shows your mediumcore hearts, for example 3/10. No permission required.
 
-`/nightsmediumcore hearts living` shows your lifesteal hearts, for example 3/10. No permission required.
+`/nm hearts living` shows your lifesteal hearts. No permission required.
 
-`/nightsmediumcore hearts total` shows all hearts including accessory bonuses. No permission required.
+`/nm hearts total` shows all hearts including accessory bonuses. No permission required.
 
-`/nightsmediumcore addheart <player> <amount>` adds mediumcore hearts.
+`/nm addheart <player> <amount>` adds mediumcore hearts.
 
-`/nightsmediumcore removeheart <player> <amount>` removes hearts, lifesteal first.
+`/nm removeheart <player> <amount>` removes hearts, lifesteal first.
 
-`/nightsmediumcore setheart <player> <amount>` sets total hearts, lifesteal adjusted first.
+`/nm setheart <player> <amount>` sets total hearts, lifesteal adjusted first.
 
-`/nightsmediumcore restoreheart <player>` restores all hearts.
+`/nm restoreheart <player>` restores all hearts.
 
-`/nightsmediumcore recovery <none|crystal|apple|both>` changes recovery mode.
+`/nm recovery <none|crystal|apple|both>` changes recovery mode.
 
-`/nightsmediumcore mode lifesteal` toggles lifesteal system.
+`/nm mode lifesteal` toggles lifesteal system.
 
-`/nightsmediumcore mode mediumcore` toggles mediumcore system.
+`/nm mode mediumcore` toggles mediumcore system.
 
-`/nightsmediumcore mode both` toggles both systems.
+`/nm mode both` toggles both systems.
 
-`/nightsmediumcore give hearts <player> <amount>` transfers hearts to another player, lifesteal first.
+`/nm give hearts <player> <amount>` transfers hearts to another player, lifesteal first.
 
-`/nightsmediumcore convert crystal <amount>` converts hearts to Crystal Heart items, lifesteal first.
+`/nm convert crystal <amount>` converts hearts to Crystal Heart items, lifesteal first.
 
-`/nightsmediumcore convert living <amount>` converts Crystal Hearts to Living Heart items.
+`/nm convert living <amount>` converts Crystal Hearts to Living Heart items.
 
-`/nightsmediumcore clearcooldown <player>` clears all cooldowns.
+`/nm clearcooldown <player>` clears all cooldowns.
 
 ---
 
 ## Advanced: Recovery Modes
 
-The recovery mode controls what items restore hearts. Change it with `/nightsmediumcore recovery` or in the config.
+The recovery mode controls what items restore hearts. Change it with `/nm recovery` or in the config.
 
 **None:** Crystal Hearts give regen only with no heart restore and no cooldown. Golden Apples give vanilla effects only. Only Living Hearts restore hearts.
 
@@ -100,7 +113,7 @@ In crystal or none recovery: vanilla effects only.
 
 ## Advanced: Lifesteal System
 
-Enable lifesteal with `/nightsmediumcore mode lifesteal` or set `lifeStealEnabled` to true in the config.
+Enable lifesteal with `/nm mode lifesteal` or set `lifeStealEnabled` to true in the config.
 
 When lifesteal is on, killing another player has a configurable chance to permanently steal one of their hearts, dropping it as a Living Heart item. The victim always respects the 3 heart floor. Recently respawned players are protected for a configurable window.
 

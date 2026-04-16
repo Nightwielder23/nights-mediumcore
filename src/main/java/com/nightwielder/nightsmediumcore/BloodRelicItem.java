@@ -41,7 +41,7 @@ public class BloodRelicItem extends Item implements ICurioItem
 
         if (player.tickCount % 20 == 0)
         {
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
         }
     }
 
@@ -51,7 +51,7 @@ public class BloodRelicItem extends Item implements ICurioItem
         if (slotContext.entity() instanceof ServerPlayer player)
         {
             BloodRelicHandler.applyOrUpdateModifier(player);
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
         }
     }
 

@@ -47,7 +47,7 @@ public class HeartRelicItem extends Item implements ICurioItem
         // Apply Regen 1 every 20 ticks with 25-tick duration
         if (player.tickCount % 20 == 0)
         {
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
         }
     }
 
@@ -57,7 +57,7 @@ public class HeartRelicItem extends Item implements ICurioItem
         if (slotContext.entity() instanceof ServerPlayer player)
         {
             applyOrUpdateModifier(player);
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 25, 0, true, false, true));
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
         }
     }
 
