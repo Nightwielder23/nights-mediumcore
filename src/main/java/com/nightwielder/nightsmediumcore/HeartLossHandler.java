@@ -60,11 +60,10 @@ public class HeartLossHandler
         int currentLost = data.getHeartsLost(player.getUUID());
         int maxLoss = MAX_HEARTS - minHearts;
 
-        // Already at minimum — no heart to lose
         if (currentLost >= maxLoss)
             return;
 
-        // Check death grace period only when a heart could actually be lost
+        // Only check the grace period when a heart could actually be lost
         long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
         if (currentTime < graceExpiry)
             return;
@@ -102,7 +101,6 @@ public class HeartLossHandler
 
         applyModifier(player, heartsLost);
 
-        // Set respawn immunity if enabled
         if (ModConfig.RESPAWN_IMMUNITY_ENABLED.get())
         {
             int immunityTicks = ModConfig.RESPAWN_IMMUNITY_SECONDS.get() * 20;
@@ -116,18 +114,16 @@ public class HeartLossHandler
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
 
-        // Only trigger on natural wake-up (not manually leaving bed)
+        // Only trigger on natural wake-up, not when the player manually leaves the bed
         if (event.wakeImmediately())
             return;
 
-        // Always grant Regen 1 for 30 seconds on natural wake-up
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 0, false, true, true));
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
 
-        // Check bed regen cooldown
         long bedExpiry = data.getBedRegenCooldown(player.getUUID());
         if (currentTime < bedExpiry)
             return;
@@ -140,16 +136,12 @@ public class HeartLossHandler
         if (currentHearts >= ModConfig.BED_REGEN_HEART_THRESHOLD.get())
             return;
 
-        // Restore 1 heart
         int newLost = currentLost - 1;
         data.setHeartsLost(player.getUUID(), newLost);
         applyModifier(player, newLost);
 
-        // Apply bed regen cooldown
         int cooldownTicks = ModConfig.BED_REGEN_COOLDOWN_MINUTES.get() * 60 * 20;
         data.setBedRegenCooldown(player.getUUID(), currentTime + cooldownTicks);
-
-        // Bed regen applied silently
     }
 
     @SubscribeEvent
@@ -167,7 +159,7 @@ public class HeartLossHandler
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
 
-        // Check respawn immunity — cancel all damage if active and enabled
+        // Cancel all damage while respawn immunity is active
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
@@ -196,7 +188,6 @@ public class HeartLossHandler
         long currentTime = overworld.getGameTime();
         long expiry = data.getRespawnImmunityExpiry(player.getUUID());
 
-        // Clear expired respawn immunity
         if (expiry > 0 && currentTime >= expiry)
         {
             data.clearRespawnImmunity(player.getUUID());
@@ -218,7 +209,6 @@ public class HeartLossHandler
         if (healthAttr == null)
             return;
 
-        // Remove existing modifier if present
         AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
         if (existing != null)
         {
@@ -227,21 +217,20 @@ public class HeartLossHandler
 
         if (heartsLost > 0)
         {
-            // Each heart = 2 health points
+            // 2 health points per heart
             double reduction = -(heartsLost * 2.0);
             AttributeModifier modifier = new AttributeModifier(
                     MODIFIER_UUID, MODIFIER_NAME, reduction, AttributeModifier.Operation.ADDITION);
             healthAttr.addPermanentModifier(modifier);
         }
 
-        // Clamp current health if it exceeds new max
         float newMax = player.getMaxHealth();
         if (player.getHealth() > newMax)
         {
             player.setHealth(newMax);
         }
 
-        // Force sync attributes to client so the HUD updates immediately
+        // Force-sync attributes so the HUD updates immediately
         player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                 player.getId(), java.util.Collections.singleton(healthAttr)));
 

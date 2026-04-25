@@ -76,7 +76,6 @@ public class HeartRenderer
             forgeGui.leftHeight += 10 * (rows + absorbRows);
         }
 
-        // Draw heart containers and fills, supporting multiple rows of 10
         for (int i = totalHearts - 1; i >= 0; i--)
         {
             int col = i % 10;
@@ -84,25 +83,22 @@ public class HeartRenderer
             int x = left + col * 8;
             int y = top - row * 10;
 
-            // Container outline
             gfx.blit(ICONS, x, y, CONTAINER_U, CONTAINER_V, 9, 9);
 
             int hp = i * 2;
             if (hp + 2 <= healthHalf)
             {
-                // Full heart — draw custom texture scaled to 9x9
                 gfx.blit(HEART_TEXTURE, x, y, 9, 9,
                         HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W, HEART_SRC_H, 256, 256);
             }
             else if (hp + 1 <= healthHalf)
             {
-                // Half heart — draw left half of custom texture
+                // Left half of the custom texture for a half heart
                 gfx.blit(HEART_TEXTURE, x, y, 5, 9,
                         HEART_SRC_X, HEART_SRC_Y, HEART_SRC_W / 2, HEART_SRC_H, 256, 256);
             }
         }
 
-        // Draw absorption hearts above the topmost heart row
         if (absorbHalf > 0)
         {
             int absTop = top - (rows - 1) * 10 - 10;

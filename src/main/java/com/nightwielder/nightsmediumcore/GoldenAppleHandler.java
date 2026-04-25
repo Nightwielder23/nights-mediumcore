@@ -22,8 +22,8 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(modid = NightsMediumcore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GoldenAppleHandler
 {
-    // Cache the item being consumed since Finish event fires after shrink(1),
-    // which makes getItem() return Items.AIR when the last apple is eaten.
+    // Cache the item being consumed: the Finish event fires after shrink(1), so
+    // getItem() returns Items.AIR when the player just ate their last apple.
     private static final Map<UUID, Item> consumingItem = new HashMap<>();
 
     @SubscribeEvent
@@ -83,10 +83,10 @@ public class GoldenAppleHandler
 
         if (isEnchanted)
         {
-            // Enchanted golden apple: no cooldown gating
+            // Enchanted golden apple ignores all cooldowns
             if (mcOn)
             {
-                // Restore all mediumcore + lifesteal hearts
+                // Restore everything: mediumcore loss and lifesteal up to the cap
                 if (currentLost <= 0 && currentLs >= lsCap)
                     return;
                 data.setHeartsLost(player.getUUID(), 0);
@@ -96,7 +96,7 @@ public class GoldenAppleHandler
             }
             else if (lsOnly)
             {
-                // Restore 2 lifesteal hearts (up to cap)
+                // Restore up to 2 lifesteal hearts, capped
                 if (currentLs >= lsCap)
                     return;
                 int add = Math.min(2, lsCap - currentLs);
@@ -111,7 +111,7 @@ public class GoldenAppleHandler
         }
         else
         {
-            // Regular golden apple — check combat cooldown if enabled
+            // Regular golden apple. Combat cooldown gates this when enabled.
             if (!isCreative && ModConfig.APPLE_COMBAT_COOLDOWN.get())
             {
                 long combatExpiry = data.getCombatCooldown(player.getUUID());
@@ -119,7 +119,6 @@ public class GoldenAppleHandler
                     return;
             }
 
-            // Check apple cooldown if configured
             int cooldownSeconds = ModConfig.APPLE_COOLDOWN_SECONDS.get();
             if (!isCreative && cooldownSeconds > 0)
             {
@@ -136,7 +135,7 @@ public class GoldenAppleHandler
                 }
             }
 
-            // Restore 1 heart: mediumcore first, then lifesteal
+            // Restore 1 heart, mediumcore first then lifesteal
             if (mcOn && currentLost > 0)
             {
                 int newLost = currentLost - 1;
@@ -154,14 +153,12 @@ public class GoldenAppleHandler
                 return;
             }
 
-            // Apply apple cooldown if configured
             if (!isCreative && cooldownSeconds > 0)
             {
                 data.setAppleCooldown(player.getUUID(), currentTime + (long) cooldownSeconds * 20);
             }
         }
 
-        // Heart particles and level-up sound
         ServerLevel serverLevel = player.serverLevel();
         serverLevel.sendParticles(ParticleTypes.HEART,
                 player.getX(), player.getY() + 1.0, player.getZ(),

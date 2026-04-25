@@ -37,11 +37,11 @@ public class BloodRelicHandler
         if (!(event.player instanceof ServerPlayer player))
             return;
 
-        // When Curios is loaded, BloodRelicItem handles everything via ICurioItem
+        // With Curios loaded, BloodRelicItem handles everything via ICurioItem
         if (ModList.get().isLoaded("curios"))
             return;
 
-        // Inventory fallback — only runs when Curios is NOT installed
+        // Inventory-based fallback for when Curios is not installed
         boolean has = hasInMainInventory(player);
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
         if (healthAttr == null)
@@ -141,8 +141,8 @@ public class BloodRelicHandler
         return false;
     }
 
-    // Inner helper — isolates Curios API references so this class verifies and loads
-    // cleanly when Curios is absent. Only touched behind a ModList.isLoaded check.
+    // Isolates the Curios API references so this class still verifies and loads when
+    // Curios is absent. Only touched after a ModList.isLoaded("curios") check.
     private static final class CuriosCheck
     {
         static boolean isEquipped(ServerPlayer player)

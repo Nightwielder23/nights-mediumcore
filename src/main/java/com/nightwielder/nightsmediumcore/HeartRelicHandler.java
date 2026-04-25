@@ -29,11 +29,11 @@ public class HeartRelicHandler
         if (!(event.player instanceof ServerPlayer player))
             return;
 
-        // When Curios is loaded, HeartRelicItem handles everything via ICurioItem
+        // With Curios loaded, HeartRelicItem handles everything via ICurioItem
         if (ModList.get().isLoaded("curios"))
             return;
 
-        // Inventory fallback — only runs when Curios is NOT installed
+        // Inventory-based fallback for when Curios is not installed
         boolean hasRelicInInventory = checkInventory(player);
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
         if (healthAttr == null)
@@ -52,7 +52,7 @@ public class HeartRelicHandler
                 bonusHP = 4.0;
             }
 
-            // Only apply or update if the value changed
+            // Only re-apply when the bonus value actually changed
             if (existing == null || existing.getAmount() != bonusHP)
             {
                 if (existing != null)
@@ -62,12 +62,11 @@ public class HeartRelicHandler
                 healthAttr.addPermanentModifier(new AttributeModifier(
                         RELIC_MODIFIER_UUID, MODIFIER_NAME, bonusHP, AttributeModifier.Operation.ADDITION));
 
-                // Sync to client
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                         player.getId(), Collections.singleton(healthAttr)));
             }
 
-            // Apply Regen 1 every 20 ticks with 25-tick duration
+            // Refresh Regen I once per second with a 5-second duration so it never lapses
             if (player.tickCount % 20 == 0)
             {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
@@ -75,19 +74,16 @@ public class HeartRelicHandler
         }
         else
         {
-            // Remove relic modifier if present
             AttributeModifier existing = healthAttr.getModifier(RELIC_MODIFIER_UUID);
             if (existing != null)
             {
                 healthAttr.removeModifier(RELIC_MODIFIER_UUID);
 
-                // Clamp health to new max
                 if (player.getHealth() > player.getMaxHealth())
                 {
                     player.setHealth(player.getMaxHealth());
                 }
 
-                // Sync to client
                 player.connection.send(new net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket(
                         player.getId(), Collections.singleton(healthAttr)));
             }
@@ -96,7 +92,7 @@ public class HeartRelicHandler
 
     private static boolean checkInventory(ServerPlayer player)
     {
-        // Check main inventory slots 0-35 (hotbar + main inventory, not armor or offhand)
+        // Hotbar plus main inventory only (slots 0-35); armor and offhand are excluded
         for (int i = 0; i < 36; i++)
         {
             if (player.getInventory().getItem(i).is(ModItems.HEART_RELIC.get()))

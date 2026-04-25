@@ -31,8 +31,8 @@ public class HeartRelicItem extends Item implements ICurioItem
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack)
     {
-        // Modifier is managed manually in curioTick/onEquip/onUnequip using a fixed UUID
-        // to prevent stacking from Curios' auto-management
+        // The modifier is applied manually in curioTick/onEquip/onUnequip with a fixed UUID
+        // so Curios' auto-managed modifiers do not stack on top of ours.
         return HashMultimap.create();
     }
 
@@ -44,7 +44,7 @@ public class HeartRelicItem extends Item implements ICurioItem
 
         applyOrUpdateModifier(player);
 
-        // Apply Regen 1 every 20 ticks with 25-tick duration
+        // Refresh Regen I once per second with a 5-second duration so it never lapses
         if (player.tickCount % 20 == 0)
         {
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false, true));
@@ -96,7 +96,7 @@ public class HeartRelicItem extends Item implements ICurioItem
         if (healthAttr == null)
             return;
 
-        // Compute bonus from mediumcore base hearts only (exclude lifesteal & any other bonuses)
+        // Bonus is derived from mediumcore base hearts only, ignoring lifesteal and other bonuses
         AttributeModifier existing = healthAttr.getModifier(MODIFIER_UUID);
         HeartLossData data = HeartLossData.get(player.server.overworld());
         int heartsLost = data.getHeartsLost(player.getUUID());
@@ -108,7 +108,6 @@ public class HeartRelicItem extends Item implements ICurioItem
             bonusHP = 4.0;
         }
 
-        // Only apply or update if the value changed
         if (existing == null || existing.getAmount() != bonusHP)
         {
             if (existing != null)

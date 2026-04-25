@@ -49,7 +49,7 @@ public class ItemTooltipHandler
         }
         else if (item == ModItems.BLOODY_HEART.get())
         {
-            addLore(tooltip, "A heart drowned in crimson \u2014 raw material for darker work.");
+            addLore(tooltip, "A heart drowned in crimson, raw material for darker work.");
         }
         else if (item == ModItems.BLOOD_RELIC.get())
         {

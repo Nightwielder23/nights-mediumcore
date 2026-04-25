@@ -58,7 +58,6 @@ public class CrystalHeartItem extends Item
         int currentLs = data.getLifeStealHearts(serverPlayer.getUUID());
         int lsCap = LifeStealHandler.resolvedHeartCap();
 
-        // Determine whether hearts are restored and how many
         boolean restoresHearts;
         int mcRestore = 0;
         int lsRestore = 0;
@@ -91,7 +90,7 @@ public class CrystalHeartItem extends Item
             lsRestore = Math.min(1, Math.max(0, lsCap - currentLs));
         }
 
-        // If restoration would do nothing, refuse (creative bypasses)
+        // Creative bypasses the no-op refusal
         if (restoresHearts && mcRestore <= 0 && lsRestore <= 0 && !isCreative)
         {
             serverPlayer.sendSystemMessage(
@@ -100,7 +99,7 @@ public class CrystalHeartItem extends Item
             return InteractionResultHolder.fail(stack);
         }
 
-        // Combat and usage cooldowns: skip for supreme and creative
+        // Supreme and creative skip combat and usage cooldowns
         if (!isSupreme && !isCreative && restoresHearts)
         {
             long combatExpiry = data.getCombatCooldown(serverPlayer.getUUID());
@@ -126,7 +125,6 @@ public class CrystalHeartItem extends Item
             }
         }
 
-        // Apply heart restoration
         if (mcRestore > 0)
         {
             int newLost = currentLost - mcRestore;
@@ -140,23 +138,20 @@ public class CrystalHeartItem extends Item
             LifeStealHandler.applyBonusModifier(serverPlayer, newLs);
         }
 
-        // Apply usage cooldown (skip for supreme and creative)
         if (!isSupreme && !isCreative && restoresHearts)
         {
             int cooldownTicks = ModConfig.CRYSTAL_USAGE_COOLDOWN_SECONDS.get() * 20;
             data.setCrystalCooldown(serverPlayer.getUUID(), currentTime + cooldownTicks);
         }
 
-        // Consume item
         if (!isCreative)
             stack.shrink(1);
 
-        // Apply effects per spec
         if (isSupreme)
         {
             if (noneMode || mcOn)
             {
-                // crystal/both/apple with mediumcore on — full suite
+                // crystal, both, or apple mode with mediumcore on: full effect suite
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
                 serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
@@ -164,7 +159,7 @@ public class CrystalHeartItem extends Item
             }
             else
             {
-                // lifesteal only — crystal: no effects, both: Regen 2 for 10s
+                // lifesteal only. crystal mode gives no effects; both mode gets Regen 2 for 10s
                 if (mode.equals("both"))
                     serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
             }
@@ -184,13 +179,12 @@ public class CrystalHeartItem extends Item
             }
             else
             {
-                // lifesteal only — crystal: no regen, both: Regen 2 for 10s
+                // lifesteal only. crystal mode gives no regen; both mode gets Regen 2 for 10s
                 if (mode.equals("both"))
                     serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
             }
         }
 
-        // Particles + sound + sync
         ServerLevel serverLevel = serverPlayer.serverLevel();
         serverLevel.sendParticles(ParticleTypes.HEART,
                 serverPlayer.getX(), serverPlayer.getY() + 1.0, serverPlayer.getZ(),
