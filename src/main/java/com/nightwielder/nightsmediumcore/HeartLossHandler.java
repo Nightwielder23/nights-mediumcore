@@ -26,12 +26,39 @@ public class HeartLossHandler
 
     public static int getMinHearts()
     {
-        return ModConfig.HEART_FLOOR.get();
+        return Math.max(ModConfig.BASE_HEARTS.get(), ModConfig.FLOOR_HEARTS.get());
     }
 
     private static int getDeathGraceTicks()
     {
         return ModConfig.DEATH_GRACE_PERIOD_SECONDS.get() * 20;
+    }
+
+    // Player's max HP with our heart-loss and lifesteal modifiers stripped off. Lets the
+    // first-login capture work correctly even when saved modifiers are already in place.
+    public static double computeNaturalMaxHealth(ServerPlayer player)
+    {
+        AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (healthAttr == null)
+            return MAX_HEARTS * 2.0;
+        double current = player.getMaxHealth();
+        AttributeModifier hl = healthAttr.getModifier(MODIFIER_UUID);
+        AttributeModifier ls = healthAttr.getModifier(LifeStealHandler.BONUS_MODIFIER_UUID);
+        if (hl != null) current -= hl.getAmount();
+        if (ls != null) current -= ls.getAmount();
+        return current;
+    }
+
+    // Player's recorded starting hearts. Falls back to a live computation if none recorded yet.
+    public static int getInitialHearts(ServerPlayer player)
+    {
+        if (player == null || player.server == null)
+            return MAX_HEARTS;
+        HeartLossData data = HeartLossData.get(player.server.overworld());
+        double saved = data.getInitialMaxHealth(player.getUUID());
+        if (saved > 0)
+            return (int) Math.round(saved / 2.0);
+        return (int) Math.round(computeNaturalMaxHealth(player) / 2.0);
     }
 
     @SubscribeEvent
@@ -45,7 +72,6 @@ public class HeartLossHandler
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
-        int minHearts = getMinHearts();
 
         // Consume a lifesteal heart first if the player has any
         int lsHearts = data.getLifeStealHearts(player.getUUID());
@@ -56,9 +82,10 @@ public class HeartLossHandler
             return;
         }
 
-        // Use base mediumcore hearts from SavedData, not total health including modded bonuses
+        // Heart loss is bounded by each player's recorded starting hearts, not a global constant
         int currentLost = data.getHeartsLost(player.getUUID());
-        int maxLoss = MAX_HEARTS - minHearts;
+        int initialHearts = getInitialHearts(player);
+        int maxLoss = Math.max(0, initialHearts - getMinHearts());
 
         if (currentLost >= maxLoss)
             return;
@@ -81,7 +108,23 @@ public class HeartLossHandler
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
+
+        // Record the natural starting max HP on first-ever login. The dynamic floor uses this.
+        if (!data.hasInitialMaxHealth(player.getUUID()))
+        {
+            data.setInitialMaxHealth(player.getUUID(), computeNaturalMaxHealth(player));
+        }
+
         int heartsLost = data.getHeartsLost(player.getUUID());
+
+        // If the floor was raised since they last logged in, clamp existing loss to the new bound
+        int initialHearts = getInitialHearts(player);
+        int maxLoss = Math.max(0, initialHearts - getMinHearts());
+        if (heartsLost > maxLoss)
+        {
+            heartsLost = maxLoss;
+            data.setHeartsLost(player.getUUID(), heartsLost);
+        }
 
         applyModifier(player, heartsLost);
     }
@@ -132,7 +175,7 @@ public class HeartLossHandler
         if (currentLost <= 0)
             return;
 
-        int currentHearts = MAX_HEARTS - currentLost;
+        int currentHearts = getInitialHearts(player) - currentLost;
         if (currentHearts >= ModConfig.BED_REGEN_HEART_THRESHOLD.get())
             return;
 

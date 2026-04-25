@@ -20,8 +20,8 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> bedRegenCooldown = new HashMap<>();
     private final Map<UUID, Long> appleCooldown = new HashMap<>();
     private final Map<UUID, Long> respawnImmunityExpiry = new HashMap<>();
-    private final Map<UUID, Long> lifeStealRespawnTime = new HashMap<>();
     private final Map<UUID, Integer> lifeStealHearts = new HashMap<>();
+    private final Map<UUID, Double> initialMaxHealth = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
     {
@@ -111,14 +111,19 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
-    public long getLifeStealRespawnTime(UUID playerUUID)
+    public boolean hasInitialMaxHealth(UUID playerUUID)
     {
-        return lifeStealRespawnTime.getOrDefault(playerUUID, 0L);
+        return initialMaxHealth.containsKey(playerUUID);
     }
 
-    public void setLifeStealRespawnTime(UUID playerUUID, long gameTime)
+    public double getInitialMaxHealth(UUID playerUUID)
     {
-        lifeStealRespawnTime.put(playerUUID, gameTime);
+        return initialMaxHealth.getOrDefault(playerUUID, 0.0);
+    }
+
+    public void setInitialMaxHealth(UUID playerUUID, double maxHealth)
+    {
+        initialMaxHealth.put(playerUUID, maxHealth);
         setDirty();
     }
 
@@ -182,19 +187,19 @@ public class HeartLossData extends SavedData
         }
         tag.put("respawnImmunityExpiry", immunityTag);
 
-        CompoundTag lsRespawnTag = new CompoundTag();
-        for (Map.Entry<UUID, Long> entry : lifeStealRespawnTime.entrySet())
-        {
-            lsRespawnTag.putLong(entry.getKey().toString(), entry.getValue());
-        }
-        tag.put("lifeStealRespawnTime", lsRespawnTag);
-
         CompoundTag lsHeartsTag = new CompoundTag();
         for (Map.Entry<UUID, Integer> entry : lifeStealHearts.entrySet())
         {
             lsHeartsTag.putInt(entry.getKey().toString(), entry.getValue());
         }
         tag.put("lifeStealHearts", lsHeartsTag);
+
+        CompoundTag initialMaxTag = new CompoundTag();
+        for (Map.Entry<UUID, Double> entry : initialMaxHealth.entrySet())
+        {
+            initialMaxTag.putDouble(entry.getKey().toString(), entry.getValue());
+        }
+        tag.put("initialMaxHealth", initialMaxTag);
 
         return tag;
     }
@@ -256,17 +261,17 @@ public class HeartLossData extends SavedData
             catch (IllegalArgumentException ignored) {}
         }
 
-        CompoundTag lsRespawnTag = tag.getCompound("lifeStealRespawnTime");
-        for (String key : lsRespawnTag.getAllKeys())
-        {
-            try { data.lifeStealRespawnTime.put(UUID.fromString(key), lsRespawnTag.getLong(key)); }
-            catch (IllegalArgumentException ignored) {}
-        }
-
         CompoundTag lsHeartsTag = tag.getCompound("lifeStealHearts");
         for (String key : lsHeartsTag.getAllKeys())
         {
             try { data.lifeStealHearts.put(UUID.fromString(key), lsHeartsTag.getInt(key)); }
+            catch (IllegalArgumentException ignored) {}
+        }
+
+        CompoundTag initialMaxTag = tag.getCompound("initialMaxHealth");
+        for (String key : initialMaxTag.getAllKeys())
+        {
+            try { data.initialMaxHealth.put(UUID.fromString(key), initialMaxTag.getDouble(key)); }
             catch (IllegalArgumentException ignored) {}
         }
 

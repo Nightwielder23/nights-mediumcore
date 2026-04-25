@@ -31,12 +31,10 @@ public class EnchantmentLoot
         if (STRONGHOLD_LIBRARY.equals(name))
         {
             event.getTable().addPool(bookPool("nights_mediumcore_life_steal_book", "nights_mediumcore:life_steal", 0.02F));
-            event.getTable().addPool(bookPool("nights_mediumcore_life_leech_book", "nights_mediumcore:life_leech", 0.02F));
         }
         else if (BASTION_TREASURE.equals(name))
         {
             event.getTable().addPool(bookPool("nights_mediumcore_life_steal_book", "nights_mediumcore:life_steal", 0.01F));
-            event.getTable().addPool(bookPool("nights_mediumcore_life_leech_book", "nights_mediumcore:life_leech", 0.01F));
         }
         else if (NETHER_FORTRESS.equals(name))
             event.getTable().addPool(bookPool("nights_mediumcore_vampirism_book", "nights_mediumcore:vampirism", 0.02F));

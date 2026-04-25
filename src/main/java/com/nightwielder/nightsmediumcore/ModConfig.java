@@ -5,7 +5,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ModConfig
 {
-    public static final ForgeConfigSpec.IntValue HEART_FLOOR;
+    public static final ForgeConfigSpec.IntValue BASE_HEARTS;
+    public static final ForgeConfigSpec.IntValue FLOOR_HEARTS;
     public static final ForgeConfigSpec.IntValue DEATH_GRACE_PERIOD_SECONDS;
     public static final ForgeConfigSpec.IntValue CRYSTAL_COMBAT_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.IntValue CRYSTAL_USAGE_COOLDOWN_SECONDS;
@@ -19,8 +20,6 @@ public class ModConfig
     public static final ForgeConfigSpec.IntValue APPLE_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.BooleanValue LIFESTEAL_ENABLED;
     public static final ForgeConfigSpec.BooleanValue MEDIUMCORE_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue LIFESTEAL_DROP_CHANCE;
-    public static final ForgeConfigSpec.IntValue LIFESTEAL_RESPAWN_COOLDOWN;
     public static final ForgeConfigSpec.IntValue LIFESTEAL_HEART_CAP;
 
     public static final ForgeConfigSpec SPEC;
@@ -31,11 +30,21 @@ public class ModConfig
 
         builder.push("hearts");
 
-        HEART_FLOOR = builder
-                .comment("The minimum number of base hearts a player can be reduced to.",
-                         "Players will never lose hearts below this floor, even on death.",
-                         "Range: 1 to 10. Default: 3")
-                .defineInRange("heartFloor", 3, 1, 10);
+        BASE_HEARTS = builder
+                .comment("Reference value for the dynamic heart floor calculation.",
+                         "Each player's actual maximum HP is captured the first time they log in,",
+                         "so starting HP from class mods like Better Combat is honored. Heart loss",
+                         "can drive their effective max down toward this number, but no further.",
+                         "Settable in-game with /nm basehearts <value>.",
+                         "Range: 1 to 30. Default: 3")
+                .defineInRange("baseHearts", 3, 1, 30);
+
+        FLOOR_HEARTS = builder
+                .comment("Absolute hard floor for hearts a player can have, regardless of deaths.",
+                         "Acts as a safety net on top of baseHearts. The actual floor used is the",
+                         "higher of the two values.",
+                         "Range: 1 to 30. Default: 3")
+                .defineInRange("floorHearts", 3, 1, 30);
 
         DEATH_GRACE_PERIOD_SECONDS = builder
                 .comment("After losing a heart on death, the player is protected from losing",
@@ -121,22 +130,11 @@ public class ModConfig
                 .define("mediumcoreEnabled", true);
 
         LIFESTEAL_ENABLED = builder
-                .comment("When true, killing a player can drop a Living Heart and",
-                         "reduces the victim's maximum hearts by 1 (respecting the heart floor).",
+                .comment("When true, the lifesteal heart pool is active alongside mediumcore mechanics.",
+                         "Affects how Crystal Hearts, Living Hearts, and golden apples interact with",
+                         "the bonus heart pool.",
                          "Default: false")
                 .define("lifeStealEnabled", false);
-
-        LIFESTEAL_DROP_CHANCE = builder
-                .comment("Chance (0.0 to 1.0) for a Living Heart to drop on PvP kill.",
-                         "Set to -1.0 for automatic: 0.5 when both mediumcore and lifesteal are on,",
-                         "1.0 when only lifesteal is on.",
-                         "Default: -1.0")
-                .defineInRange("lifeStealDropChance", -1.0D, -1.0D, 1.0D);
-
-        LIFESTEAL_RESPAWN_COOLDOWN = builder
-                .comment("Seconds after respawn during which a player cannot be lifestealed.",
-                         "Range: 0 to 3600. Default: 60")
-                .defineInRange("lifeStealRespawnCooldown", 60, 0, 3600);
 
         LIFESTEAL_HEART_CAP = builder
                 .comment("Maximum hearts for informational purposes / external systems.",

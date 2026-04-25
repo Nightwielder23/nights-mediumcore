@@ -56,16 +56,12 @@ public class EnchantmentHandler
         if (attacker.equals(victim))
             return;
 
-        ItemStack weapon = attacker.getMainHandItem();
-        int enchLevel;
-        if (victim instanceof Player)
-            enchLevel = EnchantmentHelper.getItemEnchantmentLevel(
-                    ModEnchantments.LIFE_LEECH.get(), weapon);
-        else if (victim instanceof Enemy)
-            enchLevel = EnchantmentHelper.getItemEnchantmentLevel(
-                    ModEnchantments.LIFE_STEAL.get(), weapon);
-        else
+        if (!(victim instanceof Enemy))
             return;
+
+        ItemStack weapon = attacker.getMainHandItem();
+        int enchLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                ModEnchantments.LIFE_STEAL.get(), weapon);
 
         if (enchLevel <= 0)
             return;

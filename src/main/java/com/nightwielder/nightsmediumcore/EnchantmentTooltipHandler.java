@@ -26,13 +26,6 @@ public class EnchantmentTooltipHandler
         if (enchants.isEmpty())
             return;
 
-        if (enchants.containsKey(ModEnchantments.LIFE_LEECH.get()))
-        {
-            tooltip.add(Component.literal("Each level heals 3% of damage dealt to players.")
-                    .withStyle(ChatFormatting.DARK_RED));
-            tooltip.add(Component.literal("Max level 3.")
-                    .withStyle(ChatFormatting.GRAY));
-        }
         if (enchants.containsKey(ModEnchantments.LIFE_STEAL.get()))
         {
             tooltip.add(Component.literal("Each level heals 3% of damage dealt to hostile mobs.")
