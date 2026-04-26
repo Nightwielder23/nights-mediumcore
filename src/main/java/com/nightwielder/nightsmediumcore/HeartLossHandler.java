@@ -11,18 +11,22 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HeartLossHandler
 {
     public static final UUID MODIFIER_UUID = UUID.fromString("d5ec7a62-1b8c-4f92-9e5a-3c7d1f0a2b4e");
     private static final String MODIFIER_NAME = "nights_mediumcore.heart_loss";
     public static final int MAX_HEARTS = 10;
+
+    // UUIDs already handled in their current death. Cleared on respawn.
+    private static final Set<UUID> PROCESSED_DEATHS = ConcurrentHashMap.newKeySet();
 
     public static int getMinHearts()
     {
@@ -61,43 +65,61 @@ public class HeartLossHandler
         return (int) Math.round(computeNaturalMaxHealth(player) / 2.0);
     }
 
+    // Use Clone instead of LivingDeathEvent: the Corpse mod delays the original player's
+    // removal to spawn its corpse, and reading attributes mid-death makes Clone fire with a
+    // null removal reason, which hangs the server thread.
     @SubscribeEvent
-    public void onPlayerDeath(LivingDeathEvent event)
+    public void onPlayerClone(PlayerEvent.Clone event)
     {
-        if (!(event.getEntity() instanceof ServerPlayer player))
+        if (!event.isWasDeath())
+            return;
+        if (!(event.getEntity() instanceof ServerPlayer newPlayer))
+            return;
+        if (!(event.getOriginal() instanceof ServerPlayer oldPlayer))
             return;
         if (!ModConfig.MEDIUMCORE_ENABLED.get())
             return;
 
-        ServerLevel overworld = player.server.overworld();
+        // If something delays the original's removal, getRemovalReason() is null.
+        // Skip rather than touch a half-removed entity.
+        if (oldPlayer.getRemovalReason() == null)
+            return;
+
+        UUID playerId = oldPlayer.getUUID();
+
+        // Skip if Clone has already fired for this death
+        if (!PROCESSED_DEATHS.add(playerId))
+            return;
+
+        ServerLevel overworld = newPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
 
         // Consume a lifesteal heart first if the player has any
-        int lsHearts = data.getLifeStealHearts(player.getUUID());
+        int lsHearts = data.getLifeStealHearts(playerId);
         if (lsHearts > 0)
         {
-            data.setLifeStealHearts(player.getUUID(), lsHearts - 1);
-            data.setDeathGraceExpiry(player.getUUID(), currentTime + getDeathGraceTicks());
+            data.setLifeStealHearts(playerId, lsHearts - 1);
+            data.setDeathGraceExpiry(playerId, currentTime + getDeathGraceTicks());
             return;
         }
 
         // Heart loss is bounded by each player's recorded starting hearts, not a global constant
-        int currentLost = data.getHeartsLost(player.getUUID());
-        int initialHearts = getInitialHearts(player);
+        int currentLost = data.getHeartsLost(playerId);
+        int initialHearts = getInitialHearts(newPlayer);
         int maxLoss = Math.max(0, initialHearts - getMinHearts());
 
         if (currentLost >= maxLoss)
             return;
 
         // Only check the grace period when a heart could actually be lost
-        long graceExpiry = data.getDeathGraceExpiry(player.getUUID());
+        long graceExpiry = data.getDeathGraceExpiry(playerId);
         if (currentTime < graceExpiry)
             return;
 
         int newLost = currentLost + 1;
-        data.setHeartsLost(player.getUUID(), newLost);
-        data.setDeathGraceExpiry(player.getUUID(), currentTime + getDeathGraceTicks());
+        data.setHeartsLost(playerId, newLost);
+        data.setDeathGraceExpiry(playerId, currentTime + getDeathGraceTicks());
     }
 
     @SubscribeEvent
@@ -134,6 +156,8 @@ public class HeartLossHandler
     {
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
+
+        PROCESSED_DEATHS.remove(player.getUUID());
 
         ServerLevel overworld = player.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
