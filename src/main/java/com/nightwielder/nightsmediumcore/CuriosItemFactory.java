@@ -17,20 +17,4 @@ public class CuriosItemFactory
             return new Item(new Item.Properties().stacksTo(1));
         return new HeartRelicItem(new Item.Properties().stacksTo(1));
     }
-
-    public static Item createBloodRelic()
-    {
-        if (!ModList.get().isLoaded("curios"))
-            return new Item(new Item.Properties().stacksTo(1));
-        return new BloodRelicItem(new Item.Properties().stacksTo(1));
-    }
-
-    public static boolean isEquippedInCurios(net.minecraft.world.entity.player.Player player, Item item)
-    {
-        if (!ModList.get().isLoaded("curios"))
-            return false;
-        return top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player)
-                .map(inv -> !inv.findCurios(item).isEmpty())
-                .orElse(false);
-    }
 }

@@ -30,7 +30,7 @@ public class HeartLossHandler
 
     public static int getMinHearts()
     {
-        return Math.max(ModConfig.BASE_HEARTS.get(), ModConfig.FLOOR_HEARTS.get());
+        return ModConfig.FLOOR_HEARTS.get();
     }
 
     private static int getDeathGraceTicks()
@@ -38,8 +38,8 @@ public class HeartLossHandler
         return ModConfig.DEATH_GRACE_PERIOD_SECONDS.get() * 20;
     }
 
-    // Player's max HP with our heart-loss and lifesteal modifiers stripped off. Lets the
-    // first-login capture work correctly even when saved modifiers are already in place.
+    // Player's max HP with our heart-loss modifier stripped off. Lets the first-login
+    // capture work correctly even when a saved modifier is already in place.
     public static double computeNaturalMaxHealth(ServerPlayer player)
     {
         AttributeInstance healthAttr = player.getAttribute(Attributes.MAX_HEALTH);
@@ -47,9 +47,7 @@ public class HeartLossHandler
             return MAX_HEARTS * 2.0;
         double current = player.getMaxHealth();
         AttributeModifier hl = healthAttr.getModifier(MODIFIER_UUID);
-        AttributeModifier ls = healthAttr.getModifier(LifeStealHandler.BONUS_MODIFIER_UUID);
         if (hl != null) current -= hl.getAmount();
-        if (ls != null) current -= ls.getAmount();
         return current;
     }
 
@@ -94,15 +92,6 @@ public class HeartLossHandler
         ServerLevel overworld = newPlayer.server.overworld();
         HeartLossData data = HeartLossData.get(overworld);
         long currentTime = overworld.getGameTime();
-
-        // Consume a lifesteal heart first if the player has any
-        int lsHearts = data.getLifeStealHearts(playerId);
-        if (lsHearts > 0)
-        {
-            data.setLifeStealHearts(playerId, lsHearts - 1);
-            data.setDeathGraceExpiry(playerId, currentTime + getDeathGraceTicks());
-            return;
-        }
 
         // Heart loss is bounded by each player's recorded starting hearts, not a global constant
         int currentLost = data.getHeartsLost(playerId);

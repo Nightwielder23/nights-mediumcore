@@ -44,54 +44,22 @@ public class CrystalHeartItem extends Item
         boolean isCreative = serverPlayer.getAbilities().instabuild;
 
         String mode = ModConfig.HEART_RECOVERY_MODE.get();
-        boolean mcOn = ModConfig.MEDIUMCORE_ENABLED.get();
-        boolean lsOnly = !mcOn && ModConfig.LIFESTEAL_ENABLED.get();
-
-        if (!mcOn && !lsOnly)
-            return InteractionResultHolder.fail(stack);
-        if (lsOnly && mode.equals("apple"))
+        if (!ModConfig.MEDIUMCORE_ENABLED.get())
             return InteractionResultHolder.fail(stack);
 
         boolean noneMode = mode.equals("none");
+        boolean restoresHearts = !noneMode && !mode.equals("apple");
 
         int currentLost = data.getHeartsLost(serverPlayer.getUUID());
-        int currentLs = data.getLifeStealHearts(serverPlayer.getUUID());
-        int lsCap = LifeStealHandler.resolvedHeartCap();
-
-        boolean restoresHearts;
         int mcRestore = 0;
-        int lsRestore = 0;
 
-        if (lsOnly && isSupreme && (mode.equals("crystal") || mode.equals("none") || mode.equals("both")))
+        if (restoresHearts)
         {
-            restoresHearts = true;
-            int totalCap = Math.max(lsCap, 20);
-            lsRestore = Math.min(2, Math.max(0, totalCap - currentLs));
-        }
-        else if (noneMode)
-        {
-            restoresHearts = false;
-        }
-        else if (mcOn)
-        {
-            if (mode.equals("apple"))
-            {
-                restoresHearts = false;
-            }
-            else
-            {
-                restoresHearts = true;
-                mcRestore = isSupreme ? currentLost : Math.min(1, currentLost);
-            }
-        }
-        else
-        {
-            restoresHearts = true;
-            lsRestore = Math.min(1, Math.max(0, lsCap - currentLs));
+            mcRestore = isSupreme ? currentLost : Math.min(1, currentLost);
         }
 
         // Creative bypasses the no-op refusal
-        if (restoresHearts && mcRestore <= 0 && lsRestore <= 0 && !isCreative)
+        if (restoresHearts && mcRestore <= 0 && !isCreative)
         {
             serverPlayer.sendSystemMessage(
                     Component.literal("You are already at maximum hearts!")
@@ -131,12 +99,6 @@ public class CrystalHeartItem extends Item
             data.setHeartsLost(serverPlayer.getUUID(), newLost);
             HeartLossHandler.applyModifier(serverPlayer, newLost);
         }
-        if (lsRestore > 0)
-        {
-            int newLs = currentLs + lsRestore;
-            data.setLifeStealHearts(serverPlayer.getUUID(), newLs);
-            LifeStealHandler.applyBonusModifier(serverPlayer, newLs);
-        }
 
         if (!isSupreme && !isCreative && restoresHearts)
         {
@@ -149,40 +111,17 @@ public class CrystalHeartItem extends Item
 
         if (isSupreme)
         {
-            if (noneMode || mcOn)
-            {
-                // crystal, both, or apple mode with mediumcore on: full effect suite
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
-            }
-            else
-            {
-                // lifesteal only. crystal mode gives no effects; both mode gets Regen 2 for 10s
-                if (mode.equals("both"))
-                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
-            }
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 600, 3));
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 600, 0));
+            serverPlayer.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 600, 0));
         }
         else
         {
-            if (noneMode)
-            {
-                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
-            }
-            else if (mcOn)
-            {
-                if (mode.equals("apple"))
-                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 2));
-                else
-                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
-            }
+            if (mode.equals("apple"))
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 2));
             else
-            {
-                // lifesteal only. crystal mode gives no regen; both mode gets Regen 2 for 10s
-                if (mode.equals("both"))
-                    serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
-            }
+                serverPlayer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 200, 1));
         }
 
         ServerLevel serverLevel = serverPlayer.serverLevel();

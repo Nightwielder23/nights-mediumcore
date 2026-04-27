@@ -23,9 +23,7 @@ public class ModCommands
                 .then(Commands.literal("hearts")
                         .executes(ctx -> showHearts(ctx.getSource()))
                         .then(Commands.literal("total")
-                                .executes(ctx -> showTotalHearts(ctx.getSource())))
-                        .then(Commands.literal("living")
-                                .executes(ctx -> showLivingHearts(ctx.getSource()))))
+                                .executes(ctx -> showTotalHearts(ctx.getSource()))))
                 .then(Commands.literal("addheart")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
@@ -45,17 +43,11 @@ public class ModCommands
                 .then(Commands.literal("setheart")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("amount", IntegerArgumentType.integer(1, 60))
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(1, 30))
                                         .executes(ctx -> setHeart(
                                                 ctx.getSource(),
                                                 EntityArgument.getPlayer(ctx, "player"),
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
-                .then(Commands.literal("basehearts")
-                        .requires(source -> source.hasPermission(2))
-                        .then(Commands.argument("value", IntegerArgumentType.integer(1, 30))
-                                .executes(ctx -> setBaseHearts(
-                                        ctx.getSource(),
-                                        IntegerArgumentType.getInteger(ctx, "value")))))
                 .then(Commands.literal("restoreheart")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.argument("player", EntityArgument.player())
@@ -73,20 +65,11 @@ public class ModCommands
                 .then(Commands.literal("mode")
                         .requires(source -> source.hasPermission(2))
                         .then(Commands.literal("mediumcore")
-                                .executes(ctx -> setHeartMode(ctx.getSource(), "mediumcore")))
-                        .then(Commands.literal("lifesteal")
-                                .executes(ctx -> setHeartMode(ctx.getSource(), "lifesteal")))
-                        .then(Commands.literal("both")
-                                .executes(ctx -> setHeartMode(ctx.getSource(), "both"))))
+                                .executes(ctx -> setHeartMode(ctx.getSource(), "mediumcore"))))
                 .then(Commands.literal("convert")
                         .then(Commands.literal("crystal")
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                                         .executes(ctx -> convertCrystal(
-                                                ctx.getSource(),
-                                                IntegerArgumentType.getInteger(ctx, "amount")))))
-                        .then(Commands.literal("living")
-                                .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                                        .executes(ctx -> convertLiving(
                                                 ctx.getSource(),
                                                 IntegerArgumentType.getInteger(ctx, "amount"))))))
                 .then(Commands.literal("clearcooldown")
@@ -114,25 +97,6 @@ public class ModCommands
 
         player.sendSystemMessage(Component.literal(currentHearts + "/" + initial)
                 .withStyle(ChatFormatting.GREEN));
-
-        return 1;
-    }
-
-    private static int showLivingHearts(CommandSourceStack source)
-    {
-        if (!(source.getEntity() instanceof ServerPlayer player))
-        {
-            source.sendFailure(Component.literal("This command can only be used by a player."));
-            return 0;
-        }
-
-        ServerLevel overworld = source.getServer().overworld();
-        HeartLossData data = HeartLossData.get(overworld);
-        int ls = data.getLifeStealHearts(player.getUUID());
-        int cap = HeartLossHandler.MAX_HEARTS;
-
-        player.sendSystemMessage(Component.literal(ls + "/" + cap)
-                .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;
     }
@@ -216,20 +180,14 @@ public class ModCommands
         ServerLevel overworld = source.getServer().overworld();
         HeartLossData data = HeartLossData.get(overworld);
 
-        int mcMax = HeartLossHandler.getInitialHearts(target);
-        int lsCap = LifeStealHandler.resolvedHeartCap();
+        int initial = HeartLossHandler.getInitialHearts(target);
         int min = HeartLossHandler.getMinHearts();
-        int hardCap = lsCap == Integer.MAX_VALUE ? 60 : mcMax + Math.max(0, lsCap);
-        int clamped = Math.max(min, Math.min(hearts, hardCap));
+        int clamped = Math.max(min, Math.min(hearts, initial));
 
-        int newMc = Math.min(clamped, mcMax);
-        int newLs = clamped - newMc;
-        int newLost = mcMax - newMc;
+        int newLost = initial - clamped;
 
         data.setHeartsLost(target.getUUID(), newLost);
         HeartLossHandler.applyModifier(target, newLost);
-        data.setLifeStealHearts(target.getUUID(), newLs);
-        LifeStealHandler.applyBonusModifier(target, newLs);
 
         source.sendSystemMessage(Component.literal("Set " + target.getName().getString() +
                 "'s hearts to " + clamped + ".")
@@ -263,24 +221,16 @@ public class ModCommands
 
     private static int setHeartMode(CommandSourceStack source, String mode)
     {
-        boolean mc;
-        boolean ls;
-        String label;
-        switch (mode)
+        if (!mode.equals("mediumcore"))
         {
-            case "mediumcore": mc = true; ls = false; label = "Mediumcore only"; break;
-            case "lifesteal":  mc = false; ls = true;  label = "Lifesteal only"; break;
-            case "both":       mc = true;  ls = true;  label = "Mediumcore and Lifesteal (combined)"; break;
-            default:
-                source.sendFailure(Component.literal("Invalid mode! Use: mediumcore, lifesteal, or both."));
-                return 0;
+            source.sendFailure(Component.literal("Invalid mode! Use: mediumcore."));
+            return 0;
         }
 
-        ModConfig.MEDIUMCORE_ENABLED.set(mc);
-        ModConfig.LIFESTEAL_ENABLED.set(ls);
+        ModConfig.MEDIUMCORE_ENABLED.set(true);
         ModConfig.SPEC.save();
 
-        source.sendSystemMessage(Component.literal("Heart mode: " + label + ".")
+        source.sendSystemMessage(Component.literal("Heart mode: Mediumcore.")
                 .withStyle(ChatFormatting.GREEN));
         return 1;
     }
@@ -297,25 +247,18 @@ public class ModCommands
         HeartLossData data = HeartLossData.get(overworld);
 
         int currentLost = data.getHeartsLost(player.getUUID());
-        int currentLs = data.getLifeStealHearts(player.getUUID());
         int minHearts = HeartLossHandler.getMinHearts();
         int initial = HeartLossHandler.getInitialHearts(player);
-        int mcAvailable = (initial - currentLost) - minHearts;
-        int totalAvailable = currentLs + mcAvailable;
-        if (totalAvailable <= 0)
+        int available = (initial - currentLost) - minHearts;
+        if (available <= 0)
         {
             source.sendFailure(Component.literal("You have no hearts to convert."));
             return 0;
         }
 
-        int converted = Math.min(amount, totalAvailable);
-        int fromLs = Math.min(converted, currentLs);
-        int fromMc = converted - fromLs;
+        int converted = Math.min(amount, available);
 
-        data.setLifeStealHearts(player.getUUID(), currentLs - fromLs);
-        LifeStealHandler.applyBonusModifier(player, currentLs - fromLs);
-
-        int newLost = currentLost + fromMc;
+        int newLost = currentLost + converted;
         data.setHeartsLost(player.getUUID(), newLost);
         HeartLossHandler.applyModifier(player, newLost);
 
@@ -327,51 +270,6 @@ public class ModCommands
 
         player.sendSystemMessage(Component.literal("Converted " + converted +
                 (converted == 1 ? " heart into Crystal Heart item." : " hearts into Crystal Heart items."))
-                .withStyle(ChatFormatting.LIGHT_PURPLE));
-
-        return 1;
-    }
-
-    private static int convertLiving(CommandSourceStack source, int amount)
-    {
-        if (!(source.getEntity() instanceof ServerPlayer player))
-        {
-            source.sendFailure(Component.literal("This command can only be used by a player."));
-            return 0;
-        }
-
-        ServerLevel overworld = source.getServer().overworld();
-        HeartLossData data = HeartLossData.get(overworld);
-
-        int currentLost = data.getHeartsLost(player.getUUID());
-        int currentLs = data.getLifeStealHearts(player.getUUID());
-        int minHearts = HeartLossHandler.getMinHearts();
-        int initial = HeartLossHandler.getInitialHearts(player);
-        int mcAvailable = (initial - currentLost) - minHearts;
-        int totalAvailable = currentLs + mcAvailable;
-        if (totalAvailable <= 0)
-        {
-            source.sendFailure(Component.literal("You have no hearts to convert."));
-            return 0;
-        }
-
-        int converted = Math.min(amount, totalAvailable);
-        int fromLs = Math.min(converted, currentLs);
-        int fromMc = converted - fromLs;
-
-        data.setLifeStealHearts(player.getUUID(), currentLs - fromLs);
-        LifeStealHandler.applyBonusModifier(player, currentLs - fromLs);
-
-        int newLost = currentLost + fromMc;
-        data.setHeartsLost(player.getUUID(), newLost);
-        HeartLossHandler.applyModifier(player, newLost);
-
-        ItemStack stack = new ItemStack(ModItems.LIVING_HEART.get(), converted);
-        if (!player.getInventory().add(stack))
-            player.drop(stack, false);
-
-        player.sendSystemMessage(Component.literal("Converted " + converted +
-                (converted == 1 ? " heart into Living Heart item." : " hearts into Living Heart items."))
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
 
         return 1;
@@ -422,34 +320,6 @@ public class ModCommands
                     .withStyle(ChatFormatting.GREEN));
         }
 
-        return 1;
-    }
-
-    private static int setBaseHearts(CommandSourceStack source, int value)
-    {
-        ModConfig.BASE_HEARTS.set(value);
-        ModConfig.SPEC.save();
-
-        int floor = HeartLossHandler.getMinHearts();
-        ServerLevel overworld = source.getServer().overworld();
-        HeartLossData data = HeartLossData.get(overworld);
-
-        // Re-clamp existing heart loss for every online player against the new floor
-        for (ServerPlayer player : source.getServer().getPlayerList().getPlayers())
-        {
-            int initial = HeartLossHandler.getInitialHearts(player);
-            int maxLoss = Math.max(0, initial - floor);
-            int currentLost = data.getHeartsLost(player.getUUID());
-            if (currentLost > maxLoss)
-            {
-                data.setHeartsLost(player.getUUID(), maxLoss);
-                HeartLossHandler.applyModifier(player, maxLoss);
-            }
-        }
-
-        source.sendSystemMessage(Component.literal(
-                "Base hearts set to " + value + ". Effective floor is now " + floor + " hearts.")
-                .withStyle(ChatFormatting.GREEN));
         return 1;
     }
 }

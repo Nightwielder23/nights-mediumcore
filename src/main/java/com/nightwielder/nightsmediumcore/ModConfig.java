@@ -5,7 +5,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ModConfig
 {
-    public static final ForgeConfigSpec.IntValue BASE_HEARTS;
     public static final ForgeConfigSpec.IntValue FLOOR_HEARTS;
     public static final ForgeConfigSpec.IntValue DEATH_GRACE_PERIOD_SECONDS;
     public static final ForgeConfigSpec.IntValue CRYSTAL_COMBAT_COOLDOWN_SECONDS;
@@ -18,9 +17,7 @@ public class ModConfig
     public static final ForgeConfigSpec.ConfigValue<String> HEART_RECOVERY_MODE;
     public static final ForgeConfigSpec.BooleanValue APPLE_COMBAT_COOLDOWN;
     public static final ForgeConfigSpec.IntValue APPLE_COOLDOWN_SECONDS;
-    public static final ForgeConfigSpec.BooleanValue LIFESTEAL_ENABLED;
     public static final ForgeConfigSpec.BooleanValue MEDIUMCORE_ENABLED;
-    public static final ForgeConfigSpec.IntValue LIFESTEAL_HEART_CAP;
 
     public static final ForgeConfigSpec SPEC;
 
@@ -30,19 +27,9 @@ public class ModConfig
 
         builder.push("hearts");
 
-        BASE_HEARTS = builder
-                .comment("Reference value for the dynamic heart floor calculation.",
-                         "Each player's actual maximum HP is captured the first time they log in,",
-                         "so starting HP from class mods like Better Combat is honored. Heart loss",
-                         "can drive their effective max down toward this number, but no further.",
-                         "Settable in-game with /nm basehearts <value>.",
-                         "Range: 1 to 30. Default: 3")
-                .defineInRange("baseHearts", 3, 1, 30);
-
         FLOOR_HEARTS = builder
-                .comment("Absolute hard floor for hearts a player can have, regardless of deaths.",
-                         "Acts as a safety net on top of baseHearts. The actual floor used is the",
-                         "higher of the two values.",
+                .comment("Hard floor for hearts a player can have, regardless of deaths.",
+                         "Heart loss can drive a player's effective max down toward this number, but no further.",
                          "Range: 1 to 30. Default: 3")
                 .defineInRange("floorHearts", 3, 1, 30);
 
@@ -83,6 +70,11 @@ public class ModConfig
                          "Range: 1 to 60. Default: 5")
                 .defineInRange("respawnImmunitySeconds", 5, 1, 60);
 
+        MEDIUMCORE_ENABLED = builder
+                .comment("When true, the mediumcore heart-loss mechanics are active.",
+                         "Default: true")
+                .define("mediumcoreEnabled", true);
+
         builder.pop();
         builder.push("crystals");
 
@@ -120,29 +112,6 @@ public class ModConfig
                          "Enchanted golden apples always ignore this.",
                          "Range: 0 to 3600. Default: 0")
                 .defineInRange("appleCooldownSeconds", 0, 0, 3600);
-
-        builder.pop();
-        builder.push("lifesteal");
-
-        MEDIUMCORE_ENABLED = builder
-                .comment("When true, the base mediumcore heart-loss mechanics are active.",
-                         "Default: true")
-                .define("mediumcoreEnabled", true);
-
-        LIFESTEAL_ENABLED = builder
-                .comment("When true, the lifesteal heart pool is active alongside mediumcore mechanics.",
-                         "Affects how Crystal Hearts, Living Hearts, and golden apples interact with",
-                         "the bonus heart pool.",
-                         "Default: false")
-                .define("lifeStealEnabled", false);
-
-        LIFESTEAL_HEART_CAP = builder
-                .comment("Maximum hearts for informational purposes / external systems.",
-                         "Set to -1 for automatic: 10 when both mediumcore and lifesteal are on,",
-                         "unlimited (Integer.MAX_VALUE) when only lifesteal is on.",
-                         "Living Heart use can exceed this cap regardless.",
-                         "Default: -1")
-                .defineInRange("lifeStealHeartCap", -1, -1, Integer.MAX_VALUE);
 
         builder.pop();
 

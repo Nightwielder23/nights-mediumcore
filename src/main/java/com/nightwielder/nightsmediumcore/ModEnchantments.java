@@ -2,7 +2,6 @@
 package com.nightwielder.nightsmediumcore;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -16,9 +15,6 @@ public class ModEnchantments
 
     public static final RegistryObject<Enchantment> LIFE_STEAL = ENCHANTMENTS.register(
             "life_steal", () -> new WeaponEnchantment(Enchantment.Rarity.RARE, 3));
-
-    public static final RegistryObject<Enchantment> VAMPIRISM = ENCHANTMENTS.register(
-            "vampirism", () -> new WeaponEnchantment(Enchantment.Rarity.RARE, 3));
 
     public static class WeaponEnchantment extends Enchantment
     {
@@ -46,22 +42,6 @@ public class ModEnchantments
         public int getMaxCost(int level)
         {
             return getMinCost(level) + 20;
-        }
-
-        @Override
-        public boolean canEnchant(ItemStack stack)
-        {
-            if (stack.getItem() == ModItems.VAMPIRIC_SCYTHE.get())
-                return false;
-            return super.canEnchant(stack);
-        }
-
-        @Override
-        public boolean canApplyAtEnchantingTable(ItemStack stack)
-        {
-            if (stack.getItem() == ModItems.VAMPIRIC_SCYTHE.get())
-                return false;
-            return super.canApplyAtEnchantingTable(stack);
         }
 
         @Override

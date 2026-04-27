@@ -20,7 +20,6 @@ public class HeartLossData extends SavedData
     private final Map<UUID, Long> bedRegenCooldown = new HashMap<>();
     private final Map<UUID, Long> appleCooldown = new HashMap<>();
     private final Map<UUID, Long> respawnImmunityExpiry = new HashMap<>();
-    private final Map<UUID, Integer> lifeStealHearts = new HashMap<>();
     private final Map<UUID, Double> initialMaxHealth = new HashMap<>();
 
     public int getHeartsLost(UUID playerUUID)
@@ -100,17 +99,6 @@ public class HeartLossData extends SavedData
         setDirty();
     }
 
-    public int getLifeStealHearts(UUID playerUUID)
-    {
-        return lifeStealHearts.getOrDefault(playerUUID, 0);
-    }
-
-    public void setLifeStealHearts(UUID playerUUID, int amount)
-    {
-        lifeStealHearts.put(playerUUID, Math.max(0, amount));
-        setDirty();
-    }
-
     public boolean hasInitialMaxHealth(UUID playerUUID)
     {
         return initialMaxHealth.containsKey(playerUUID);
@@ -187,13 +175,6 @@ public class HeartLossData extends SavedData
         }
         tag.put("respawnImmunityExpiry", immunityTag);
 
-        CompoundTag lsHeartsTag = new CompoundTag();
-        for (Map.Entry<UUID, Integer> entry : lifeStealHearts.entrySet())
-        {
-            lsHeartsTag.putInt(entry.getKey().toString(), entry.getValue());
-        }
-        tag.put("lifeStealHearts", lsHeartsTag);
-
         CompoundTag initialMaxTag = new CompoundTag();
         for (Map.Entry<UUID, Double> entry : initialMaxHealth.entrySet())
         {
@@ -258,13 +239,6 @@ public class HeartLossData extends SavedData
         for (String key : immunityTag.getAllKeys())
         {
             try { data.respawnImmunityExpiry.put(UUID.fromString(key), immunityTag.getLong(key)); }
-            catch (IllegalArgumentException ignored) {}
-        }
-
-        CompoundTag lsHeartsTag = tag.getCompound("lifeStealHearts");
-        for (String key : lsHeartsTag.getAllKeys())
-        {
-            try { data.lifeStealHearts.put(UUID.fromString(key), lsHeartsTag.getInt(key)); }
             catch (IllegalArgumentException ignored) {}
         }
 

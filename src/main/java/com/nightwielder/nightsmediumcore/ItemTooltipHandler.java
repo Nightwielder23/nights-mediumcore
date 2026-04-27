@@ -43,26 +43,6 @@ public class ItemTooltipHandler
             addEffect(tooltip, "+20% max hearts and permanent Regeneration I.");
             addLore(tooltip, "An heirloom that remembers every heartbeat before yours.");
         }
-        else if (item == ModItems.BLOOD_SHARD.get())
-        {
-            addLore(tooltip, "A fragment of clotted life, pulsing faintly in the dark.");
-        }
-        else if (item == ModItems.BLOODY_HEART.get())
-        {
-            addLore(tooltip, "A heart drowned in crimson, raw material for darker work.");
-        }
-        else if (item == ModItems.BLOOD_RELIC.get())
-        {
-            addEffect(tooltip, "Keeps all Heart Relic effects.");
-            addEffect(tooltip, "0.5% chance for hostile mobs to drop a Living Heart on kill.");
-            addLore(tooltip, "A relic steeped in the blood of a thousand fallen beasts.");
-        }
-        else if (item == ModItems.VAMPIRIC_SCYTHE.get())
-        {
-            addEffect(tooltip, "Heals 12% of damage dealt.");
-            addEffect(tooltip, "0.5% chance for mobs to drop a Living Heart on kill.");
-            addLore(tooltip, "A curved edge that drinks deeply from every wound.");
-        }
     }
 
     private static void addEffect(List<Component> tooltip, String text)

@@ -28,30 +28,6 @@ public class ModItems
     public static final RegistryObject<Item> HEART_RELIC = ITEMS.register("heart_relic",
             ModItems::createHeartRelic);
 
-    public static final RegistryObject<Item> LIVING_HEART = ITEMS.register("living_heart",
-            () -> new LivingHeartItem(new Item.Properties().stacksTo(16)));
-
-    public static final RegistryObject<Item> BLOOD_SHARD = ITEMS.register("blood_shard",
-            () -> new Item(new Item.Properties()));
-
-    public static final RegistryObject<Item> BLOODY_HEART = ITEMS.register("bloody_heart",
-            () -> new Item(new Item.Properties().stacksTo(16)));
-
-    public static final RegistryObject<Item> BLOOD_RELIC = ITEMS.register("blood_relic",
-            ModItems::createBloodRelic);
-
-    public static final RegistryObject<Item> VAMPIRIC_SCYTHE = ITEMS.register("vampiric_scythe",
-            () -> new VampiricScytheItem(new Item.Properties().stacksTo(1).durability(2031)));
-
-    private static Item createBloodRelic()
-    {
-        if (ModList.get().isLoaded("curios"))
-        {
-            return CuriosItemFactory.createBloodRelic();
-        }
-        return new Item(new Item.Properties().stacksTo(1));
-    }
-
     private static Item createHeartRelic()
     {
         if (ModList.get().isLoaded("curios"))

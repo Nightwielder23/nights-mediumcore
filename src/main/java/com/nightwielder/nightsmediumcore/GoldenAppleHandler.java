@@ -75,39 +75,18 @@ public class GoldenAppleHandler
         long currentTime = overworld.getGameTime();
 
         int currentLost = data.getHeartsLost(player.getUUID());
-        int currentLs = data.getLifeStealHearts(player.getUUID());
-        int lsCap = HeartLossHandler.MAX_HEARTS;
         boolean isCreative = player.getAbilities().instabuild;
         boolean mcOn = ModConfig.MEDIUMCORE_ENABLED.get();
-        boolean lsOnly = !mcOn && ModConfig.LIFESTEAL_ENABLED.get();
+        if (!mcOn)
+            return;
 
         if (isEnchanted)
         {
-            // Enchanted golden apple ignores all cooldowns
-            if (mcOn)
-            {
-                // Restore everything: mediumcore loss and lifesteal up to the cap
-                if (currentLost <= 0 && currentLs >= lsCap)
-                    return;
-                data.setHeartsLost(player.getUUID(), 0);
-                HeartLossHandler.applyModifier(player, 0);
-                data.setLifeStealHearts(player.getUUID(), lsCap);
-                LifeStealHandler.applyBonusModifier(player, lsCap);
-            }
-            else if (lsOnly)
-            {
-                // Restore up to 2 lifesteal hearts, capped
-                if (currentLs >= lsCap)
-                    return;
-                int add = Math.min(2, lsCap - currentLs);
-                int newLs = currentLs + add;
-                data.setLifeStealHearts(player.getUUID(), newLs);
-                LifeStealHandler.applyBonusModifier(player, newLs);
-            }
-            else
-            {
+            // Enchanted golden apple ignores all cooldowns and restores all loss
+            if (currentLost <= 0)
                 return;
-            }
+            data.setHeartsLost(player.getUUID(), 0);
+            HeartLossHandler.applyModifier(player, 0);
         }
         else
         {
@@ -135,23 +114,13 @@ public class GoldenAppleHandler
                 }
             }
 
-            // Restore 1 heart, mediumcore first then lifesteal
-            if (mcOn && currentLost > 0)
-            {
-                int newLost = currentLost - 1;
-                data.setHeartsLost(player.getUUID(), newLost);
-                HeartLossHandler.applyModifier(player, newLost);
-            }
-            else if (currentLs < lsCap)
-            {
-                int newLs = currentLs + 1;
-                data.setLifeStealHearts(player.getUUID(), newLs);
-                LifeStealHandler.applyBonusModifier(player, newLs);
-            }
-            else
-            {
+            // Restore 1 heart of mediumcore loss
+            if (currentLost <= 0)
                 return;
-            }
+
+            int newLost = currentLost - 1;
+            data.setHeartsLost(player.getUUID(), newLost);
+            HeartLossHandler.applyModifier(player, newLost);
 
             if (!isCreative && cooldownSeconds > 0)
             {
